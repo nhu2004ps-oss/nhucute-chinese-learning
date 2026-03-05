@@ -6303,7 +6303,7 @@ function updateApiBanner(){
 
 /* Central AI fetch helper — handles key, errors, response parsing */
 const GEMINI_MODEL = 'gemini-1.5-flash';
-const GEMINI_BASE  = 'https://generativelanguage.googleapis.com/v1beta/models/';
+const GEMINI_BASE  = 'https://generativelanguage.googleapis.com/v1/models/';
 
 async function aiChat(systemPrompt, userPrompt, maxTokens){
   maxTokens = maxTokens || 1000;
