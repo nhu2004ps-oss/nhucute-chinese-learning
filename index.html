@@ -13,7 +13,7 @@
   --red:#C0392B;--red-light:#E74C3C;--gold:#D4A843;--gold-light:#F1C55A;
   --ink:#1A1A2E;--paper:#FAF6F0;--green:#27AE60;--green-light:#2ECC71;
   --blue:#2471A3;--muted:#7F8C8D;--white:#FFFFFF;
-  --hsk3:#E74C3C;--hsk4:#E67E22;--hsk5:#8E44AD;--hsk6:#2471A3;
+  --hsk1:#27AE60;--hsk2:#16A085;--hsk3:#E74C3C;--hsk4:#E67E22;--hsk5:#8E44AD;--hsk6:#2471A3;
 }
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Be Vietnam Pro',sans-serif;background:var(--ink);color:var(--paper);min-height:100vh;overflow-x:hidden;}
@@ -35,6 +35,8 @@ h1 span{color:var(--gold);}
 .level-bar{display:flex;gap:8px;justify-content:center;margin:14px 0 18px;flex-wrap:wrap;}
 .lvl-btn{padding:8px 20px;border-radius:20px;border:2px solid rgba(255,255,255,.15);background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;letter-spacing:1px;}
 .lvl-btn:hover{border-color:rgba(255,255,255,.4);color:var(--paper);}
+.lvl-btn.on[data-lvl="1"]{background:var(--hsk1);border-color:var(--hsk1);color:#fff;box-shadow:0 4px 16px rgba(39,174,96,.4);}
+.lvl-btn.on[data-lvl="2"]{background:var(--hsk2);border-color:var(--hsk2);color:#fff;box-shadow:0 4px 16px rgba(22,160,133,.4);}
 .lvl-btn.on[data-lvl="3"]{background:var(--hsk3);border-color:var(--hsk3);color:#fff;box-shadow:0 4px 16px rgba(231,76,60,.4);}
 .lvl-btn.on[data-lvl="4"]{background:var(--hsk4);border-color:var(--hsk4);color:#fff;box-shadow:0 4px 16px rgba(230,126,34,.4);}
 .lvl-btn.on[data-lvl="5"]{background:var(--hsk5);border-color:var(--hsk5);color:#fff;box-shadow:0 4px 16px rgba(142,68,173,.4);}
@@ -203,8 +205,14 @@ h1 span{color:var(--gold);}
    TRANSLATE (AI-POWERED)
 ═══════════════════════════════════════════════════════ */
 .trq{font-size:17px;color:var(--paper);line-height:1.8;padding:14px 18px;background:rgba(212,168,67,.07);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;margin-bottom:12px;font-family:'Noto Serif SC',serif;}
+.trq.vi{border-left-color:var(--green);background:rgba(39,174,96,.07);font-family:'Be Vietnam Pro',sans-serif;font-size:15px;}
 .trta{width:100%;min-height:68px;padding:11px 13px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:11px;color:var(--white);font-size:13px;font-family:'Be Vietnam Pro',sans-serif;resize:vertical;outline:none;transition:border-color .2s;margin-bottom:8px;}
+.trta.zh{font-family:'Noto Serif SC',serif;font-size:16px;}
 .trta:focus{border-color:var(--gold);}
+.tr-dir-btn{flex:1;padding:9px 12px;border:none;border-radius:9px;background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;}
+.tr-dir-btn.tr-dir-on{background:var(--blue);color:#fff;box-shadow:0 4px 12px rgba(36,113,163,.35);}
+.tr-dir-btn:not(.tr-dir-on):hover{color:var(--paper);background:rgba(255,255,255,.08);}
+.tr-py-hint{font-size:12px;color:var(--gold-light);margin-top:-4px;margin-bottom:8px;font-style:italic;display:none;}
 .ai-check-btn{padding:8px 16px;background:linear-gradient(135deg,var(--blue),#1a3a5c);border:none;border-radius:8px;color:#fff;font-size:12px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
 .ai-check-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(36,113,163,.4);}
 .ai-fb{display:none;margin-top:10px;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.7;}
@@ -454,6 +462,8 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 
 <!-- HSK LEVEL SELECTOR -->
 <div class="level-bar">
+  <button class="lvl-btn" data-lvl="1" onclick="setLevel(1,this)">HSK 1</button>
+  <button class="lvl-btn" data-lvl="2" onclick="setLevel(2,this)">HSK 2</button>
   <button class="lvl-btn on" data-lvl="3" onclick="setLevel(3,this)">HSK 3</button>
   <button class="lvl-btn" data-lvl="4" onclick="setLevel(4,this)">HSK 4</button>
   <button class="lvl-btn" data-lvl="5" onclick="setLevel(5,this)">HSK 5</button>
@@ -613,21 +623,28 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 ══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-fi">
 <div class="card">
-  <div class="xhdr"><div class="xicon">✏️</div><div><div class="xtitle">Điền chữ Hán vào chỗ trống</div><div class="xsub">Có gợi ý pinyin · 8 câu / lượt</div></div></div>
+  <div class="xhdr"><div class="xicon">✏️</div><div><div class="xtitle">Điền chữ Hán vào chỗ trống</div><div class="xsub">Không có gợi ý · Nhập đáp án rồi bấm kiểm tra</div></div></div>
   <div id="fiwrap"></div>
   <div style="text-align:center;margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <button class="btn gold" onclick="checkFI()">✅ Kiểm tra tất cả</button>
+    <button id="fi-check-btn" class="btn gold" onclick="checkFI()">✅ Kiểm tra tất cả</button>
     <button class="btn out" onclick="initFI()">🔄 Đề mới</button>
   </div>
 </div>
 </div>
 
 <!-- ══════════════════════════════════════════════════
-     PANEL: TRANSLATE (AI-POWERED)
+     PANEL: TRANSLATE (AI-POWERED, 2-WAY)
 ══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-tr">
 <div class="card">
-  <div class="xhdr"><div class="xicon">🈯</div><div><div class="xtitle">Dịch câu có AI chấm điểm</div><div class="xsub">Dịch câu tiếng Trung → AI phân tích lỗi & giải thích chi tiết</div></div></div>
+  <div class="xhdr"><div class="xicon">🈯</div><div><div class="xtitle">Dịch câu có AI chấm điểm</div><div class="xsub">Chọn chiều dịch · AI phân tích lỗi & giải thích chi tiết</div></div></div>
+
+  <!-- Direction Selector -->
+  <div style="display:flex;gap:8px;margin-bottom:16px;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;">
+    <button id="tr-dir-zh2vi" class="tr-dir-btn tr-dir-on" onclick="setTRDir('zh2vi',this)">🇨🇳→🇻🇳 Trung → Việt</button>
+    <button id="tr-dir-vi2zh" class="tr-dir-btn" onclick="setTRDir('vi2zh',this)">🇻🇳→🇨🇳 Việt → Trung</button>
+  </div>
+
   <div id="trwrap"></div>
   <div style="text-align:center;margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
     <button class="btn out" onclick="initTR()">🔄 Đề mới</button>
@@ -853,7 +870,7 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 <div class="card">
   <div class="xhdr"><div class="xicon">📊</div><div><div class="xtitle">Thống Kê Học Tập</div><div class="xsub">Theo dõi tiến độ của bạn theo từng cấp độ HSK</div></div></div>
   
-  <div class="stats-grid" id="stats-grid">
+  <div class="stats-grid" id="stats-grid" style="grid-template-columns:repeat(3,1fr)">
     <!-- rendered by JS -->
   </div>
 
@@ -883,6 +900,309 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
    Cấu trúc: [hanzi, pinyin, meaning_vi, type]
 ════════════════════════════════════════════════════════════════ */
 const DB = {
+  1: [
+    ["爱","ài","yêu","","我爱你。","Wǒ ài nǐ.","Tôi yêu bạn."],
+    ["八","bā","tám","","他有八个苹果。","Tā yǒu bā ge píngguǒ.","Anh ấy có tám quả táo."],
+    ["爸爸","bàba","bố","","我的爸爸很高。","Wǒ de bàba hěn gāo.","Bố của tôi rất cao."],
+    ["杯子","bēizi","cốc","","这是我的杯子。","Zhè shì wǒ de bēizi.","Đây là cốc của tôi."],
+    ["北京","Běijīng","Bắc Kinh","","北京很大。","Běijīng hěn dà.","Bắc Kinh thì lớn."],
+    ["本","běn","cuốn (dùng cho sách)","","这本书很有趣。","Zhè běn shū hěn yǒuqù.","Quyển sách này rất thú vị."],
+    ["不客气","bú kèqì","không có gì (đáp lại lời cảm ơn)","","不客气。","bú kèqì.","Không có gì."],
+    ["不","bù","không","","他不喜欢吃鱼。","Tā bù xǐhuān chī yú.","Anh ấy không thích ăn cá."],
+    ["菜","cài","món ăn, rau củ","","我喜欢吃菜。","Wǒ xǐhuān chī cài.","Tôi thích ăn rau."],
+    ["茶","chá","trà","","我喝茶。","Wǒ hē chá.","Tôi uống trà."],
+    ["吃","chī","ăn","","我吃苹果。","Wǒ chī píngguǒ.","Tôi ăn táo."],
+    ["出租车","chūzūchē","taxi","","我坐出租车。","Wǒ zuò chūzūchē.","Tôi đi taxi."],
+    ["打电话","dǎ diànhuà","gọi điện thoại","","她给我打电话。","Tā gěi wǒ dǎ diànhuà.","Cô ấy gọi điện cho tôi."],
+    ["大","dà","lớn, to","","这件衣服很大。","Zhè jiàn yīfú hěn dà.","Cái áo này rất to."],
+    ["的","de","của (thuộc tính)","","这是我的书。","Zhè shì wǒ de shū.","Đây là sách của tôi."],
+    ["点","diǎn","giờ (trong thời gian)","","现在是三点。","Xiànzài shì sān diǎn?","Bây giờ là mấy giờ?"],
+    ["电脑","diànnǎo","máy tính","","我用电脑。","Wǒ yòng diànnǎo.","Tôi dùng máy tính."],
+    ["电视","diànshì","ti vi","","电视很大。","Diànshì hěn dà.","Tivi thì lớn."],
+    ["电影","diànyǐng","phim","","我喜欢看电影。","Wǒ xǐhuān kàn diànyǐng.","Tôi thích xem phim."],
+    ["东西","dōngxī","đồ vật, thứ","","这是什么东西？","Zhè shì shénme dōngxī?","Đây là cái gì?"],
+    ["都","dōu","đều","","我们都去学校。","Wǒmen dōu qù xuéxiào.","Chúng tôi đều đi đến trường."],
+    ["读","dú","đọc","","她读书很快。","Tā dúshū hěn kuài.","Cô ấy đọc sách rất nhanh."],
+    ["对不起","duìbùqǐ","xin lỗi","","对不起，我迟到了。","Duìbuqǐ, wǒ chídào le.","Xin lỗi, tôi đến muộn."],
+    ["多","duō","nhiều","","我有很多书。","Wǒ yǒu hěn duō shū.","Tôi có nhiều sách."],
+    ["多少","duōshǎo","bao nhiêu","","这本书多少钱？","Zhè běn shū duōshǎo qián?","Quyển sách này bao nhiêu tiền?"],
+    ["儿子","érzi","con trai","","我的儿子很聪明。","Wǒ de érzi hěn cōngmíng.","Con trai của tôi rất thông minh."],
+    ["二","èr","hai","","我喜欢“二”数字。","Wǒ xǐhuān \"èr\" shùzi","Tôi thích số 2."],
+    ["饭馆","fànguǎn","nhà hàng","","我们去饭馆吃饭。","Wǒmen qù fànguǎn chīfàn.","Chúng tôi đi nhà hàng ăn cơm."],
+    ["飞机","fēijī","máy bay","","飞机很快。","Fēijī hěn kuài.","Máy bay thì nhanh."],
+    ["分钟","fēnzhōng","phút","","他等了五分钟。","Tā děngle wǔ fēnzhōng.","Anh ấy đợi năm phút."],
+    ["高兴","gāoxìng","vui","","我很高兴。","Wǒ hěn gāoxìng.","Tôi rất vui."],
+    ["个","gè","cái (đơn vị lượng từ)","","我有一个钱包。","Wǒ yǒu yī ge qiánbāo.","Tôi có một cái ví tiền."],
+    ["工作","gōngzuò","công việc","","我的工作很忙。","Wǒ de gōngzuò hěn máng.","Công việc của tôi rất bận."],
+    ["狗","gǒu","chó","","这只狗很可爱。","Zhè zhī gǒu hěn kě'ài.","Con chó này rất dễ thương."],
+    ["汉语","Hànyǔ","tiếng Hán","","我在学汉语。","Wǒ zài xué Hànyǔ.","Tôi đang học tiếng Trung."],
+    ["好","hǎo","tốt, khỏe","","他很好。","Tā hěn hǎo.","Anh ấy rất tốt."],
+    ["喝","hē","uống","","我喝水。","Wǒ hē shuǐ.","Tôi uống nước."],
+    ["和","hé","và","","我和你一起去。","Wǒ hé nǐ yīqǐ qù.","Tôi và bạn cùng đi."],
+    ["很","hěn","rất","","这个苹果很甜。","Zhège píngguǒ hěn tián.","Cái táo này rất ngọt."],
+    ["后面","hòumiàn","phía sau","","我家在后面。","Wǒ jiā zài hòumiàn.","Nhà tôi ở phía sau."],
+    ["回","huí","quay lại, về","","我回家了。","Wǒ huí jiā le.","Tôi đã về nhà."],
+    ["会","huì","sẽ, biết (kỹ năng)","","我会说汉语。","Wǒ huì shuō Hànyǔ.","Tôi biết nói tiếng Trung."],
+    ["火车站","huǒchēzhàn","ga tàu","","火车站在前面。","Huǒchēzhàn zài qiánmiàn.","Ga tàu ở phía trước."],
+    ["几","jǐ","mấy","","你有几个苹果？","Nǐ yǒu jǐ ge píngguǒ?","Bạn có mấy quả táo?"],
+    ["家","jiā","gia đình, nhà","","我家有四口人。","Wǒ jiā yǒu sì kǒu rén.","Nhà tôi có bốn người."],
+    ["叫","jiào","gọi, tên gọi","","她叫李娜。","Tā jiào Lǐ Nà.","Cô ấy tên là Lý Na."],
+    ["今天","jīntiān","hôm nay","","今天是星期一。","Jīntiān shì xīngqī yī.","Hôm nay là thứ Hai."],
+    ["九","jiǔ","chín","","我有九本书。","Wǒ yǒu jiǔ běn shū.","Tôi có chín quyển sách."],
+    ["开","kāi","mở, khởi động","","我们开车去。","Wǒmen kāichē qù.","Chúng tôi đi bằng ô tô."],
+    ["看","kàn","xem","","我喜欢看电影。","Wǒ xǐhuān kàn diànyǐng.","Tôi thích xem phim."],
+    ["看见","kànjiàn","nhìn thấy","","我看见你了。","Wǒ kànjiàn nǐ le.","Tôi đã thấy bạn."],
+    ["块","kuài","miếng, đồng (tiền)","","这个苹果两块钱。","Zhège píngguǒ liǎng kuài qián.","Cái táo này hai tệ."],
+    ["来","lái","đến","","明天我来。","Míngtiān wǒ lái.","Ngày mai tôi đến."],
+    ["老师","lǎoshī","giáo viên","","我的老师很友好。","Wǒ de lǎoshī hěn yǒuhǎo.","Giáo viên của tôi rất thân thiện."],
+    ["了","le","đã (dùng để chỉ sự thay đổi)","","她去了学校。","Tā qùle xuéxiào.","Cô ấy đã đi đến trường."],
+    ["冷","lěng","lạnh","","外面很冷。","Wàimiàn hěn lěng.","Bên ngoài rất lạnh."],
+    ["里","lǐ","trong","","我的书在里面。","Wǒ de shū zài lǐmiàn.","Sách của tôi ở bên trong."],
+    ["零","líng","không (số 0)","","今天零度。","Jīntiān líng dù.","Hôm nay không độ."],
+    ["六","liù","sáu","","我有六个苹果。","Wǒ yǒu liù ge píngguǒ.","Tôi có sáu quả táo."],
+    ["妈妈","māma","mẹ","","我的妈妈很漂亮。","Wǒ de māmā hěn piàoliang.","Mẹ của tôi rất xinh đẹp."],
+    ["吗","ma","không (dùng trong câu hỏi)","","你好吗？","Nǐ hǎo ma?","Bạn khỏe không?"],
+    ["买","mǎi","mua","","我买了水果。","Wǒ mǎile shuǐguǒ.","Tôi đã mua trái cây."],
+    ["猫","māo","mèo","","这只猫很可爱。","Zhè zhī māo hěn kě'ài.","Con mèo này rất dễ thương."],
+    ["没","méi","không có, chưa","","我没看见他。","Wǒ méi kànjiàn tā.","Tôi không nhìn thấy anh ấy."],
+    ["没关系","méi guānxi","không sao, không có gì","","下雨了，没关系，我们有伞。","Xiàyǔ le, méi guānxì, wǒmen yǒu sǎn.","Trời mưa rồi, không sao đâu, chúng ta có ô."],
+    ["米饭","mǐfàn","cơm","","我们吃米饭。","Wǒmen chī mǐfàn.","Chúng tôi ăn cơm."],
+    ["明天","míngtiān","ngày mai","","明天见。","Míngtiān jiàn.","Ngày mai gặp."],
+    ["名字","míngzi","tên","","你叫什么名字？","Nǐ jiào shénme míngzì?","Bạn tên là gì?"],
+    ["哪里 (哪儿)","nǎlǐ (nǎr)","đâu, chỗ nào","","你要去哪儿？","Nǐ yào qù nǎr？","Bạn muốn đi đâu?"],
+    ["那","nà","đó, kia","","那个书包很漂亮。","Nàge shūbāo hěn piàoliang.","Cái cặp sách đó rất đẹp."],
+    ["呢","ne","thì sao? (dùng để hỏi thêm)","","你呢？","Nǐ ne?","Còn bạn thì sao?"],
+    ["能","néng","có thể","","他能说三种语言。","Tā néng shuō sān zhǒng yǔyán.","Anh ấy có thể nói ba ngôn ngữ."],
+    ["你","nǐ","bạn","","你叫什么名字？","Nǐ jiào shénme míngzi?","Bạn tên là gì?"],
+    ["年","nián","năm","","我结婚三年了。","Wǒ jiéhūn sān nián le.","Tôi kết hôn 3 năm rồi."],
+    ["女儿","nǚ'ér","con gái","","她是我的女儿。","Tā shì wǒ de nǚ'ér.","Con bé là con gái của tôi."],
+    ["朋友","péngyou","bạn","","她的朋友很聪明。","Tā de péngyou hěn cōngmíng.","Bạn của cô ấy rất thông minh."],
+    ["漂亮","piàoliang","đẹp","","她很漂亮。","Tā hěn piàoliang.","Cô ấy rất xinh đẹp."],
+    ["苹果","píngguǒ","táo","","这个苹果很好吃。","Zhège píngguǒ hěn hǎochī.","Táo này rất ngon."],
+    ["七","qī","bảy","","我有七个朋友。","Wǒ yǒu qī ge péngyou.","Tôi có bảy người bạn."],
+    ["钱","qián","tiền","","这本书多少钱？","Zhè běn shū duōshǎo qián?","Cuốn sách này giá bao nhiêu?"],
+    ["前面","qiánmiàn","phía trước","","火车站在前面。","Huǒchēzhàn zài qiánmiàn.","Ga tàu ở phía trước."],
+    ["请","qǐng","xin vui lòng, mời","","请给我菜单。","Qǐng gěi wǒ càidān.","Xin vui lòng đưa cho tôi thực đơn."],
+    ["去","qù","đi","","我们要去商店。","Wǒmen yào qù shāngdiàn.","Chúng tôi phải đến cửa hàng."],
+    ["热","rè","nóng","","天气很热。","Tiānqì hěn rè.","Thời tiết rất nóng."],
+    ["人","rén","người","","这个人很友好。","Zhè ge rén hěn yǒuhǎo.","Người này rất thân thiện."],
+    ["认识","rènshi","quen biết","","我认识他。","Wǒ rènshi tā.","Tôi quen anh ấy."],
+    ["日","rì","ngày","","今天是几月几日？","Jīntiān shì jǐ yuè jǐ rì?","Hôm nay là ngày mấy tháng mấy?"],
+    ["三","sān","ba","","我有三本书。","Wǒ yǒu sān běn shū.","Tôi có ba cuốn sách."],
+    ["商店","shāngdiàn","cửa hàng","","这个商店很大。","Zhège shāngdiàn hěn dà.","Cửa hàng này rất lớn."],
+    ["上","shàng","lên","","他在上楼。","Tā zài shàng lóu.","Anh ấy đang lên tầng."],
+    ["上午","shàngwǔ","buổi sáng","","上午我们去学校。","Shàngwǔ wǒmen qù xuéxiào.","Vào buổi sáng chúng tôi đi học."],
+    ["少","shǎo","ít","","我们还少一个人。","Wǒmen hái shǎo yīgè rén.","Chúng tôi vẫn thiếu một người."],
+    ["谁","shuí/ shéi","ai","","谁是你的老师？","Shéi shì nǐ de lǎoshī?","Ai là giáo viên của bạn?"],
+    ["什么","shénme","cái gì","","你想吃什么？","Nǐ xiǎng chī shénme?","Bạn muốn ăn gì?"],
+    ["十","shí","mười","","我有十块钱。","Wǒ yǒu shí kuài qián.","Tôi có mười tệ."],
+    ["时候","shíhòu","lúc, khi","","你什么时候来？","Nǐ shénme shíhòu lái?","Bạn đến lúc nào ?"],
+    ["是","shì","là, thì","","这是一本好书。","Zhè shì yī běn hǎo shū.","Đây là một cuốn sách hay."],
+    ["书","shū","sách","","这本书很有意思。","Zhè běn shū hěn yǒuyìsi.","Cuốn sách này rất thú vị."],
+    ["水","shuǐ","nước","","我喝水。","Wǒ hē shuǐ.","Tôi uống nước."],
+    ["水果","shuǐguǒ","trái cây","","她喜欢吃水果。","Tā xǐhuān chī shuǐguǒ.","Cô ấy thích ăn trái cây."],
+    ["睡觉","shuìjiào","ngủ","","他每天晚上十点睡觉。","Tā měitiān wǎnshàng shí diǎn shuìjiào.","Anh ấy đi ngủ lúc mười giờ tối mỗi ngày."],
+    ["说话","shuōhuà","nói chuyện","","你怎么不说话？","Nǐ zěnme bù shuōhuà?","Sao bạn không nói chuyện thế?"],
+    ["四","sì","bốn","","他们四个人去旅行。","Tāmen sì gè rén qù lǚxíng.","Bốn người họ đi du lịch."],
+    ["岁","suì","tuổi","","我今年二十五岁。","Wǒ jīnnián èrshíwǔ suì.","Tôi năm nay hai mươi lăm tuổi."],
+    ["他","tā","anh ấy, ông ấy","","他是我的朋友。","Tā shì wǒ de péngyou.","Anh ấy là bạn của tôi."],
+    ["她","tā","cô ấy, bà ấy","","她在家里。","Tā zài jiālǐ.","Cô ấy ở nhà."],
+    ["太","tài","quá","","今天太热了。","Jīntiān tài rè le.","Hôm nay nóng quá."],
+    ["天气","tiānqì","thời tiết","","今天天气很好。","Jīntiān tiānqì hěn hǎo.","Thời tiết hôm nay rất tốt."],
+    ["听","tīng","nghe","","我喜欢听音乐。","Wǒ xǐhuān tīng yīnyuè.","Tôi thích nghe nhạc."],
+    ["同学","tóngxué","bạn học","","我们是同学。","Wǒmen shì tóngxué.","Chúng tôi là bạn học."],
+    ["喂","wèi","alo","","喂，你好吗？","Wèi, nǐ hǎo ma?","Alo, bạn khỏe không?"],
+    ["我","wǒ","tôi","","我想喝水。","Wǒ xiǎng hē shuǐ.","Tôi muốn uống nước."],
+    ["我们","wǒmen","chúng tôi","","我们一起去吧。","Wǒmen yīqǐ qù ba.","Chúng ta cùng đi nhé."],
+    ["五","wǔ","năm","","他有五本书。","Tā yǒu wǔ běn shū.","Anh ấy có năm cuốn sách."],
+    ["喜欢","xǐhuān","thích","","我喜欢喝咖啡。","Wǒ xǐhuān hē kāfēi.","Tôi thích uống cà phê."],
+    ["下","xià","xuống","","我在下楼。","Wǒ zài xià lóu.","Tôi đang xuống lầu."],
+    ["下午","xiàwǔ","buổi chiều","","下午我们去逛街。","Xiàwǔ wǒmen qù guàngjiē.","uổi chiều, chúng tôi đi dạo phố."],
+    ["下雨","xià yǔ","mưa","","外面下雨了，记得带伞。","Wàimiàn xià yǔ le, jìdé dài sǎn.","Ngoài trời mưa, nhớ mang theo ô."],
+    ["先生","xiānshēng","ông, ngài","","先生，这边请。","Xiānshēng, zhè biān qǐng","Mời anh qua bên này."],
+    ["现在","xiànzài","bây giờ","","我现在很累。","Wǒ xiànzài hěn lèi.","Tôi hiện tại rất mệt."],
+    ["想","xiǎng","nghĩ, muốn","","我想去看电影。","Wǒ xiǎng qù kàn diànyǐng.","Tôi muốn đi xem phim."],
+    ["小","xiǎo","nhỏ","","这是一只小狗。","Zhè shì yī zhī xiǎo gǒu.","Đây là một chú chó con."],
+    ["小姐","xiǎojiě","cô (trong cách gọi)","","小姐，请问这里有洗手间吗？","Xiǎojiě, qǐngwèn zhèlǐ yǒu xǐshǒujiān ma?","Cô ơi, xin hỏi ở đây có nhà vệ sinh không?"],
+    ["些","xiē","vài","","我们买了一些水果。","Wǒmen mǎile yīxiē shuǐguǒ.","Chúng tôi đã mua một ít trái cây."],
+    ["写","xiě","viết","","我正在写信。","Wǒ zhèngzài xiě xìn.","Tôi đang viết thư."],
+    ["谢谢","xièxiè","cảm ơn","","谢谢你的帮助。","Xièxiè nǐ de bāngzhù.","Cảm ơn sự giúp đỡ của bạn."],
+    ["星期","xīngqī","tuần","","一个星期就好。","Yí gè xīngqī jiǔ hǎo.","Một tuần là được"],
+    ["学生","xuéshēng","học sinh","","他是一个好学生。","Tā shì yīgè hǎo xuéshēng.","Anh ấy là một học sinh giỏi."],
+    ["学习","xuéxí","học tập","","学习中文很有趣。","Xuéxí zhōngwén hěn yǒuqù.","Học tiếng Trung rất thú vị."],
+    ["学校","xuéxiào","trường học","","我在学校学习中文。","Wǒ zài xuéxiào xuéxí zhōngwén.","Tôi học tiếng Trung ở trường."],
+    ["一","yī","một","","一个人在公园散步。","Yī gè rén zài gōngyuán sànbù.","Một người đang đi dạo trong công viên."],
+    ["衣服","yīfu","quần áo","","这件衣服很漂亮。","Zhè jiàn yīfu hěn piàoliang.","Bộ quần áo này rất đẹp."],
+    ["医生","yīshēng","bác sĩ","","他是一位医生。","Tā shì yī wèi yīshēng.","Anh ấy là một bác sĩ."],
+    ["医院","yīyuàn","bệnh viện","","我们去医院看病。","Wǒmen qù yīyuàn kàn bìng.","Chúng tôi đến bệnh viện để khám bệnh."],
+    ["椅子","yǐzi","ghế","","请坐在椅子上。","Qǐng zuò zài yǐzi shàng.","Xin ngồi lên ghế."],
+    ["月","yuè","tháng, mặt trăng","","这个月我很忙。","Zhège yuè wǒ hěn máng.","Tháng này tôi rất bận."],
+    ["在","zài","ở, tại","","他在学校学习。","Tā zài xuéxiào xuéxí.","Anh ấy học ở trường."],
+    ["再见","zàijiàn","tạm biệt","","我们明天再见。","Wǒmen míngtiān zàijiàn.","Chúng ta gặp lại vào ngày mai."],
+    ["怎么","zěnme","làm sao","","你怎么了？","Nǐ zěnme le?","Bạn sao vậy?"],
+    ["怎么样","zěnmeyàng","như thế nào","","你的工作怎么样？","Nǐ de gōngzuò zěnmeyàng?","Công việc của bạn thế nào?"],
+    ["这","zhè","Đây, này","","这件事怎么样？","Zhè jiàn shì zěnme yàng?","Việc này như thế nào?"],
+    ["中国","Zhōngguó","Trung Quốc","","中国有很多美丽的风景。","Zhōngguó yǒu hěn duō měilì de fēngjǐng.","Trung Quốc có nhiều cảnh đẹp."],
+    ["中午","zhōngwǔ","buổi trưa","","中午我们去吃饭吧。","Zhōngwǔ wǒmen qù chīfàn ba.","Buổi trưa chúng ta đi ăn cơm nhé."],
+    ["住","zhù","sống, cư trú","","我住在一个很安静的地方。","Wǒ zhù zài yīgè hěn ānjìng de dìfāng.","Tôi sống ở một nơi rất yên tĩnh."],
+    ["桌子","zhuōzi","bàn","","桌子上放着一本书。","Zhuōzi shàng fàngzhe yī běn shū.","Trên bàn có một cuốn sách."],
+    ["字","zì","chữ","","我们要学会写字。","Wǒmen yào xuéhuì xiě zì.","Chúng ta phải học viết chữ."],
+    ["昨天","zuótiān","hôm qua","","昨天我去看了一部电影。","Zuótiān wǒ qù kànle yī bù diànyǐng.","Hôm qua tôi đã đi xem một bộ phim."],
+    ["坐","zuò","ngồi","","我们在公园里坐了一会儿。","Wǒmen zài gōngyuán lǐ zuòle yīhuìr.","Chúng tôi đã ngồi một lúc trong công viên."],
+    ["做","zuò","làm","","他正在做作业。","Tā zhèngzài zuò zuòyè.","Anh ấy đang làm bài tập về nhà."]
+  ],
+  2: [
+    ["吧","ba","đi, nhé, nhỉ (đứng cuối câu)","","请你帮我吧。","Qǐng nǐ bāng wǒ ba.","Xin bạn giúp tôi nhé."],
+    ["白","bái","trắng","","他的白色衬衫很漂亮。","Tā de báisè chènshān hěn piàoliang.","Áo sơ mi trắng của anh ấy rất đẹp."],
+    ["百","bǎi","trăm","","我们要买一百个苹果。","Wǒmen yào mǎi yī bǎi gè píngguǒ.","Chúng tôi muốn mua một trăm quả táo."],
+    ["帮助","bāngzhù","giúp đỡ","","请你帮忙翻译这篇文章。","Qǐng nǐ bāngmáng fānyì zhè piān wénzhāng.","Xin bạn giúp dịch bài viết này."],
+    ["报纸","bàozhǐ","báo","","我每天都看报纸。","Wǒ měitiān dōu kàn bàozhǐ.","Tôi đọc báo mỗi ngày."],
+    ["比","bǐ","so sánh","","我的家比你的家大。","Wǒ de jiā bǐ nǐ de jiā dà.","Nhà của tôi lớn hơn nhà của bạn."],
+    ["别","bié","đừng, khác biệt","","别忘带钥匙。","Bié wàng dài yàoshi.","Đừng quên mang theo chìa khóa."],
+    ["长","cháng","dài","","她的头发很长。","Tā de tóufǎ hěn cháng.","Tóc của cô ấy rất dài."],
+    ["唱歌","chànggē","hát","","我喜欢唱歌。","Wǒ xǐhuān chànggē.","Tôi thích hát."],
+    ["出","chū","ra ngoài","","我们出去玩吧。","Wǒmen chūqù wán ba.","Chúng ta ra ngoài chơi đi."],
+    ["穿","chuān","mặc","","你穿的衣服很漂亮。","Nǐ chuān de yīfú hěn piàoliang.","Quần áo bạn mặc rất đẹp."],
+    ["船","chuán","thuyền","","他坐在船上。","Tā zuò zài chuán shàng.","Anh ấy ngồi trên thuyền."],
+    ["次","cì","lần","","这是我第一次来这里。","Zhè shì wǒ dì yī cì lái zhèlǐ.","Đây là lần đầu tiên tôi đến đây."],
+    ["从","cóng","từ, theo","","他从早上工作到晚上。","Tā cóng zǎoshang gōngzuò dào wǎnshang.","Anh ấy làm việc từ sáng đến tối."],
+    ["错","cuò","sai","","他做错了一个题。","Tā zuò cuòle yīgè tí.","Anh ấy đã làm sai một bài tập."],
+    ["打篮球","dǎ lánqiú","chơi bóng rổ","","他打篮球打得很好。","Tā dǎ lánqiú dǎ de hěn hǎo.","Anh ấy chơi bóng rổ rất giỏi."],
+    ["大家","dàjiā","mọi người","","大家都很高兴。","Dàjiā dōu hěn gāoxìng.","Mọi người đều rất vui."],
+    ["但是","dànshì","nhưng","","我想去，但是没有时间。","Wǒ xiǎng qù, dànshì méiyǒu shíjiān.","Tôi muốn đi, nhưng không có thời gian."],
+    ["到","dào","đến","","我们今天到学校了。","Wǒmen jīntiān dào xuéxiào le.","Hôm nay chúng tôi đã đến trường."],
+    ["得","děi","phải, đạt được","","你得努力学习。","Nǐ děi nǔlì xuéxí.","Bạn phải cố gắng học."],
+    ["等","děng","đợi","","我们等你来。","Wǒmen děng nǐ lái.","Chúng tôi đợi bạn đến."],
+    ["弟弟","dìdì","em trai","","弟弟在玩玩具。","Dìdì zài wán wánjù.","Em trai đang chơi đồ chơi."],
+    ["第一","dì yī","đầu tiên","","他是第一名。","Tā shì dì yī míng.","Anh ấy là người đứng đầu."],
+    ["懂","dǒng","hiểu","","我不懂这个问题。","Wǒ bù dǒng zhège wèntí.","Tôi không hiểu vấn đề này."],
+    ["对","duì","đúng, đối với","","你对我很好。","Nǐ duì wǒ hěn hǎo.","Bạn đối xử tốt với tôi."],
+    ["房间","fángjiān","phòng","","房间里很安静。","Fángjiān lǐ hěn ānjìng.","Trong phòng rất yên tĩnh."],
+    ["非常","fēicháng","rất, cực kỳ","","这道菜非常好吃。","Zhè dào cài fēicháng hǎochī.","Món ăn này rất ngon."],
+    ["服务员","fúwùyuán","nhân viên phục vụ","","服务员请帮忙。","Fúwùyuán qǐng bāngmáng.","Nhân viên phục vụ, xin giúp đỡ."],
+    ["高","gāo","cao","","他很高。","Tā hěn gāo.","Anh ấy rất cao."],
+    ["告诉","gàosù","nói cho, thông báo","","请告诉我答案。","Qǐng gàosù wǒ dá'àn.","Xin cho tôi biết đáp án."],
+    ["哥哥","gēge","anh trai","","哥哥在家里。","Gēge zài jiālǐ.","Anh trai đang ở nhà."],
+    ["给","gěi","đưa cho, cho","","请给我一本书。","Qǐng gěi wǒ yī běn shū.","Xin hãy đưa cho tôi một cuốn sách."],
+    ["公共汽车","gōnggòng qìchē","xe buýt","","公共汽车很方便。","Gōnggòng qìchē hěn fāngbiàn.","Xe buýt rất tiện lợi."],
+    ["公斤","gōngjīn","kilogram (kg)","","这个包十公斤。","Zhège bāo shí gōngjīn.","Cái túi này mười kilogram."],
+    ["公司","gōngsī","công ty","","我在公司工作。","Wǒ zài gōngsī gōngzuò.","Tôi làm việc ở công ty."],
+    ["贵","guì","đắt, quý","","这件衣服很贵。","Zhè jiàn yīfú hěn guì.","Cái áo này rất đắt."],
+    ["过","guò","qua, đi qua","","请过安检门。","Qǐng guò ānjiǎn mén.\\","Mời đi qua cửa an ninh."],
+    ["还","hái","vẫn, còn","","我还想要一杯水。","Wǒ hái xiǎng yào yī bēi shuǐ.","Tôi còn muốn một cốc nước."],
+    ["孩子","háizi","trẻ con","","孩子们都在玩。","Háizimen dōu zài wán.","Những đứa trẻ đang chơi."],
+    ["好吃","hǎochī","ngon","","这道菜很好吃。","Zhè dào cài hěn hǎo chī.","Món ăn này rất ngon."],
+    ["号","hào","số (như số điện thoại, số nhà)","","你的手机号是多少？","Nǐ de shǒujī hào shì duōshǎo?","Số điện thoại của bạn là bao nhiêu?"],
+    ["黑","hēi","đen","","我的车是黑色的。","Wǒ de chē shì hēisè de.","Xe của tôi màu đen."],
+    ["红","hóng","đỏ","","她喜欢红色的衣服。","Tā xǐhuān hóngsè de yīfú.","Cô ấy thích quần áo màu đỏ."],
+    ["欢迎","huānyíng","hoan nghênh, chào mừng","","欢迎你来我家。","Huānyíng nǐ lái wǒ jiā.","Chào mừng bạn đến nhà tôi."],
+    ["回答","huídá","trả lời","","请回答我的问题。","Qǐng huídá wǒ de wèntí.","Xin trả lời câu hỏi của tôi."],
+    ["机场","jīchǎng","sân bay","","机场离这里很近。","Jīchǎng lí zhèlǐ hěn jìn.","Sân bay gần đây."],
+    ["鸡蛋","jīdàn","trứng gà","","我喜欢吃鸡蛋。","Wǒ xǐhuān chī jīdàn.","Tôi thích ăn trứng."],
+    ["件","jiàn","cái (dùng cho sự việc, quần áo)","","这件衣服很好看。","Zhè jiàn yīfú hěn hǎokàn.","Cái áo này rất đẹp."],
+    ["教室","jiàoshì","lớp học","","学生们在教室里学习。","Xuéshēngmen zài jiàoshì lǐ xuéxí.","Học sinh đang học trong lớp học."],
+    ["姐姐","jiějie","chị gái","","姐姐比我大三岁。","Jiějiě bǐ wǒ dà sān suì.","Chị gái lớn hơn tôi ba tuổi."],
+    ["介绍","jièshào","giới thiệu","","请介绍一下你自己。","Qǐng jièshào yīxià nǐ zìjǐ.","Xin hãy giới thiệu về bản thân."],
+    ["进","jìn","vào","","请进，别客气。","Qǐng jìn, bié kèqì.","Mời vào, đừng khách sáo."],
+    ["近","jìn","gần","","学校离我家很近。","Xuéxiào lí wǒ jiā hěn jìn.","Trường học gần nhà tôi."],
+    ["就","jiù","thì, ngay","","他就住在我家旁边。","Tā jiù zhù zài wǒ jiā pángbiān.","Anh ấy sống ngay cạnh nhà tôi."],
+    ["觉得","juéde","cảm thấy","","我觉得今天很热。","Wǒ juéde jīntiān hěn rè.","Tôi cảm thấy hôm nay rất nóng."],
+    ["咖啡","kāfēi","cà phê","","我每天早上喝咖啡。","Wǒ měitiān zǎoshang hē kāfēi.","Tôi uống cà phê mỗi sáng."],
+    ["开始","kāishǐ","bắt đầu","","我们现在开始上课。","Wǒmen xiànzài kāishǐ shàngkè.","Bây giờ chúng ta bắt đầu học."],
+    ["考试","kǎoshì","thi","","我准备好考试了。","Wǒ zhǔnbèi hǎo kǎoshì le.","Tôi đã chuẩn bị sẵn sàng cho kỳ thi."],
+    ["可能","kěnéng","có thể","","可能会下雨。","Kěnéng huì xiàyǔ.","Có thể sẽ mưa."],
+    ["可以","kěyǐ","có thể","","你可以坐在这里。","Nǐ kěyǐ zuò zài zhèlǐ.","Bạn có thể ngồi ở đây."],
+    ["课","kè","bài học","","我们今天有三节课。","Wǒmen jīntiān yǒu sān jié kè.","Hôm nay chúng ta có ba tiết học."],
+    ["快","kuài","nhanh","","他跑得很快。","Tā pǎo de hěn kuài.","Anh ấy chạy rất nhanh."],
+    ["快乐","kuàilè","vui vẻ","","祝你生日快乐。","Zhù nǐ shēngrì kuàilè.","Chúc bạn sinh nhật vui vẻ."],
+    ["累","lèi","mệt","","我累了，想休息一下。","Wǒ lèile, xiǎng xiūxí yīxià.","Tôi mệt rồi, muốn nghỉ ngơi một chút."],
+    ["离","lí","cách (khoảng cách), rời","","学校离我家不远。","Xuéxiào lí wǒ jiā bù yuǎn.","Trường học không xa nhà tôi."],
+    ["两","liǎng","hai (khi đếm số lượng)","","我有两个弟弟。","Wǒ yǒu liǎng gè dìdì.","Tôi có hai em trai."],
+    ["路","lù","đường","","这条路很长。","Zhè tiáo lù hěn cháng.","Con đường này rất dài."],
+    ["旅游","lǚyóu","du lịch","","我喜欢旅游。","Wǒ xǐhuān lǚyóu.","Tôi thích du lịch."],
+    ["卖","mài","bán","","他在商店里卖东西。","Tā zài shāngdiàn lǐ mài dōngxī.","Anh ấy bán hàng trong cửa hàng."],
+    ["慢","màn","chậm","","他走得很慢。","Tā zǒu de hěn màn.","Anh ấy đi rất chậm."],
+    ["忙","máng","bận","","我今天很忙。","Wǒ jīntiān hěn máng.","Hôm nay tôi rất bận."],
+    ["每","měi","mỗi","","每个人都有机会。","Měi gèrén dōu yǒu jīhuì.","Mỗi người đều có cơ hội."],
+    ["妹妹","mèimei","em gái","","妹妹在唱歌。","Mèimei zài chànggē.","Em gái đang hát."],
+    ["门","mén","cửa","","他站在门口。","Tā zhàn zài ménkǒu.","Anh ấy đứng ở cửa."],
+    ["男人","nánrén","đàn ông","","那个男人很高。","Nàgè nánrén hěn gāo.","Người đàn ông đó rất cao."],
+    ["您","nín","bạn (dùng lịch sự)","","您好，请进。","Nín hǎo, qǐng jìn.","Xin chào, mời vào."],
+    ["牛奶","niúnǎi","sữa bò","","我每天早上喝牛奶。","Wǒ měitiān zǎoshang hē niúnǎi.","Tôi uống sữa mỗi sáng."],
+    ["女人","nǚrén","phụ nữ","","那个女人是我妈妈。","Nàgè nǚrén shì wǒ māma.","Người phụ nữ đó là mẹ tôi."],
+    ["旁边","pángbiān","bên cạnh","","学校在我家旁边。","Xuéxiào zài wǒ jiā pángbiān.","Trường học ở cạnh nhà tôi."],
+    ["跑步","pǎobù","chạy bộ","","我每天早上跑步。","Wǒ měitiān zǎoshang pǎobù.","Tôi chạy bộ mỗi sáng."],
+    ["便宜","piányí","rẻ","","这件衣服很便宜。","Zhè jiàn yīfú hěn piányí.","Cái áo này rất rẻ."],
+    ["票","piào","vé","","我买了两张电影票。","Wǒ mǎile liǎng zhāng diànyǐng piào.","Tôi đã mua hai vé xem phim."],
+    ["妻子","qīzi","vợ","","这是我的妻子。","Zhè shì wǒ de qīzi.","Đây là vợ tôi."],
+    ["起床","qǐchuáng","dậy (rời khỏi giường)","","我每天六点起床。","Wǒ měitiān liù diǎn qǐchuáng.","Tôi thức dậy lúc sáu giờ mỗi ngày."],
+    ["千","qiān","nghìn","","我有一千块钱。","Wǒ yǒu yīqiān kuài qián.","Tôi có một ngàn đồng."],
+    ["晴","qíng","nắng, quang đãng","","今天是晴天。","Jīntiān shì qíngtiān.","Hôm nay trời nắng."],
+    ["去年","qùnián","năm ngoái","","我去年去了中国。","Wǒ qùnián qùle zhōngguó.","Năm ngoái tôi đã đi Trung Quốc."],
+    ["让","ràng","để, làm cho, nhường","","请让他进来。","Qǐng ràng tā jìnlái.","Xin hãy để anh ấy vào."],
+    ["上班","shàngbān","đi làm","","我每天八点上班。","Wǒ měitiān bā diǎn shàngbān.","Tôi đi làm lúc tám giờ mỗi ngày."],
+    ["身体","shēntǐ","cơ thể","","你的身体怎么样？","Nǐ de shēntǐ zěnme yàng?","Sức khỏe của bạn thế nào?"],
+    ["生病","shēngbìng","bị bệnh","","他生病了，不能来上课。","Tā shēngbìng le, bùnéng lái shàngkè.","Anh ấy bị ốm, không thể đến lớp."],
+    ["生日","shēngrì","sinh nhật","","今天是我的生日。","Jīntiān shì wǒ de shēngrì.","Hôm nay là sinh nhật của tôi."],
+    ["时间","shíjiān","thời gian","","现在我没有时间。","Xiànzài wǒ méiyǒu shíjiān.","Bây giờ tôi không có thời gian."],
+    ["事情","shìqíng","việc","","你在做什么事情？","Nǐ zài zuò shénme shìqíng?","Bạn đang làm việc gì vậy?"],
+    ["手表","shǒubiǎo","đồng hồ","","这块手表很贵。","Zhè kuài shǒubiǎo hěn guì.","Chiếc đồng hồ này rất đắt."],
+    ["手机","shǒujī","điện thoại di động","","我的手机没电了。","Wǒ de shǒujī méi diàn le.","Điện thoại của tôi hết pin rồi."],
+    ["送","sòng","tặng","","我送你一本书。","Wǒ sòng nǐ yī běn shū.","Tôi tặng bạn một quyển sách."],
+    ["所以","suǒyǐ","vì vậy","","他很累，所以休息了。","Tā hěn lèi, suǒyǐ xiūxí le.","Anh ấy rất mệt, nên đã nghỉ ngơi rồi."],
+    ["它","tā","nó (cho vật, động vật)","","它是一只可爱的小猫。","Tā shì yī zhī kě'ài de xiǎo māo.","Nó là một chú mèo đáng yêu."],
+    ["踢足球","tī zúqiú","đá bóng","","我们一起踢足球吧。","Wǒmen yīqǐ tī zúqiú ba.","Chúng ta cùng chơi đá bóng nhé."],
+    ["题","tí","câu hỏi, đề bài","","这道题很难。","Zhè dào tí hěn nán.","Câu hỏi này rất khó."],
+    ["跳舞","tiàowǔ","nhảy múa","","我喜欢跳舞。","Wǒ xǐhuān tiàowǔ.","Tôi thích nhảy múa."],
+    ["外","wài","ngoài","","他在外面等你。","Tā zài wàimiàn děng nǐ.","Anh ấy đang đợi bạn ở bên ngoài."],
+    ["玩","wán","chơi","","小孩子们在玩游戏。","Xiǎo háizimen zài wán yóuxì.","Các em nhỏ đang chơi trò chơi."],
+    ["完","wán","xong, hoàn thành","","我已经做完了作业。","Wǒ yǐjīng zuò wán le zuòyè.","Tôi đã làm xong bài tập."],
+    ["晚上","wǎnshàng","buổi tối","","我晚上九点睡觉。","Wǒ wǎnshàng jiǔ diǎn shuìjiào.","Tôi đi ngủ lúc chín giờ tối."],
+    ["为什么","wèishénme","tại sao","","你为什么不来？","Nǐ wèishéme bù lái?","Tại sao bạn không đến?"],
+    ["问","wèn","hỏi","","请问你叫什么名字？","Qǐng wèn nǐ jiào shénme míngzì?","Xin hỏi bạn tên là gì?"],
+    ["问题","wèntí","vấn đề","","这个问题很重要。","Zhège wèntí hěn zhòngyào.","Vấn đề này rất quan trọng."],
+    ["西瓜","xīguā","dưa hấu","","我喜欢吃西瓜。","Wǒ xǐhuān chī xīguā.","Tôi thích ăn dưa hấu."],
+    ["希望","xīwàng","hy vọng","","我希望你能来。","Wǒ xīwàng nǐ néng lái.","Tôi hy vọng bạn có thể đến."],
+    ["洗","xǐ","rửa","","请洗手。","Qǐng xǐ shǒu.","Xin rửa tay."],
+    ["向","xiàng","hướng về, đối với","","向左走。","Xiàng zuǒ zǒu.","Đi về phía bên trái."],
+    ["小时","xiǎoshí","tiếng đồng hồ","","我每天学习一个小时。","Wǒ měitiān xuéxí yī gè xiǎoshí.","Tôi học một tiếng mỗi ngày."],
+    ["笑","xiào","cười","","他在笑什么？","Tā zài xiào shénme?","Anh ấy đang cười gì vậy?"],
+    ["新","xīn","mới","","我有一个新手机。","Wǒ yǒu yī gè xīn shǒujī.","Tôi có một chiếc điện thoại mới."],
+    ["姓","xìng","họ","","你姓什么？","Nǐ xìng shénme?","Họ của bạn là gì?"],
+    ["休息","xiūxi","nghỉ ngơi","","我累了，需要休息。","Wǒ lèile, xūyào xiūxí.","Tôi mệt rồi, cần nghỉ ngơi."],
+    ["雪","xuě","tuyết","","明天会下雪。","Míngtiān huì xià xuě.","Ngày mai sẽ có tuyết rơi."],
+    ["颜色","yánsè","màu sắc","","你喜欢什么颜色？","Nǐ xǐhuān shénme yánsè?","Bạn thích màu gì?"],
+    ["眼睛","yǎnjing","mắt","","他的眼睛很大。","Tā de yǎnjīng hěn dà.","Mắt của anh ấy rất to."],
+    ["羊肉","yángròu","thịt cừu","","我喜欢吃羊肉。","Wǒ xǐhuān chī yángròu.","Tôi thích ăn thịt cừu."],
+    ["要","yào","muốn, cần","","我要一杯水。","Wǒ yào yī bēi shuǐ.","Tôi muốn một cốc nước."],
+    ["药","yào","thuốc","","我生病了，要吃药。","Wǒ shēngbìng le, yào chī yào.","Tôi bị ốm, cần uống thuốc."],
+    ["也","yě","cũng","","他也喜欢游泳。","Tā yě xǐhuān yóuyǒng.","Anh ấy cũng thích bơi lội."],
+    ["已经","yǐjīng","đã","","我已经吃过饭了。","Wǒ yǐjīng chī guò fàn le.","Tôi đã ăn cơm rồi."],
+    ["一起","yìqǐ","cùng nhau","","我们一起去看电影吧。","Wǒmen yīqǐ qù kàn diànyǐng ba.","Chúng ta cùng đi xem phim nhé."],
+    ["意思","yìsi","ý nghĩa","","这是什么意思？","Zhè shì shénme yìsi?","Điều này có nghĩa là gì?"],
+    ["阴","yīn","âm u, trời nhiều mây","","今天是阴天。","Jīntiān shì yīntiān.","Hôm nay là ngày trời âm u."],
+    ["因为","yīnwèi","vì","","因为下雨，我不去跑步。","Yīnwèi xiàyǔ, wǒ bú qù pǎobù.","Vì trời mưa, tôi không đi chạy bộ."],
+    ["游泳","yóuyǒng","bơi","","我喜欢游泳。","Wǒ xǐhuān yóuyǒng.","Tôi thích bơi lội."],
+    ["右边","yòubiān","bên phải","","他坐在我右边。","Tā zuò zài wǒ yòubiān.","Anh ấy ngồi bên phải tôi."],
+    ["鱼","yú","cá","","我们晚饭吃鱼。","Wǒmen wǎnfàn chī yú.","Chúng tôi ăn cá vào bữa tối."],
+    ["元","yuán","Đồng (đơn vị tiền tệ)","","这本书要十元。","Zhè běn shū yào shí yuán.","Quyển sách này giá mười đồng."],
+    ["远","yuǎn","xa","","他家离学校很远。","Tā jiā lí xuéxiào hěn yuǎn.","Nhà anh ấy cách xa trường học."],
+    ["运动","yùndòng","vận","","我每天都运动。","Wǒ měitiān dōu yùndòng.","Tôi tập thể dục mỗi ngày."],
+    ["再","zài","lại","","请再说一遍。","Qǐng zài shuō yī biàn.","Xin hãy nói lại một lần nữa."],
+    ["早上","zǎoshàng","buổi sáng","","我每天早上六点起床。","Wǒ měitiān zǎoshang liù diǎn qǐchuáng.","Tôi dậy lúc sáu giờ sáng mỗi ngày."],
+    ["张","zhāng","tờ, bức (dùng cho vật phẳng, giấy, tranh, bàn)","","这是一张照片。","Zhè shì yī zhāng zhàopiàn.","Đây là một tấm ảnh."],
+    ["丈夫","zhàngfu","chồng","","这是我的丈夫。","Zhè shì wǒ de zhàngfu.","Đây là chồng tôi."],
+    ["找","zhǎo","tìm","","我在找我的钥匙。","Wǒ zài zhǎo wǒ de yàoshi.","Tôi đang tìm chìa khóa của mình."],
+    ["着","zhe","đang (dùng để chỉ trạng thái hiện tại)","","他在吃着饭呢。","Tā zài chī zhe fàn ne.","Anh ấy đang ăn cơm."],
+    ["真","zhēn","thật","","这个苹果真好吃。","Zhège píngguǒ zhēn hào chī.","Quả táo này thật ngon."],
+    ["正在","zhèngzài","đang","","妈妈正在打电话。","Māma zhèngzài dǎ diànhuà.","Mẹ đang gọi điện thoại."],
+    ["知道","zhīdào","biết","","我知道他是谁。","Wǒ zhīdào tā shì shéi.","Tôi biết anh ấy là ai."],
+    ["准备","zhǔnbèi","chuẩn bị","","我正在准备考试。","Wǒ zhèngzài zhǔnbèi kǎoshì.","Tôi đang chuẩn bị cho kỳ thi."],
+    ["自行车","zìxíngchē","xe đạp","","他骑自行车去上班。","Tā qí zìxíngchē qù shàngbān.","Anh ấy đi làm bằng xe đạp."],
+    ["走","zǒu","đi","","我们一起走吧。","Wǒmen yīqǐ zǒu ba.","Chúng ta cùng đi nhé."],
+    ["最","zuì","nhất (so sánh nhất)","","这是我最喜欢的书。","Zhè shì wǒ zuì xǐhuān de shū.","Đây là cuốn sách tôi thích nhất."],
+    ["左边","zuǒbiān","bên trái","","他坐在我左边。","Tā zuò zài wǒ zuǒbiān.","Anh ấy ngồi bên trái tôi."]
+  ],
   3: [
     ["阿姨","āyí","dì, cô","","阿姨非常喜欢我们。","Āyí fēicháng xǐhuān wǒmen.","Dì rất thích chúng tôi."],
     ["啊","a","a, à, ơ (trợ từ ngữ khí)","","啊，我忘记了！","A, wǒ wàngjì le!","À, tôi quên rồi!"],
@@ -2492,6 +2812,26 @@ const DB = {
    FILL-IN-BLANK DATA PER LEVEL
 ════════════════════════════════════════════════════════════════ */
 const FIB_DATA = {
+  1: [
+    {s:"我___你。",a:"爱",h:"ài",m:"yêu"},
+    {s:"你___吗？",a:"好",h:"hǎo",m:"tốt/khỏe"},
+    {s:"___谢你！",a:"谢",h:"xiè",m:"cảm ơn"},
+    {s:"我是中___人。",a:"国",h:"guó",m:"quốc"},
+    {s:"他是我的___爸。",a:"爸",h:"bà",m:"bố"},
+    {s:"我___三个苹果。",a:"有",h:"yǒu",m:"có"},
+    {s:"她是我的___妈。",a:"妈",h:"mā",m:"mẹ"},
+    {s:"___，再见！",a:"你好",h:"nǐ hǎo",m:"xin chào"},
+  ],
+  2: [
+    {s:"今天天气___好。",a:"很",h:"hěn",m:"rất"},
+    {s:"我___喝咖啡。",a:"想",h:"xiǎng",m:"muốn"},
+    {s:"你从___里来？",a:"哪",h:"nǎ",m:"nơi nào"},
+    {s:"这本书___贵了。",a:"太",h:"tài",m:"quá"},
+    {s:"我每天___公共汽车去学校。",a:"坐",h:"zuò",m:"ngồi/đi"},
+    {s:"他的汉语说得___好。",a:"非常",h:"fēicháng",m:"rất/cực kỳ"},
+    {s:"我们一起___饭吧。",a:"吃",h:"chī",m:"ăn"},
+    {s:"请问，洗手间在___？",a:"哪里",h:"nǎlǐ",m:"ở đâu"},
+  ],
   3: [
     {s:"我的汉语老师非常___，每次上课都很积极。",a:"热情",h:"rè qíng",m:"nhiệt tình"},
     {s:"他每天___学习，成绩越来越好。",a:"努力",h:"nǔ lì",m:"cố gắng"},
@@ -2540,6 +2880,25 @@ const FIB_DATA = {
    TRANSLATE DATA PER LEVEL
 ════════════════════════════════════════════════════════════════ */
 const TR_DATA = {
+  1: [
+    {zh:"我爱你。",vi:"Tôi yêu bạn."},
+    {zh:"你好吗？",vi:"Bạn có khỏe không?"},
+    {zh:"谢谢你。",vi:"Cảm ơn bạn."},
+    {zh:"不客气。",vi:"Không có gì."},
+    {zh:"对不起，我来晚了。",vi:"Xin lỗi, tôi đến muộn."},
+    {zh:"他是我的朋友。",vi:"Anh ấy là bạn của tôi."},
+    {zh:"我有一个苹果。",vi:"Tôi có một quả táo."},
+    {zh:"这是什么？",vi:"Đây là cái gì?"},
+  ],
+  2: [
+    {zh:"今天天气很好，我想出去走走。",vi:"Hôm nay thời tiết rất đẹp, tôi muốn ra ngoài đi dạo."},
+    {zh:"你从哪里来？我从越南来。",vi:"Bạn đến từ đâu? Tôi đến từ Việt Nam."},
+    {zh:"我每天坐公共汽车去学校。",vi:"Mỗi ngày tôi đi xe buýt đến trường."},
+    {zh:"这本书太贵了，我买不起。",vi:"Cuốn sách này quá đắt, tôi không mua được."},
+    {zh:"他的汉语说得非常好。",vi:"Tiếng Trung của anh ấy nói rất tốt."},
+    {zh:"请问，洗手间在哪里？",vi:"Xin hỏi, nhà vệ sinh ở đâu?"},
+    {zh:"我想学汉语，因为汉语很有趣。",vi:"Tôi muốn học tiếng Trung, vì tiếng Trung rất thú vị."},
+  ],
   3: [
     {zh:"我非常喜欢学习汉语，因为汉语很有意思。",vi:"Tôi rất thích học tiếng Trung, vì tiếng Trung rất thú vị."},
     {zh:"如果你努力学习，一定能提高你的中文水平。",vi:"Nếu bạn học tập cố gắng, nhất định có thể nâng cao trình độ tiếng Trung."},
@@ -2769,9 +3128,9 @@ function onSearch(q){
 }
 function doSearch(q){
   const qLow = q.toLowerCase();
-  // Search ALL levels
+  // Search ALL levels including HSK1 and HSK2
   let results = [];
-  [3,4,5,6].forEach(lvl => {
+  [1,2,3,4,5,6].forEach(lvl => {
     (DB[lvl]||[]).forEach(v => {
       if(v[0].includes(q) || v[1].toLowerCase().includes(qLow) || v[2].toLowerCase().includes(qLow)){
         results.push({v, lvl});
@@ -2789,9 +3148,9 @@ function doSearch(q){
         <div class="sr-hz">${v[0]}</div>
         <div class="sr-info">
           <div class="sr-py">${v[1]}</div>
-          <div class="sr-mn">${v[2]} · <span style="color:var(--muted);font-size:11px">${v[3]}</span></div>
+          <div class="sr-mn">${v[2]} · <span style="color:var(--muted);font-size:11px">${v[3]||''}</span></div>
         </div>
-        <span class="sr-badge l${lvl}">HSK${lvl}</span>
+        <span class="sr-badge l${lvl<=2?'1-2':lvl}" style="${lvl===1?'background:rgba(39,174,96,.2);color:var(--hsk1)':lvl===2?'background:rgba(22,160,133,.2);color:var(--hsk2)':''}">HSK${lvl}</span>
         <button class="sr-play" onclick="event.stopPropagation();speak('${v[0]}')" title="Nghe phát âm">🔊</button>
         <button class="sr-learned ${lrn}" onclick="event.stopPropagation();srToggleLearned(this,'${v[0]}')">${lrn?'✓ Học rồi':'+ Đánh dấu'}</button>
       </div>`;
@@ -3016,20 +3375,47 @@ function doMT(el){
 /* ════════════════════════════════════════════════════════════════
    FILL IN BLANK
 ════════════════════════════════════════════════════════════════ */
+/* ════════════════════════════════════════════════════════════════
+   FILL-IN-BLANK — NO HINTS (generate from vocab+examples in DB)
+════════════════════════════════════════════════════════════════ */
 function initFI(){
-  const data = FIB_DATA[currentLevel] || FIB_DATA[3];
-  const qs = pick(data, 8);
+  // Build questions from DB examples: find words that have example sentences
+  const pool = V.filter(w => w[4] && w[4].includes(w[0]));
+  // Fallback to FIB_DATA if not enough
+  let qs = [];
+  if(pool.length >= 8){
+    qs = pick(pool, 8).map(w => ({
+      s: w[4].replace(w[0], '___'),  // blank out the word in example
+      a: w[0],
+      m: w[2],     // meaning (shown AFTER answer)
+      py: w[1],    // pinyin (shown AFTER answer)
+      full: w[4],  // full sentence for display after
+    }));
+  } else {
+    // Use FIB_DATA but strip the hints from display
+    const data = FIB_DATA[currentLevel] || FIB_DATA[3];
+    qs = pick(data, 8).map(q => ({s:q.s, a:q.a, m:q.m, py:q.h, full:'', fromFIB:true}));
+  }
+
   const w = document.getElementById('fiwrap'); w.innerHTML='';
   qs.forEach((q,i)=>{
     const d=document.createElement('div'); d.style.marginBottom='22px';
     const disp=q.s.replace('___','<span class="fibblank">___</span>');
-    d.innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:5px">Câu ${i+1} · Gợi ý: <span style="color:var(--gold-light)">${q.h}</span> (${q.m})</div>
+    d.innerHTML=`
+    <div style="font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600">Câu ${i+1}</div>
     <div class="fibq">${disp}</div>
-    <input class="fibin" data-a="${q.a}" placeholder="Nhập chữ Hán..." autocomplete="off"/>
-    <div class="ansbox" id="fa${i}">✅ Đáp án: <strong style="font-family:'Noto Serif SC',serif;font-size:16px">${q.a}</strong></div>`;
+    <input class="fibin" data-a="${q.a.replace(/"/g,'&quot;')}" data-m="${(q.m||'').replace(/"/g,'&quot;')}" data-py="${(q.py||'').replace(/"/g,'&quot;')}"
+      placeholder="Nhập chữ Hán..." autocomplete="off" onkeydown="if(event.key==='Enter'){document.getElementById('fi-check-btn').click();}"/>
+    <div class="ansbox" id="fa${i}" style="display:none">
+      ✅ <strong style="font-family:'Noto Serif SC',serif;font-size:17px">${q.a}</strong>
+      <span style="color:var(--gold-light);margin-left:8px;font-size:13px">${q.py||''}</span>
+      <span style="color:var(--muted);margin-left:6px;font-size:13px">${q.m||''}</span>
+      ${q.full?`<div style="margin-top:6px;font-size:12px;color:var(--muted)">${q.full}</div>`:''}
+    </div>`;
     w.appendChild(d);
   });
 }
+
 function checkFI(){
   let correct=0, total=0;
   document.querySelectorAll('.fibin').forEach((inp,i)=>{
@@ -3037,43 +3423,113 @@ function checkFI(){
     const a=inp.dataset.a, v=inp.value.trim();
     inp.classList.remove('ok','no'); inp.classList.add(v===a?'ok':'no');
     if(v===a) correct++;
-    const b=document.getElementById('fa'+i); if(b)b.classList.add('on');
+    const b=document.getElementById('fa'+i);
+    if(b){ b.style.display='block'; b.classList.add('on'); }
   });
   if(total>0){ addScore(Math.round(correct/total*100)); addExercise(); }
+  // Show result summary
+  const pct = Math.round(correct/total*100);
+  const emoji = pct>=80?'🌟':pct>=60?'👍':'💪';
+  const existing = document.getElementById('fi-result-summary');
+  if(existing) existing.remove();
+  const summary = document.createElement('div');
+  summary.id = 'fi-result-summary';
+  summary.style.cssText = 'text-align:center;padding:14px;background:rgba(255,255,255,.04);border-radius:12px;margin-top:10px;';
+  summary.innerHTML = `<strong style="font-size:18px">${emoji} ${correct}/${total} đúng (${pct}%)</strong>`;
+  document.getElementById('fiwrap').after(summary);
 }
 
 /* ════════════════════════════════════════════════════════════════
-   TRANSLATE – AI POWERED
+   TRANSLATE – AI POWERED · 2 CHIỀU (ZH→VI  &  VI→ZH)
 ════════════════════════════════════════════════════════════════ */
+let trDirection = 'zh2vi'; // 'zh2vi' | 'vi2zh'
+
+function setTRDir(dir, btn){
+  trDirection = dir;
+  document.querySelectorAll('.tr-dir-btn').forEach(b=>b.classList.remove('tr-dir-on'));
+  btn.classList.add('tr-dir-on');
+  initTR();
+}
+
 function initTR(){
   const data = TR_DATA[currentLevel] || TR_DATA[3];
   const qs = pick(data, Math.min(4, data.length));
   const w = document.getElementById('trwrap'); w.innerHTML='';
+
   qs.forEach((q,i)=>{
     const d = document.createElement('div');
     d.className = 'tr-item';
-    d.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px">CÂU ${i+1} · <span style="cursor:pointer;color:#5DADE2" onclick="speak('${q.zh.replace(/'/g,"\\'")}')">🔊 Nghe</span></div>
-    <div class="trq">${q.zh}</div>
-    <textarea class="trta" id="ta-input-${i}" placeholder="Viết nghĩa tiếng Việt của bạn..."></textarea>
-    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-      <button class="ai-check-btn" onclick="checkTranslate(${i},'${encodeURIComponent(q.zh)}','${encodeURIComponent(q.vi)}')">🤖 AI chấm điểm & giải thích</button>
-      <button onclick="document.getElementById('ta-ans-${i}').classList.toggle('on')" style="font-size:11px;padding:5px 11px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:6px;cursor:pointer" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">👁 Tham khảo</button>
-    </div>
-    <div class="ansbox" id="ta-ans-${i}" style="margin-top:8px">${q.vi}</div>
-    <div class="ai-fb" id="ta-fb-${i}"></div>`;
+    const isZH2VI = trDirection === 'zh2vi';
+
+    if(isZH2VI){
+      // Show Chinese, ask for Vietnamese
+      d.innerHTML=`
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;font-weight:600">
+          CÂU ${i+1} 🇨🇳 → 🇻🇳 &nbsp;·&nbsp;
+          <span style="cursor:pointer;color:#5DADE2" onclick="speak('${esc4attr(q.zh)}')">🔊 Nghe</span>
+        </div>
+        <div class="trq">${q.zh}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px">✍️ Dịch sang tiếng Việt:</div>
+        <textarea class="trta" id="ta-input-${i}" placeholder="Nhập bản dịch tiếng Việt của bạn..."></textarea>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="ai-check-btn" onclick="checkTranslate(${i},'zh2vi','${encodeURIComponent(q.zh)}','${encodeURIComponent(q.vi)}')">🤖 AI chấm điểm</button>
+          <button onclick="document.getElementById('ta-ans-${i}').classList.toggle('on')" class="btn out" style="font-size:11px;padding:5px 11px;">👁 Tham khảo</button>
+        </div>
+        <div class="ansbox" id="ta-ans-${i}" style="margin-top:8px">${q.vi}</div>
+        <div class="ai-fb" id="ta-fb-${i}"></div>`;
+    } else {
+      // Show Vietnamese, ask for Chinese
+      d.innerHTML=`
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px;font-weight:600">CÂU ${i+1} 🇻🇳 → 🇨🇳</div>
+        <div class="trq vi">${q.vi}</div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:6px">✍️ Dịch sang tiếng Trung:</div>
+        <textarea class="trta zh" id="ta-input-${i}" placeholder="Nhập bản dịch tiếng Trung của bạn..." lang="zh"></textarea>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="ai-check-btn" onclick="checkTranslate(${i},'vi2zh','${encodeURIComponent(q.vi)}','${encodeURIComponent(q.zh)}')">🤖 AI chấm điểm</button>
+          <button onclick="document.getElementById('ta-ans-${i}').classList.toggle('on')" class="btn out" style="font-size:11px;padding:5px 11px;">👁 Tham khảo</button>
+          <button onclick="speak('${esc4attr(q.zh)}')" class="btn out" style="font-size:11px;padding:5px 11px;">🔊 Nghe mẫu</button>
+        </div>
+        <div class="ansbox" id="ta-ans-${i}" style="margin-top:8px">
+          <span style="font-family:'Noto Serif SC',serif;font-size:16px">${q.zh}</span>
+        </div>
+        <div class="ai-fb" id="ta-fb-${i}"></div>`;
+    }
     w.appendChild(d);
   });
 }
 
-async function checkTranslate(idx, zhEnc, viEnc){
-  const zh = decodeURIComponent(zhEnc);
-  const vi = decodeURIComponent(viEnc);
+function esc4attr(s){
+  return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;');
+}
+
+async function checkTranslate(idx, dir, srcEnc, refEnc){
+  const src = decodeURIComponent(srcEnc);
+  const ref = decodeURIComponent(refEnc);
   const userAnswer = document.getElementById(`ta-input-${idx}`).value.trim();
   if(!userAnswer){ alert('Vui lòng nhập bản dịch của bạn trước.'); return; }
 
   const fb = document.getElementById(`ta-fb-${idx}`);
   fb.className = 'ai-fb on ok';
   fb.innerHTML = '<div class="ai-loading"><span style="font-size:12px">🤖 AI đang chấm...</span><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+
+  const isZH2VI = dir === 'zh2vi';
+  const systemPrompt = isZH2VI
+    ? `Bạn là giáo viên tiếng Trung dạy học viên người Việt học HSK ${currentLevel}.
+Nhiệm vụ: chấm điểm bản dịch từ TIẾNG TRUNG sang TIẾNG VIỆT.
+Phân tích chi tiết, thân thiện bằng tiếng Việt.
+Chú ý: chấp nhận các cách diễn đạt tương đương, không cần dịch từng chữ.
+Trả về ĐÚNG định dạng JSON (không có markdown), ví dụ:
+{"score":85,"grade":"Tốt","correct":"phần dịch đúng","wrong":"lỗi nếu có","explain":"giải thích ngắn","suggestion":"gợi ý tốt hơn nếu cần"}`
+    : `Bạn là giáo viên tiếng Trung dạy học viên người Việt học HSK ${currentLevel}.
+Nhiệm vụ: chấm điểm bản dịch từ TIẾNG VIỆT sang TIẾNG TRUNG.
+Phân tích chi tiết, thân thiện bằng tiếng Việt.
+Chú ý: chấp nhận từ vựng HSK${currentLevel} trở xuống. Ưu tiên ý nghĩa và ngữ pháp đúng hơn từ ngữ giống hệt.
+Trả về ĐÚNG định dạng JSON (không có markdown), ví dụ:
+{"score":85,"grade":"Tốt","correct":"phần đúng","wrong":"lỗi nếu có","explain":"giải thích cấu trúc/từ mới","suggestion":"câu tham khảo tốt hơn nếu cần","pinyin":"pinyin của đáp án mẫu"}`;
+
+  const userPrompt = isZH2VI
+    ? `Câu tiếng Trung gốc: ${src}\nĐáp án tham khảo: ${ref}\nBản dịch của học viên: ${userAnswer}`
+    : `Câu tiếng Việt gốc: ${src}\nĐáp án tiếng Trung tham khảo: ${ref}\nBản dịch tiếng Trung của học viên: ${userAnswer}`;
 
   try {
     const res = await fetch("https://api.anthropic.com/v1/messages", {
@@ -3082,31 +3538,33 @@ async function checkTranslate(idx, zhEnc, viEnc){
       body: JSON.stringify({
         model: "claude-sonnet-4-20250514",
         max_tokens: 1000,
-        system: `Bạn là giáo viên tiếng Trung dạy học viên người Việt đang học HSK.
-Nhiệm vụ: chấm điểm bản dịch của học viên từ tiếng Trung sang tiếng Việt.
-Phân tích chi tiết và thân thiện bằng tiếng Việt.
-Trả lời JSON: {"score":0-100,"grade":"Xuất sắc/Tốt/Khá/Cần cố gắng","correct":"phần dịch đúng","wrong":"lỗi cụ thể (nếu có)","explain":"giải thích ngắn về từ/cấu trúc khó","suggestion":"bản dịch gợi ý tốt hơn (nếu cần)"}`,
-        messages:[{role:"user", content:`Câu tiếng Trung: ${zh}\nĐáp án tham khảo: ${vi}\nBản dịch của học viên: ${userAnswer}\nHãy chấm điểm và nhận xét chi tiết.`}]
+        system: systemPrompt,
+        messages:[{role:"user", content: userPrompt}]
       })
     });
     const data = await res.json();
-    const text = data.content?.[0]?.text || '';
+    const text = (data.content?.[0]?.text || '').replace(/```json|```/g,'').trim();
     let p;
-    try { p = JSON.parse(text.replace(/```json|```/g,'').trim()); }
+    try { p = JSON.parse(text); }
     catch { p = {score:65, grade:'Khá', explain:text, wrong:'', correct:userAnswer, suggestion:''}; }
 
     const gc = p.score>=85?'great':p.score>=60?'ok':'bad';
     const emoji = p.score>=85?'🌟':p.score>=60?'👍':'💪';
     fb.className = `ai-fb on ${gc}`;
     fb.innerHTML = `
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
-        <strong style="font-size:16px">${emoji} ${p.score}/100</strong>
-        <span style="padding:3px 10px;border-radius:10px;font-size:12px;background:rgba(255,255,255,.1)">${p.grade}</span>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap">
+        <strong style="font-size:20px">${emoji} ${p.score}/100</strong>
+        <span style="padding:3px 12px;border-radius:10px;font-size:12px;background:rgba(255,255,255,.1);font-weight:600">${p.grade}</span>
+        ${!isZH2VI&&p.pinyin?`<span style="font-size:12px;color:var(--gold-light);font-style:italic">${p.pinyin}</span>`:''}
       </div>
-      ${p.correct?`<div style="margin-bottom:5px">✅ <strong>Phần đúng:</strong> ${p.correct}</div>`:''}
-      ${p.wrong?`<div style="margin-bottom:5px;color:#E74C3C">❌ <strong>Lỗi:</strong> ${p.wrong}</div>`:''}
-      ${p.explain?`<div style="margin-bottom:5px;color:var(--gold-light)">💡 <strong>Giải thích:</strong> ${p.explain}</div>`:''}
-      ${p.suggestion?`<div style="margin-top:6px;padding:8px;background:rgba(255,255,255,.05);border-radius:7px;font-size:12px">📝 <strong>Gợi ý:</strong> ${p.suggestion}</div>`:''}`;
+      ${p.correct?`<div style="margin-bottom:6px">✅ <strong>Phần đúng:</strong> ${p.correct}</div>`:''}
+      ${p.wrong?`<div style="margin-bottom:6px;color:#E74C3C">❌ <strong>Lỗi:</strong> ${p.wrong}</div>`:''}
+      ${p.explain?`<div style="margin-bottom:6px;color:var(--gold-light)">💡 <strong>Giải thích:</strong> ${p.explain}</div>`:''}
+      ${p.suggestion?`<div style="margin-top:8px;padding:10px;background:rgba(255,255,255,.05);border-radius:8px;font-size:13px">
+        📝 <strong>Gợi ý:</strong>
+        <span style="font-family:${!isZH2VI?"'Noto Serif SC',":""}serif">${p.suggestion}</span>
+        ${!isZH2VI?`<span style="margin-left:8px;cursor:pointer;color:#5DADE2" onclick="speak('${esc4attr(p.suggestion)}')">🔊</span>`:''}
+      </div>`:''}`;
     addScore(p.score); addExercise();
   } catch(e) {
     fb.className = 'ai-fb on bad';
@@ -3673,8 +4131,8 @@ function renderSRDone(){
    STATISTICS & ACHIEVEMENTS
 ════════════════════════════════════════════════════════════════ */
 function renderStats(){
-  const levels = [3,4,5,6];
-  const colors = {'3':'#E74C3C','4':'#E67E22','5':'#8E44AD','6':'#2471A3'};
+  const levels = [1,2,3,4,5,6];
+  const colors = {'1':'#27AE60','2':'#16A085','3':'#E74C3C','4':'#E67E22','5':'#8E44AD','6':'#2471A3'};
   let gridHtml = '';
   levels.forEach(lv => {
     const learned = Object.keys(getLS_lv(lv,'learned',{})).length;
