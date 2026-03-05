@@ -286,7 +286,13 @@ h1 span{color:var(--gold);}
 .hwmfb.no{background:rgba(192,57,43,.12);color:#E74C3C;}
 .hwright{display:flex;flex-direction:column;gap:10px;}
 .cvouter{position:relative;border-radius:14px;border:1.5px solid rgba(255,255,255,.15);overflow:hidden;background:#F5EFE6;}
-#hwcv{display:block;width:100%;height:280px;touch-action:none;cursor:crosshair;}
+.cvouter.pencil-mode{touch-action:auto;cursor:crosshair;}
+#hwcv{display:block;width:100%;height:300px;touch-action:none;cursor:crosshair;}
+#hwcv.pencil-mode{touch-action:pan-x pan-y;}
+.pencil-toggle{width:44px;height:24px;background:rgba(255,255,255,.15);border-radius:12px;position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;}
+.pencil-toggle.on{background:var(--gold);}
+.pencil-knob{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;left:3px;transition:transform .25s;box-shadow:0 1px 4px rgba(0,0,0,.3);}
+.pencil-toggle.on .pencil-knob{transform:translateX(20px);}
 .cvlbl{position:absolute;top:8px;left:10px;font-size:10px;letter-spacing:1px;color:rgba(0,0,0,.22);font-family:'Be Vietnam Pro',sans-serif;text-transform:uppercase;pointer-events:none;}
 .cvbtns{display:flex;gap:7px;flex-wrap:wrap;}
 .cvbtn{flex:1;min-width:55px;padding:7px 6px;border:1.5px solid rgba(255,255,255,.15);border-radius:8px;background:transparent;color:var(--muted);font-size:11px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;transition:all .2s;}
@@ -349,6 +355,21 @@ h1 span{color:var(--gold);}
 .sp-chat-text:focus{border-color:var(--gold);}
 .sp-nav{display:flex;gap:10px;justify-content:center;margin-top:4px;flex-wrap:wrap;}
 
+/* API KEY BANNER & MODAL */
+.apikey-banner{display:flex;align-items:center;justify-content:space-between;gap:10px;background:linear-gradient(90deg,rgba(192,57,43,.18),rgba(212,168,67,.12));border:1px solid rgba(212,168,67,.3);border-radius:12px;padding:10px 16px;margin-bottom:14px;font-size:13px;color:var(--paper);flex-wrap:wrap;}
+.apikey-banner.hidden{display:none;}
+.apikey-banner-btn{padding:6px 14px;background:var(--gold);border:none;border-radius:8px;color:#000;font-weight:700;font-size:12px;cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;white-space:nowrap;}
+.key-modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.8);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:16px;}
+.key-modal-overlay.show{display:flex;}
+.key-modal{background:#1C1A17;border:1px solid rgba(212,168,67,.4);border-radius:20px;padding:28px;max-width:460px;width:100%;animation:slideUp .3s ease;}
+.key-modal-title{font-size:18px;font-weight:700;color:#fff;margin-bottom:10px;}
+.key-modal-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:14px;}
+.key-modal-steps{background:rgba(255,255,255,.04);border-radius:10px;padding:12px 14px;margin-bottom:14px;}
+.key-step{font-size:12px;color:var(--muted);line-height:2;}
+.key-input{width:100%;padding:11px 14px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.15);border-radius:10px;color:#fff;font-size:14px;font-family:monospace;outline:none;transition:border-color .2s;}
+.key-input:focus{border-color:var(--gold);}
+/* TTS status indicator */
+.tts-status{display:inline-flex;align-items:center;gap:5px;font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(255,255,255,.05);}
 footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opacity:.6;}
 
 /* ═══════════════════════════════════════════════════════
@@ -457,8 +478,33 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 <header>
   <div class="badge">🏮 Luyện tập HSK</div>
   <h1>Từ Vựng <span>汉语水平考试</span></h1>
-  <p class="sub">Hệ thống học toàn diện · HSK3 đến HSK6</p>
+  <p class="sub">Hệ thống học toàn diện · HSK1 đến HSK6</p>
 </header>
+
+<!-- API KEY BANNER -->
+<div class="apikey-banner" id="apikey-banner">
+  <span>🔑 Cần API Key để dùng AI chấm bài &amp; luyện nói</span>
+  <button class="apikey-banner-btn" onclick="openKeyModal()">Cài đặt ngay →</button>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="key-modal-overlay" id="key-modal-overlay" onclick="closeKeyModal(event)">
+  <div class="key-modal" onclick="event.stopPropagation()">
+    <div class="key-modal-title">🔑 Cài đặt Anthropic API Key</div>
+    <p class="key-modal-desc">API Key dùng để AI chấm bài dịch, luyện nói và hội thoại. Key lưu trong trình duyệt, không gửi đi ngoài Anthropic.</p>
+    <div class="key-modal-steps">
+      <div class="key-step">1. Truy cập <a href="https://console.anthropic.com/settings/keys" target="_blank" style="color:var(--gold-light)">console.anthropic.com/settings/keys</a></div>
+      <div class="key-step">2. Tạo API key mới → Copy key (bắt đầu bằng <code style="color:var(--gold-light)">sk-ant-...</code>)</div>
+      <div class="key-step">3. Dán vào ô bên dưới và bấm Lưu</div>
+    </div>
+    <input type="password" id="apikey-input" class="key-input" placeholder="sk-ant-api03-..." autocomplete="off" />
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn gold" style="flex:1" onclick="saveApiKey()">💾 Lưu API Key</button>
+      <button class="btn out" onclick="closeKeyModal()">Hủy</button>
+    </div>
+    <div id="key-status" style="margin-top:10px;font-size:13px;text-align:center"></div>
+  </div>
+</div>
 
 <!-- HSK LEVEL SELECTOR -->
 <div class="level-bar">
@@ -701,7 +747,18 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
       </div>
     </div>
     <div class="hwright">
-      <div style="font-size:12px;color:var(--muted);margin-bottom:4px">🖊 Viết chữ Hán vào bảng bên dưới:</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px">
+        <div style="font-size:12px;color:var(--muted)">🖊 Viết chữ Hán vào bảng bên dưới:</div>
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);cursor:pointer;user-select:none">
+          <span>✏️ Chỉ Apple Pencil</span>
+          <div class="pencil-toggle" id="pencil-toggle" onclick="togglePencilMode()">
+            <div class="pencil-knob" id="pencil-knob"></div>
+          </div>
+        </label>
+      </div>
+      <div id="pencil-tip" style="display:none;font-size:11px;color:var(--gold-light);text-align:center;margin-bottom:6px;padding:5px 10px;background:rgba(212,168,67,.08);border-radius:8px">
+        ✏️ Chế độ Pencil bật — ngón tay để cuộn, bút Pencil để viết
+      </div>
       <div class="cvouter" id="cvouter">
         <span class="cvlbl">Viết tại đây</span>
         <canvas id="hwcv"></canvas>
@@ -6203,12 +6260,141 @@ function setLevel(lvl, btn){
 ════════════════════════════════════════════════════════════════ */
 const sh = a => { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];} return b; };
 const pick = (a, n) => sh(a).slice(0, Math.min(n, a.length));
-function speak(text, lang='zh-CN'){
-  if(!window.speechSynthesis) return;
+
+/* ════════════════════════════════════════════════════════════════
+   API KEY MANAGEMENT
+════════════════════════════════════════════════════════════════ */
+const API_KEY_STORE = 'hsk_anthropic_api_key';
+
+function getApiKey(){
+  try { return localStorage.getItem(API_KEY_STORE) || ''; } catch(e){ return ''; }
+}
+function saveApiKey(){
+  const val = document.getElementById('apikey-input').value.trim();
+  if(!val){ 
+    document.getElementById('key-status').innerHTML = '<span style="color:#E74C3C">⚠️ Vui lòng nhập API key</span>';
+    return;
+  }
+  if(!val.startsWith('sk-ant')){
+    document.getElementById('key-status').innerHTML = '<span style="color:#E67E22">⚠️ Key phải bắt đầu bằng sk-ant-...</span>';
+    return;
+  }
+  try { localStorage.setItem(API_KEY_STORE, val); } catch(e){}
+  document.getElementById('key-status').innerHTML = '<span style="color:#27AE60">✅ Đã lưu! Có thể dùng AI ngay.</span>';
+  updateApiBanner();
+  setTimeout(closeKeyModal, 1200);
+}
+function openKeyModal(){
+  const existing = getApiKey();
+  if(existing) document.getElementById('apikey-input').value = existing;
+  document.getElementById('key-status').innerHTML = '';
+  document.getElementById('key-modal-overlay').classList.add('show');
+}
+function closeKeyModal(e){
+  if(!e || e.target === document.getElementById('key-modal-overlay'))
+    document.getElementById('key-modal-overlay').classList.remove('show');
+}
+function updateApiBanner(){
+  const key = getApiKey();
+  const banner = document.getElementById('apikey-banner');
+  if(key){ banner.classList.add('hidden'); }
+  else { banner.classList.remove('hidden'); }
+}
+
+/* Central AI fetch helper — handles key, errors, response parsing */
+async function aiChat(systemPrompt, userPrompt, maxTokens=1000){
+  const key = getApiKey();
+  if(!key) throw new Error('NO_KEY');
+  const headers = {
+    'Content-Type': 'application/json',
+    'x-api-key': key,
+    'anthropic-version': '2023-06-01',
+    'anthropic-dangerous-direct-browser-access': 'true'
+  };
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }]
+    })
+  });
+  if(!res.ok){
+    const err = await res.json().catch(()=>({error:{message:`HTTP ${res.status}`}}));
+    const msg = err?.error?.message || `HTTP ${res.status}`;
+    throw new Error(msg);
+  }
+  const data = await res.json();
+  return (data.content?.[0]?.text || '').replace(/```json\n?|```/g,'').trim();
+}
+
+function showAIError(fbEl, err){
+  fbEl.className = 'ai-fb on bad';
+  if(err.message === 'NO_KEY'){
+    fbEl.innerHTML = `⚠️ Chưa có API Key. <button onclick="openKeyModal()" style="margin-left:8px;padding:4px 10px;background:var(--gold);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:12px">Cài đặt ngay</button>`;
+  } else {
+    fbEl.innerHTML = `❌ Lỗi AI: <span style="color:#E74C3C">${err.message}</span><br><small style="color:var(--muted)">Kiểm tra API key hoặc thử lại sau.</small>`;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TTS — hỗ trợ iOS / iPad / Safari
+   iOS Safari: cần user-gesture, cần resume() sau unlock,
+   cần chờ voices load, và dùng zh-TW nếu zh-CN không có
+════════════════════════════════════════════════════════════════ */
+let _ttsUnlocked = false;
+let _zhVoice = null;
+
+function _loadZhVoice(){
+  const voices = window.speechSynthesis.getVoices();
+  // Prefer zh-CN, fallback zh-TW, then any zh
+  _zhVoice = voices.find(v => v.lang === 'zh-CN')
+    || voices.find(v => v.lang === 'zh-TW')
+    || voices.find(v => v.lang.startsWith('zh'))
+    || null;
+}
+
+if(window.speechSynthesis){
+  window.speechSynthesis.onvoiceschanged = _loadZhVoice;
+  _loadZhVoice();
+}
+
+// iOS requires a silent utterance from a user-gesture to unlock TTS
+function _unlockTTS(cb){
+  if(_ttsUnlocked){ if(cb) cb(); return; }
+  const silent = new SpeechSynthesisUtterance(' ');
+  silent.volume = 0; silent.rate = 1; silent.lang = 'zh-CN';
+  silent.onend = ()=>{ _ttsUnlocked = true; if(cb) cb(); };
+  silent.onerror = ()=>{ _ttsUnlocked = true; if(cb) cb(); };
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang; u.rate = 0.85; u.pitch = 1;
-  window.speechSynthesis.speak(u);
+  window.speechSynthesis.speak(silent);
+}
+
+function speak(text, lang='zh-CN', rate=0.85){
+  if(!window.speechSynthesis || !text) return;
+  _loadZhVoice();
+  const _doSpeak = () => {
+    window.speechSynthesis.cancel();
+    // iOS Safari bug: speechSynthesis pauses after 15s — need resume()
+    if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang;
+    u.rate = rate;
+    u.pitch = 1;
+    if(_zhVoice && lang.startsWith('zh')) u.voice = _zhVoice;
+    // iOS Safari resume-hack: poll every 10s
+    let resumeTimer;
+    u.onstart = () => {
+      resumeTimer = setInterval(() => {
+        if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+      }, 10000);
+    };
+    u.onend = u.onerror = () => { clearInterval(resumeTimer); };
+    window.speechSynthesis.speak(u);
+  };
+  _unlockTTS(_doSpeak);
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -6622,37 +6808,15 @@ async function checkTranslate(idx, dir, srcEnc, refEnc){
   fb.innerHTML = '<div class="ai-loading"><span style="font-size:12px">🤖 AI đang chấm...</span><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
 
   const isZH2VI = dir === 'zh2vi';
-  const systemPrompt = isZH2VI
-    ? `Bạn là giáo viên tiếng Trung dạy học viên người Việt học HSK ${currentLevel}.
-Nhiệm vụ: chấm điểm bản dịch từ TIẾNG TRUNG sang TIẾNG VIỆT.
-Phân tích chi tiết, thân thiện bằng tiếng Việt.
-Chú ý: chấp nhận các cách diễn đạt tương đương, không cần dịch từng chữ.
-Trả về ĐÚNG định dạng JSON (không có markdown), ví dụ:
-{"score":85,"grade":"Tốt","correct":"phần dịch đúng","wrong":"lỗi nếu có","explain":"giải thích ngắn","suggestion":"gợi ý tốt hơn nếu cần"}`
-    : `Bạn là giáo viên tiếng Trung dạy học viên người Việt học HSK ${currentLevel}.
-Nhiệm vụ: chấm điểm bản dịch từ TIẾNG VIỆT sang TIẾNG TRUNG.
-Phân tích chi tiết, thân thiện bằng tiếng Việt.
-Chú ý: chấp nhận từ vựng HSK${currentLevel} trở xuống. Ưu tiên ý nghĩa và ngữ pháp đúng hơn từ ngữ giống hệt.
-Trả về ĐÚNG định dạng JSON (không có markdown), ví dụ:
-{"score":85,"grade":"Tốt","correct":"phần đúng","wrong":"lỗi nếu có","explain":"giải thích cấu trúc/từ mới","suggestion":"câu tham khảo tốt hơn nếu cần","pinyin":"pinyin của đáp án mẫu"}`;
-
-  const userPrompt = isZH2VI
-    ? `Câu tiếng Trung gốc: ${src}\nĐáp án tham khảo: ${ref}\nBản dịch của học viên: ${userAnswer}`
-    : `Câu tiếng Việt gốc: ${src}\nĐáp án tiếng Trung tham khảo: ${ref}\nBản dịch tiếng Trung của học viên: ${userAnswer}`;
+  const sys = isZH2VI
+    ? `Bạn là giáo viên tiếng Trung dạy học viên người Việt học HSK ${currentLevel}. Chấm điểm bản dịch TIẾNG TRUNG→TIẾNG VIỆT. Thân thiện, chi tiết, bằng tiếng Việt. Chấp nhận diễn đạt tương đương. Trả về JSON thuần (không markdown): {"score":0-100,"grade":"Xuất sắc/Tốt/Khá/Cần cố gắng","correct":"phần đúng","wrong":"lỗi nếu có","explain":"giải thích ngắn","suggestion":"gợi ý nếu cần"}`
+    : `Bạn là giáo viên tiếng Trung dạy học viên người Việt học HSK ${currentLevel}. Chấm điểm bản dịch TIẾNG VIỆT→TIẾNG TRUNG. Thân thiện, chi tiết, bằng tiếng Việt. Ưu tiên ý nghĩa và ngữ pháp đúng hơn từ ngữ giống hệt. Trả về JSON thuần (không markdown): {"score":0-100,"grade":"Xuất sắc/Tốt/Khá/Cần cố gắng","correct":"phần đúng","wrong":"lỗi nếu có","explain":"giải thích cấu trúc","suggestion":"câu tham khảo","pinyin":"pinyin đáp án mẫu"}`;
+  const usr = isZH2VI
+    ? `Câu tiếng Trung: ${src}\nĐáp án tham khảo: ${ref}\nBản dịch học viên: ${userAnswer}`
+    : `Câu tiếng Việt: ${src}\nĐáp án tham khảo: ${ref}\nBản dịch tiếng Trung của học viên: ${userAnswer}`;
 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: systemPrompt,
-        messages:[{role:"user", content: userPrompt}]
-      })
-    });
-    const data = await res.json();
-    const text = (data.content?.[0]?.text || '').replace(/```json|```/g,'').trim();
+    const text = await aiChat(sys, usr);
     let p;
     try { p = JSON.parse(text); }
     catch { p = {score:65, grade:'Khá', explain:text, wrong:'', correct:userAnswer, suggestion:''}; }
@@ -6675,10 +6839,7 @@ Trả về ĐÚNG định dạng JSON (không có markdown), ví dụ:
         ${!isZH2VI?`<span style="margin-left:8px;cursor:pointer;color:#5DADE2" onclick="speak('${esc4attr(p.suggestion)}')">🔊</span>`:''}
       </div>`:''}`;
     addScore(p.score); addExercise();
-  } catch(e) {
-    fb.className = 'ai-fb on bad';
-    fb.innerHTML = '❌ Lỗi kết nối AI. Vui lòng thử lại!';
-  }
+  } catch(e) { showAIError(fb, e); }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -6742,12 +6903,25 @@ function toggleLIPlay(){
     return;
   }
   if(!window.speechSynthesis){ alert('Trình duyệt không hỗ trợ TTS.'); return; }
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(liData.zh.replace(/\n/g,' '));
-  u.lang = 'zh-CN'; u.rate = speed; u.pitch = 1;
-  u.onstart = ()=>{ liSpeaking=true; btn.textContent='⏹'; btn.classList.add('playing'); };
-  u.onend = u.onerror = ()=>{ liSpeaking=false; btn.textContent='▶'; btn.classList.remove('playing'); };
-  window.speechSynthesis.speak(u);
+  _loadZhVoice();
+  const _doPlay = () => {
+    window.speechSynthesis.cancel();
+    if(window.speechSynthesis.paused) window.speechSynthesis.resume();
+    const u = new SpeechSynthesisUtterance(liData.zh.replace(/\n/g,' '));
+    u.lang = 'zh-CN'; u.rate = speed; u.pitch = 1;
+    if(_zhVoice) u.voice = _zhVoice;
+    let resumeTimer;
+    u.onstart = ()=>{
+      liSpeaking=true; btn.textContent='⏹'; btn.classList.add('playing');
+      resumeTimer = setInterval(()=>{ if(window.speechSynthesis.paused) window.speechSynthesis.resume(); }, 10000);
+    };
+    u.onend = u.onerror = ()=>{
+      clearInterval(resumeTimer);
+      liSpeaking=false; btn.textContent='▶'; btn.classList.remove('playing');
+    };
+    window.speechSynthesis.speak(u);
+  };
+  _unlockTTS(_doPlay);
 }
 
 function toggleLIText(){
@@ -6783,35 +6957,122 @@ let hwChk=false, refOn=false;
 let painting=false, lx=0, ly=0, strokes=[], cur=[];
 let penClr='#1a1a1a';
 let cvs=null, ctx=null;
+let pencilOnly = false;   // Apple Pencil–only mode
+
+function togglePencilMode(){
+  pencilOnly = !pencilOnly;
+  const toggle = document.getElementById('pencil-toggle');
+  const knob   = document.getElementById('pencil-knob');
+  const tip    = document.getElementById('pencil-tip');
+  const canvas = document.getElementById('hwcv');
+  toggle?.classList.toggle('on', pencilOnly);
+  tip && (tip.style.display = pencilOnly ? 'block' : 'none');
+  // In pencil-only mode, let touch events pass through (for scrolling)
+  // canvas touch-action: 'none' blocks scroll; 'pan-x pan-y' allows it
+  if(canvas){
+    canvas.style.touchAction = pencilOnly ? 'pan-x pan-y' : 'none';
+  }
+}
 
 function initHW(hard){
   hwI=0; hwOk=0; hwNo=0; hwChk=false; refOn=false;
   hwL=hard&&hwBad.length>0 ? pick(hwBad,Math.min(hwBad.length,15)) : pick(V.length?V:DB[3],15);
   updHWS(); renderHW();
 }
+
 function setupCV(){
-  const outer=document.getElementById('cvouter');
+  const outer = document.getElementById('cvouter');
   if(!outer) return;
-  cvs=document.getElementById('hwcv');
+  cvs = document.getElementById('hwcv');
   if(!cvs) return;
-  const W=outer.clientWidth||380, H=cvs.clientHeight||280;
-  cvs.width=W; cvs.height=H;
-  ctx=cvs.getContext('2d');
-  strokes=[]; drawGrid();
-  const nc=cvs.cloneNode(false);
-  outer.replaceChild(nc,cvs);
-  cvs=nc; ctx=cvs.getContext('2d');
-  cvs.width=W; cvs.height=H; drawGrid();
+
+  const W = outer.clientWidth || 380;
+  const H = 300;
+  cvs.width  = W;
+  cvs.height = H;
+  ctx = cvs.getContext('2d');
+  strokes = []; drawGrid();
+
+  // Clone to remove all old listeners
+  const nc = cvs.cloneNode(false);
+  outer.replaceChild(nc, cvs);
+  cvs = nc;
+  ctx = cvs.getContext('2d');
+  cvs.width = W; cvs.height = H;
+  drawGrid();
+
+  // ── coordinate helper ──────────────────────────────────
   function getP(e){
-    const r=cvs.getBoundingClientRect();
-    const src=e.touches?e.touches[0]:e;
-    return{x:(src.clientX-r.left)*cvs.width/r.width, y:(src.clientY-r.top)*cvs.height/r.height};
+    const r = cvs.getBoundingClientRect();
+    // PointerEvent / TouchEvent / MouseEvent
+    let cx, cy;
+    if(e.clientX !== undefined){ cx = e.clientX; cy = e.clientY; }
+    else if(e.touches && e.touches[0]){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
+    else { return null; }
+    return {
+      x: (cx - r.left) * cvs.width  / r.width,
+      y: (cy - r.top)  * cvs.height / r.height
+    };
   }
-  function dn(e){e.preventDefault();painting=true;cur=[];const p=getP(e);lx=p.x;ly=p.y;cur.push({x:lx,y:ly});}
-  function mv(e){e.preventDefault();if(!painting)return;const p=getP(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.strokeStyle=penClr;ctx.lineWidth=3.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lx=p.x;ly=p.y;cur.push({x:lx,y:ly});}
-  function up(e){e.preventDefault();if(painting){strokes.push([...cur]);painting=false;}}
-  cvs.addEventListener('mousedown',dn);cvs.addEventListener('mousemove',mv);cvs.addEventListener('mouseup',up);cvs.addEventListener('mouseleave',up);
-  cvs.addEventListener('touchstart',dn,{passive:false});cvs.addEventListener('touchmove',mv,{passive:false});cvs.addEventListener('touchend',up,{passive:false});cvs.addEventListener('touchcancel',up,{passive:false});
+
+  // ── line width with pressure ───────────────────────────
+  function lw(e){
+    // e.pressure: 0–1 (Apple Pencil), 0.5 for mouse/touch without pressure
+    const p = (e.pressure !== undefined && e.pressure > 0) ? e.pressure : 0.5;
+    return Math.max(1.5, p * 6);
+  }
+
+  // ── draw handlers ──────────────────────────────────────
+  function dn(e){
+    // In pencil-only mode, ignore finger touches
+    if(pencilOnly && e.pointerType === 'touch') return;
+    e.preventDefault();
+    painting = true; cur = [];
+    const p = getP(e); if(!p) return;
+    lx = p.x; ly = p.y; cur.push({x:lx, y:ly});
+    // Capture pointer so we keep getting events even if pointer leaves element
+    if(cvs.setPointerCapture && e.pointerId !== undefined){
+      try { cvs.setPointerCapture(e.pointerId); } catch(_){}
+    }
+  }
+  function mv(e){
+    if(pencilOnly && e.pointerType === 'touch') return;
+    if(!painting) return;
+    e.preventDefault();
+    const p = getP(e); if(!p) return;
+    ctx.beginPath();
+    ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y);
+    ctx.strokeStyle = penClr;
+    ctx.lineWidth   = lw(e);
+    ctx.lineCap     = 'round';
+    ctx.lineJoin    = 'round';
+    ctx.stroke();
+    lx = p.x; ly = p.y;
+    cur.push({x:lx, y:ly});
+  }
+  function up(e){
+    if(pencilOnly && e.pointerType === 'touch') return;
+    if(painting){ strokes.push([...cur]); painting = false; }
+  }
+
+  // ── Pointer Events (covers Apple Pencil, mouse, touch on modern browsers) ──
+  if(window.PointerEvent){
+    cvs.addEventListener('pointerdown',  dn);
+    cvs.addEventListener('pointermove',  mv);
+    cvs.addEventListener('pointerup',    up);
+    cvs.addEventListener('pointercancel',up);
+    cvs.addEventListener('pointerleave', up);
+  } else {
+    // Fallback: Mouse + Touch (older browsers / older iOS WebKit)
+    cvs.addEventListener('mousedown',  dn);
+    cvs.addEventListener('mousemove',  mv);
+    cvs.addEventListener('mouseup',    up);
+    cvs.addEventListener('mouseleave', up);
+    cvs.addEventListener('touchstart', dn, {passive:false});
+    cvs.addEventListener('touchmove',  mv, {passive:false});
+    cvs.addEventListener('touchend',   up, {passive:false});
+    cvs.addEventListener('touchcancel',up, {passive:false});
+  }
 }
 function drawGrid(){
   if(!ctx||!cvs) return;
@@ -6958,17 +7219,18 @@ async function evalPronunciation(spoken,hanzi,pinyin,meaning,resultId){
   rb.className='sp-result on ok';
   rb.innerHTML='<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Bạn là giáo viên tiếng Trung dạy người Việt HSK. Đánh giá phát âm ngắn gọn bằng tiếng Việt. JSON: {"score":0-100,"grade":"A/B/C","comment":"nhận xét","tips":"mẹo"}`,messages:[{role:"user",content:`Từ: ${hanzi} (${pinyin}) - ${meaning}\nHọc viên nói: "${spoken}"\nĐánh giá.`}]})});
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'';
-    let p; try{p=JSON.parse(text.replace(/```json|```/g,'').trim());}catch{p={score:70,grade:'B',comment:text,tips:''};}
+    const text = await aiChat(
+      `Bạn là giáo viên tiếng Trung dạy người Việt HSK. Đánh giá phát âm ngắn gọn bằng tiếng Việt. Trả về JSON thuần: {"score":0-100,"grade":"A/B/C","comment":"nhận xét","tips":"mẹo"}`,
+      `Từ: ${hanzi} (${pinyin}) - ${meaning}\nHọc viên nói: "${spoken}"\nĐánh giá.`
+    );
+    let p; try{p=JSON.parse(text);}catch{p={score:70,grade:'B',comment:text,tips:''};}
     const gc=p.score>=85?'great':p.score>=60?'ok':'bad';
     rb.className=`sp-result on ${gc}`;
     rb.innerHTML=`<div class="sp-score-row"><span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">${p.score>=85?'🌟':p.score>=60?'👍':'💪'} ${p.score}/100</span><span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">Bạn nói: "${spoken}"</span></div>
     <div style="margin-top:8px"><strong>📝</strong> ${p.comment}</div>
     ${p.tips?`<div style="margin-top:6px;color:var(--gold-light)">💡 ${p.tips}</div>`:''}
     <div style="margin-top:8px;opacity:.7;font-size:12px">🔊 <span style="cursor:pointer;text-decoration:underline" onclick="speak('${hanzi}')">Nghe mẫu</span></div>`;
-  }catch(e){rb.className='sp-result on bad';rb.innerHTML=`❌ Lỗi AI. Từ đúng: ${hanzi} (${pinyin})`;}
+  }catch(e){showAIError(rb,e);}
 }
 
 function nextSentence(){
@@ -6995,10 +7257,11 @@ async function evalSentence(spoken,sent,resultId){
   rb.className='sp-result on ok';
   rb.innerHTML='<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
   try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Đánh giá học viên đọc câu tiếng Trung. JSON: {"score":0-100,"comment":"nhận xét","correct_parts":"phần đúng","wrong_parts":"phần sai","encouragement":"lời động viên"}`,messages:[{role:"user",content:`Câu gốc: ${sent.zh}\nHọc viên đọc: "${spoken}"`}]})});
-    const data=await res.json();
-    const text=data.content?.[0]?.text||'';
-    let p; try{p=JSON.parse(text.replace(/```json|```/g,'').trim());}catch{p={score:65,comment:text,encouragement:"Cố gắng thêm nhé!"};}
+    const text = await aiChat(
+      `Đánh giá học viên đọc câu tiếng Trung. Trả về JSON thuần: {"score":0-100,"comment":"nhận xét","correct_parts":"phần đúng","wrong_parts":"phần sai","encouragement":"lời động viên"}`,
+      `Câu gốc: ${sent.zh}\nHọc viên đọc: "${spoken}"`
+    );
+    let p; try{p=JSON.parse(text);}catch{p={score:65,comment:text,encouragement:"Cố gắng thêm nhé!"};}
     const gc=p.score>=85?'great':p.score>=60?'ok':'bad';
     rb.className=`sp-result on ${gc}`;
     rb.innerHTML=`<div class="sp-score-row"><span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">${p.score>=85?'🌟':p.score>=60?'👍':'💪'} ${p.score}/100</span></div>
@@ -7008,7 +7271,7 @@ async function evalSentence(spoken,sent,resultId){
     ${p.correct_parts?`<div style="margin-top:5px;color:var(--green-light)">✅ ${p.correct_parts}</div>`:''}
     <div style="margin-top:6px;color:var(--gold-light)">✨ ${p.encouragement}</div>
     <div style="margin-top:8px;opacity:.7;font-size:12px">🔊 <span style="cursor:pointer;text-decoration:underline" onclick="speak('${sent.zh.replace(/'/g,"\\'")}')">Nghe mẫu</span></div>`;
-  }catch(e){rb.className='sp-result on bad';rb.innerHTML=`❌ Lỗi AI.`;}
+  }catch(e){showAIError(rb,e);}
 }
 
 function initChat(){
@@ -7046,14 +7309,22 @@ async function sendChat(){
   chatHistory.push({role:'user',content:text});
   addTyping();
   try{
-    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Bạn là giáo viên tiếng Trung thân thiện dạy người Việt HSK ${currentLevel}. Trả lời theo cấu trúc: 1) Câu tiếng Trung (từ vựng HSK1-${currentLevel}) 2) Pinyin 3) Nghĩa Việt 4) Giải thích nếu có từ mới 5) Câu hỏi gợi chuyện tiếp. Dùng **bold** cho chữ Hán chính, *italic* cho pinyin.`,messages:chatHistory})});
+    const key = getApiKey();
+    if(!key) throw new Error('NO_KEY');
+    const headers = {'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'};
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers,body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:`Bạn là giáo viên tiếng Trung thân thiện dạy người Việt HSK ${currentLevel}. Trả lời theo cấu trúc: 1) Câu tiếng Trung (từ vựng HSK1-${currentLevel}) 2) Pinyin 3) Nghĩa Việt 4) Giải thích nếu có từ mới 5) Câu hỏi gợi chuyện tiếp. Dùng **bold** cho chữ Hán chính, *italic* cho pinyin.`,messages:chatHistory})});
+    if(!res.ok){ const err=await res.json().catch(()=>({})); throw new Error(err?.error?.message||`HTTP ${res.status}`); }
     const data=await res.json();
     const reply=data.content?.[0]?.text||'对不起，我不明白。';
     removeTyping();
     chatHistory.push({role:'assistant',content:reply});
     const fmt=reply.replace(/\*\*(.+?)\*\*/g,'<span class="msg-hanzi">$1</span>').replace(/\*(.+?)\*/g,'<em style="color:var(--gold-light)">$1</em>').replace(/💡/g,'<br>💡').replace(/❓/g,'<br>❓').replace(/→/g,'<br>→').replace(/\n/g,'<br>');
     addAIMsg(fmt);
-  }catch(e){ removeTyping(); addAIMsg('❌ Lỗi kết nối. Vui lòng thử lại!'); }
+  }catch(e){
+    removeTyping();
+    if(e.message==='NO_KEY'){ addAIMsg(`⚠️ Chưa có API Key. <button onclick="openKeyModal()" style="margin-left:8px;padding:4px 10px;background:var(--gold);border:none;border-radius:6px;color:#000;font-weight:700;cursor:pointer;font-size:12px">Cài đặt ngay</button>`); }
+    else { addAIMsg(`❌ Lỗi AI: ${e.message}`); }
+  }
 }
 
 function toggleMicC(){
@@ -7329,9 +7600,7 @@ const _origRenderVL = renderVocabList;
   fcL=[...V]; fcI=0; drawFC();
   initMC(); initMT(); initFI(); initTR(); initHW(false); initLI(); initSP();
   nextSentence();
-  // Also call in setLevel
-  const _origSetLevel = setLevel;
-  window._setLevelOrig = _origSetLevel;
+  updateApiBanner();
 })();
 </script>
 </body>
