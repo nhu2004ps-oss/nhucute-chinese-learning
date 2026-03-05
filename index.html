@@ -285,9 +285,9 @@ h1 span{color:var(--gold);}
 .hwmfb.ok{background:rgba(39,174,96,.12);color:var(--green-light);}
 .hwmfb.no{background:rgba(192,57,43,.12);color:#E74C3C;}
 .hwright{display:flex;flex-direction:column;gap:10px;}
-.cvouter{position:relative;border-radius:14px;border:1.5px solid rgba(255,255,255,.15);overflow:hidden;background:#F5EFE6;}
-.cvouter.pencil-mode{touch-action:auto;cursor:crosshair;}
-#hwcv{display:block;width:100%;height:300px;touch-action:none;cursor:crosshair;}
+.cvouter{position:relative;border-radius:14px;border:1.5px solid rgba(255,255,255,.15);overflow:hidden;background:#F5EFE6;touch-action:none;}
+.cvouter.pencil-mode{touch-action:pan-x pan-y;}
+#hwcv{display:block;width:100%;height:300px;touch-action:none;cursor:crosshair;user-select:none;-webkit-user-select:none;}
 #hwcv.pencil-mode{touch-action:pan-x pan-y;}
 .pencil-toggle{width:44px;height:24px;background:rgba(255,255,255,.15);border-radius:12px;position:relative;cursor:pointer;transition:background .25s;flex-shrink:0;}
 .pencil-toggle.on{background:var(--gold);}
@@ -483,7 +483,7 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 
 <!-- API KEY BANNER -->
 <div class="apikey-banner" id="apikey-banner">
-  <span>🔑 Cần OpenAI API Key để dùng AI chấm bài &amp; luyện nói</span>
+  <span>🔑 Cần OpenAI API Key để dùng tính năng AI</span>
   <button class="apikey-banner-btn" onclick="openKeyModal()">Cài đặt ngay →</button>
 </div>
 
@@ -493,9 +493,9 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
     <div class="key-modal-title">🔑 Cài đặt OpenAI API Key</div>
     <p class="key-modal-desc">API Key dùng để AI chấm bài dịch, luyện nói và hội thoại. Key lưu trong trình duyệt, không gửi ra ngoài OpenAI.</p>
     <div class="key-modal-steps">
-      <div class="key-step">1. Đăng ký tại <a href="https://platform.openai.com/signup" target="_blank" style="color:var(--gold-light)">platform.openai.com</a> (miễn phí $5 credit)</div>
-      <div class="key-step">2. Vào <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--gold-light)">platform.openai.com/api-keys</a> → Create new secret key</div>
-      <div class="key-step">3. Copy key (bắt đầu bằng <code style="color:var(--gold-light)">sk-...</code>) → Dán vào ô bên dưới</div>
+      <div class="key-step">1. Đăng ký tại <a href="https://platform.openai.com/signup" target="_blank" style="color:var(--gold-light)">platform.openai.com</a></div>
+      <div class="key-step">2. Vào <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--gold-light)">platform.openai.com/api-keys</a> → <strong>Create new secret key</strong></div>
+      <div class="key-step">3. Copy key (dạng <code style="color:var(--gold-light)">sk-...</code>) → Dán vào ô bên dưới</div>
     </div>
     <input type="password" id="apikey-input" class="key-input" placeholder="sk-proj-..." autocomplete="off" />
     <div style="display:flex;gap:8px;margin-top:12px">
@@ -6302,28 +6302,30 @@ function updateApiBanner(){
 }
 
 /* Central AI fetch helper — handles key, errors, response parsing */
-async function aiChat(systemPrompt, userPrompt, maxTokens=1000){
+async function aiChat(systemPrompt, userPrompt, maxTokens){
+  maxTokens = maxTokens || 1000;
   const key = getApiKey();
   if(!key) throw new Error('NO_KEY');
   const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
+    method : 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+    body   : JSON.stringify({
+      model     : 'gpt-4o-mini',
       max_tokens: maxTokens,
-      messages: [
+      messages  : [
         { role: 'system', content: systemPrompt },
         { role: 'user',   content: userPrompt   }
       ]
     })
   });
   if(!res.ok){
-    const err = await res.json().catch(()=>({error:{message:`HTTP ${res.status}`}}));
-    const msg = err?.error?.message || `HTTP ${res.status}`;
+    const err = await res.json().catch(function(){ return {}; });
+    const msg = (err.error && err.error.message) ? err.error.message : ('Lỗi HTTP ' + res.status);
     throw new Error(msg);
   }
-  const data = await res.json();
-  return (data.choices?.[0]?.message?.content || '').replace(/```json\n?|```/g,'').trim();
+  const d = await res.json();
+  const t = (d.choices && d.choices[0] && d.choices[0].message) ? d.choices[0].message.content : '';
+  return (t || '').replace(/```json[\n]?|```/g, '').trim();
 }
 
 function showAIError(fbEl, err){
@@ -6984,91 +6986,126 @@ function setupCV(){
 
   const W = outer.clientWidth || 380;
   const H = 300;
-  cvs.width  = W;
-  cvs.height = H;
+  cvs.width = W; cvs.height = H;
   ctx = cvs.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   strokes = []; drawGrid();
 
-  // Clone to remove all old listeners
+  // Clone to strip old listeners
   const nc = cvs.cloneNode(false);
   outer.replaceChild(nc, cvs);
-  cvs = nc;
-  ctx = cvs.getContext('2d');
+  cvs = nc; ctx = cvs.getContext('2d');
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
   cvs.width = W; cvs.height = H;
   drawGrid();
 
-  // ── coordinate helper ──────────────────────────────────
+  // ── smooth drawing state ───────────────────────────────────
+  let pts = [];          // buffer of recent points for smoothing
+  let rafId = null;
+
   function getP(e){
     const r = cvs.getBoundingClientRect();
-    // PointerEvent / TouchEvent / MouseEvent
-    let cx, cy;
-    if(e.clientX !== undefined){ cx = e.clientX; cy = e.clientY; }
-    else if(e.touches && e.touches[0]){ cx = e.touches[0].clientX; cy = e.touches[0].clientY; }
-    else { return null; }
     return {
-      x: (cx - r.left) * cvs.width  / r.width,
-      y: (cy - r.top)  * cvs.height / r.height
+      x: (e.clientX - r.left) * W / r.width,
+      y: (e.clientY - r.top)  * H / r.height
     };
   }
 
-  // ── line width with pressure ───────────────────────────
-  function lw(e){
-    // e.pressure: 0–1 (Apple Pencil), 0.5 for mouse/touch without pressure
-    const p = (e.pressure !== undefined && e.pressure > 0) ? e.pressure : 0.5;
-    return Math.max(1.5, p * 6);
-  }
-
-  // ── draw handlers ──────────────────────────────────────
-  function dn(e){
-    // In pencil-only mode, ignore finger touches
-    if(pencilOnly && e.pointerType === 'touch') return;
-    e.preventDefault();
-    painting = true; cur = [];
-    const p = getP(e); if(!p) return;
-    lx = p.x; ly = p.y; cur.push({x:lx, y:ly});
-    // Capture pointer so we keep getting events even if pointer leaves element
-    if(cvs.setPointerCapture && e.pointerId !== undefined){
-      try { cvs.setPointerCapture(e.pointerId); } catch(_){}
-    }
-  }
-  function mv(e){
-    if(pencilOnly && e.pointerType === 'touch') return;
-    if(!painting) return;
-    e.preventDefault();
-    const p = getP(e); if(!p) return;
+  // Catmull-Rom smooth render from buffered points
+  function renderSmooth(){
+    rafId = null;
+    if(pts.length < 2) return;
     ctx.beginPath();
-    ctx.moveTo(lx, ly); ctx.lineTo(p.x, p.y);
     ctx.strokeStyle = penClr;
-    ctx.lineWidth   = lw(e);
+    ctx.lineWidth   = pts[pts.length-1].w;
     ctx.lineCap     = 'round';
     ctx.lineJoin    = 'round';
+    if(pts.length === 2){
+      ctx.moveTo(pts[0].x, pts[0].y);
+      ctx.lineTo(pts[1].x, pts[1].y);
+    } else {
+      // Smooth quadratic curve through midpoints
+      ctx.moveTo(pts[0].x, pts[0].y);
+      for(let i = 1; i < pts.length - 1; i++){
+        const mx = (pts[i].x + pts[i+1].x) / 2;
+        const my = (pts[i].y + pts[i+1].y) / 2;
+        ctx.quadraticCurveTo(pts[i].x, pts[i].y, mx, my);
+      }
+      const last = pts[pts.length-1];
+      ctx.lineTo(last.x, last.y);
+    }
     ctx.stroke();
-    lx = p.x; ly = p.y;
-    cur.push({x:lx, y:ly});
-  }
-  function up(e){
-    if(pencilOnly && e.pointerType === 'touch') return;
-    if(painting){ strokes.push([...cur]); painting = false; }
+    // Keep only last 2 pts to continue from current position
+    pts = pts.slice(-2);
   }
 
-  // ── Pointer Events (covers Apple Pencil, mouse, touch on modern browsers) ──
-  if(window.PointerEvent){
-    cvs.addEventListener('pointerdown',  dn);
-    cvs.addEventListener('pointermove',  mv);
-    cvs.addEventListener('pointerup',    up);
-    cvs.addEventListener('pointercancel',up);
-    cvs.addEventListener('pointerleave', up);
-  } else {
-    // Fallback: Mouse + Touch (older browsers / older iOS WebKit)
-    cvs.addEventListener('mousedown',  dn);
-    cvs.addEventListener('mousemove',  mv);
-    cvs.addEventListener('mouseup',    up);
-    cvs.addEventListener('mouseleave', up);
-    cvs.addEventListener('touchstart', dn, {passive:false});
-    cvs.addEventListener('touchmove',  mv, {passive:false});
-    cvs.addEventListener('touchend',   up, {passive:false});
-    cvs.addEventListener('touchcancel',up, {passive:false});
+  function scheduleRender(){
+    if(!rafId) rafId = requestAnimationFrame(renderSmooth);
   }
+
+  function lineW(e){
+    const p = (e.pressure && e.pressure > 0) ? e.pressure : 0.5;
+    return Math.max(2, p * 8);
+  }
+
+  // ── lock scroll while drawing ─────────────────────────────
+  function lockScroll(){
+    document.body.style.overflow = 'hidden';
+    document.body.style.overscrollBehavior = 'none';
+  }
+  function unlockScroll(){
+    document.body.style.overflow = '';
+    document.body.style.overscrollBehavior = '';
+  }
+
+  // ── event handlers ────────────────────────────────────────
+  function dn(e){
+    if(pencilOnly && e.pointerType === 'touch') return;
+    e.preventDefault(); e.stopPropagation();
+    lockScroll();
+    painting = true; cur = []; pts = [];
+    const p = getP(e);
+    lx = p.x; ly = p.y;
+    pts.push({x:lx, y:ly, w:lineW(e)});
+    cur.push({x:lx, y:ly});
+    if(cvs.setPointerCapture) try{ cvs.setPointerCapture(e.pointerId); }catch(_){}
+  }
+
+  function mv(e){
+    if(pencilOnly && e.pointerType === 'touch') return;
+    e.preventDefault(); e.stopPropagation();
+    if(!painting) return;
+    const p = getP(e);
+    // Skip duplicate points (stylus can fire many events at same pos)
+    const dx = p.x - lx, dy = p.y - ly;
+    if(dx*dx + dy*dy < 1) return;
+    pts.push({x:p.x, y:p.y, w:lineW(e)});
+    cur.push({x:p.x, y:p.y});
+    lx = p.x; ly = p.y;
+    scheduleRender();
+  }
+
+  function up(e){
+    if(pencilOnly && e.pointerType === 'touch') return;
+    e.preventDefault();
+    if(rafId){ cancelAnimationFrame(rafId); rafId = null; renderSmooth(); }
+    if(painting){ strokes.push([...cur]); painting = false; }
+    pts = [];
+    unlockScroll();
+  }
+
+  // Block touch scroll on container
+  outer.addEventListener('touchstart', function(e){ if(!pencilOnly) e.preventDefault(); }, {passive:false});
+  outer.addEventListener('touchmove',  function(e){ if(!pencilOnly) e.preventDefault(); }, {passive:false});
+  outer.addEventListener('touchend',   function(e){ if(!pencilOnly) e.preventDefault(); }, {passive:false});
+
+  // Pointer events (Apple Pencil, mouse, touch)
+  cvs.addEventListener('pointerdown',   dn, {passive:false});
+  cvs.addEventListener('pointermove',   mv, {passive:false});
+  cvs.addEventListener('pointerup',     up, {passive:false});
+  cvs.addEventListener('pointercancel', up, {passive:false});
 }
 function drawGrid(){
   if(!ctx||!cvs) return;
@@ -7307,12 +7344,16 @@ async function sendChat(){
   try{
     const key = getApiKey();
     if(!key) throw new Error('NO_KEY');
-    const sysmsg = `Bạn là giáo viên tiếng Trung thân thiện dạy người Việt HSK ${currentLevel}. Trả lời theo cấu trúc: 1) Câu tiếng Trung (từ vựng HSK1-${currentLevel}) 2) Pinyin 3) Nghĩa Việt 4) Giải thích nếu có từ mới 5) Câu hỏi gợi chuyện tiếp. Dùng **bold** cho chữ Hán chính, *italic* cho pinyin.`;
-    const msgs = [{role:'system',content:sysmsg}, ...chatHistory];
-    const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:1000,messages:msgs})});
-    if(!res.ok){ const err=await res.json().catch(()=>({})); throw new Error(err?.error?.message||`HTTP ${res.status}`); }
-    const data=await res.json();
-    const reply=data.choices?.[0]?.message?.content||'对不起，我不明白。';
+    const sysmsg = 'Bạn là giáo viên tiếng Trung thân thiện dạy người Việt HSK '+currentLevel+'. Trả lời theo cấu trúc: 1) Câu tiếng Trung (từ vựng HSK1-'+currentLevel+') 2) Pinyin 3) Nghĩa Việt 4) Giải thích nếu có từ mới 5) Câu hỏi gợi chuyện tiếp. Dùng **bold** cho chữ Hán chính, *italic* cho pinyin.';
+    const msgs = [{role:'system', content:sysmsg}].concat(chatHistory);
+    const cres = await fetch('https://api.openai.com/v1/chat/completions', {
+      method : 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body   : JSON.stringify({ model:'gpt-4o-mini', max_tokens:1000, messages:msgs })
+    });
+    if(!cres.ok){ const ce=await cres.json().catch(function(){return {};}); throw new Error(ce&&ce.error&&ce.error.message?ce.error.message:'HTTP '+cres.status); }
+    const cdata = await cres.json();
+    const reply = (cdata.choices && cdata.choices[0] && cdata.choices[0].message ? cdata.choices[0].message.content : '') || '对不起，我不明白。';
     removeTyping();
     chatHistory.push({role:'assistant',content:reply});
     const fmt=reply.replace(/\*\*(.+?)\*\*/g,'<span class="msg-hanzi">$1</span>').replace(/\*(.+?)\*/g,'<em style="color:var(--gold-light)">$1</em>').replace(/💡/g,'<br>💡').replace(/❓/g,'<br>❓').replace(/→/g,'<br>→').replace(/\n/g,'<br>');
@@ -7578,12 +7619,6 @@ function logActivity(){
   log[today] = (log[today]||0) + 1;
   try { localStorage.setItem(key, JSON.stringify(log)); } catch(e){}
 }
-
-/* ════════════════════════════════════════════════════════════════
-   PATCH: open vocab detail on word click in vocab list
-════════════════════════════════════════════════════════════════ */
-// Override existing click handler to also open detail modal
-const _origRenderVL = renderVocabList;
 
 /* ════════════════════════════════════════════════════════════════
    INIT
