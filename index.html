@@ -3,25 +3,118 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>HSK3 - Luyện Tập Từ Vựng</title>
+<title>HSK Luyện Tập Từ Vựng</title>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Be+Vietnam+Pro:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--red:#C0392B;--red-light:#E74C3C;--gold:#D4A843;--gold-light:#F1C55A;--ink:#1A1A2E;--paper:#FAF6F0;--green:#27AE60;--green-light:#2ECC71;--blue:#2471A3;--muted:#7F8C8D;--white:#FFFFFF;}
+/* ═══════════════════════════════════════════════════════
+   ROOT VARIABLES & RESET
+═══════════════════════════════════════════════════════ */
+:root{
+  --red:#C0392B;--red-light:#E74C3C;--gold:#D4A843;--gold-light:#F1C55A;
+  --ink:#1A1A2E;--paper:#FAF6F0;--green:#27AE60;--green-light:#2ECC71;
+  --blue:#2471A3;--muted:#7F8C8D;--white:#FFFFFF;
+  --hsk3:#E74C3C;--hsk4:#E67E22;--hsk5:#8E44AD;--hsk6:#2471A3;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:'Be Vietnam Pro',sans-serif;background:var(--ink);color:var(--paper);min-height:100vh;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 50%,rgba(192,57,43,.08) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(212,168,67,.06) 0%,transparent 40%);pointer-events:none;z-index:0;}
-.wrap{max-width:880px;margin:0 auto;padding:0 16px;position:relative;z-index:1;}
-header{text-align:center;padding:36px 16px 24px;}
-.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:20px;padding:4px 14px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-light);margin-bottom:14px;}
-h1{font-family:'Noto Serif SC',serif;font-size:clamp(26px,5vw,42px);color:var(--white);line-height:1.2;margin-bottom:6px;}
+.wrap{max-width:920px;margin:0 auto;padding:0 16px;position:relative;z-index:1;}
+
+/* ═══════════════════════════════════════════════════════
+   HEADER
+═══════════════════════════════════════════════════════ */
+header{text-align:center;padding:28px 16px 16px;}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);border-radius:20px;padding:4px 14px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--gold-light);margin-bottom:10px;}
+h1{font-family:'Noto Serif SC',serif;font-size:clamp(22px,4vw,36px);color:var(--white);line-height:1.2;margin-bottom:4px;}
 h1 span{color:var(--gold);}
-.sub{color:var(--muted);font-size:13px;}
-.pills{display:flex;gap:10px;justify-content:center;margin-bottom:28px;flex-wrap:wrap;}
-.pill{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:7px 14px;font-size:13px;display:flex;align-items:center;gap:6px;}
-.pill strong{color:var(--gold-light);}
+.sub{color:var(--muted);font-size:12px;}
+
+/* ═══════════════════════════════════════════════════════
+   HSK LEVEL SELECTOR
+═══════════════════════════════════════════════════════ */
+.level-bar{display:flex;gap:8px;justify-content:center;margin:14px 0 18px;flex-wrap:wrap;}
+.lvl-btn{padding:8px 20px;border-radius:20px;border:2px solid rgba(255,255,255,.15);background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .25s;letter-spacing:1px;}
+.lvl-btn:hover{border-color:rgba(255,255,255,.4);color:var(--paper);}
+.lvl-btn.on[data-lvl="3"]{background:var(--hsk3);border-color:var(--hsk3);color:#fff;box-shadow:0 4px 16px rgba(231,76,60,.4);}
+.lvl-btn.on[data-lvl="4"]{background:var(--hsk4);border-color:var(--hsk4);color:#fff;box-shadow:0 4px 16px rgba(230,126,34,.4);}
+.lvl-btn.on[data-lvl="5"]{background:var(--hsk5);border-color:var(--hsk5);color:#fff;box-shadow:0 4px 16px rgba(142,68,173,.4);}
+.lvl-btn.on[data-lvl="6"]{background:var(--hsk6);border-color:var(--hsk6);color:#fff;box-shadow:0 4px 16px rgba(36,113,163,.4);}
+
+/* ═══════════════════════════════════════════════════════
+   PROGRESS DASHBOARD
+═══════════════════════════════════════════════════════ */
+.progress-dash{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:16px 20px;margin-bottom:16px;}
+.progress-dash-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.progress-title{font-size:13px;font-weight:600;color:var(--paper);}
+.progress-stats{display:flex;gap:12px;flex-wrap:wrap;}
+.pstat{text-align:center;}
+.pstat-num{font-size:18px;font-weight:700;color:var(--gold-light);}
+.pstat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;}
+.pbar-outer{height:8px;background:rgba(255,255,255,.08);border-radius:4px;overflow:hidden;}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:4px;transition:width .5s ease;}
+.pbar-label{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px;}
+.reset-prog{font-size:11px;padding:4px 10px;background:transparent;border:1px solid rgba(255,255,255,.1);border-radius:6px;color:var(--muted);cursor:pointer;font-family:'Be Vietnam Pro',sans-serif;}
+.reset-prog:hover{border-color:var(--red-light);color:var(--red-light);}
+
+/* ═══════════════════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════════════════ */
+.search-bar{position:relative;margin-bottom:14px;}
+.search-bar input{width:100%;padding:11px 44px 11px 44px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:12px;color:var(--white);font-size:14px;font-family:'Be Vietnam Pro',sans-serif;outline:none;transition:border-color .2s;}
+.search-bar input:focus{border-color:var(--gold);}
+.search-bar input::placeholder{color:var(--muted);}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.search-clear{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;display:none;}
+.search-clear.show{display:block;}
+.search-results{background:rgba(26,26,46,.98);border:1px solid rgba(255,255,255,.12);border-radius:12px;max-height:280px;overflow-y:auto;display:none;position:absolute;width:100%;z-index:100;top:calc(100% + 4px);scrollbar-width:thin;}
+.search-results.show{display:block;}
+.sr-item{display:flex;align-items:center;gap:12px;padding:10px 16px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.05);transition:background .15s;}
+.sr-item:last-child{border-bottom:none;}
+.sr-item:hover{background:rgba(255,255,255,.06);}
+.sr-hz{font-family:'Noto Serif SC',serif;font-size:22px;color:var(--gold);min-width:40px;}
+.sr-info{flex:1;}
+.sr-py{font-size:12px;color:var(--gold-light);}
+.sr-mn{font-size:13px;color:var(--paper);}
+.sr-badge{font-size:10px;padding:2px 7px;border-radius:8px;font-weight:600;}
+.sr-badge.l3{background:rgba(231,76,60,.2);color:var(--hsk3);}
+.sr-badge.l4{background:rgba(230,126,34,.2);color:var(--hsk4);}
+.sr-badge.l5{background:rgba(142,68,173,.2);color:var(--hsk5);}
+.sr-badge.l6{background:rgba(36,113,163,.2);color:var(--hsk6);}
+.sr-play{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px;}
+.sr-play:hover{color:var(--gold);}
+.sr-learned{font-size:12px;cursor:pointer;padding:4px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;}
+.sr-learned.done{border-color:var(--green);color:var(--green-light);background:rgba(39,174,96,.1);}
+.search-hint{padding:14px;text-align:center;color:var(--muted);font-size:13px;}
+
+/* ═══════════════════════════════════════════════════════
+   VOCAB LIST PANEL
+═══════════════════════════════════════════════════════ */
+.vlist-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.vlist-filters{display:flex;gap:6px;}
+.vf-btn{padding:5px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--muted);font-size:11px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;transition:all .2s;}
+.vf-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(212,168,67,.1);}
+.vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;max-height:400px;overflow-y:auto;scrollbar-width:thin;padding-right:4px;}
+.vcard{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px 14px;cursor:pointer;transition:all .2s;position:relative;}
+.vcard:hover{border-color:rgba(255,255,255,.18);transform:translateY(-1px);}
+.vcard.learned{border-color:rgba(39,174,96,.3);background:rgba(39,174,96,.05);}
+.vc-hz{font-family:'Noto Serif SC',serif;font-size:24px;color:var(--white);line-height:1;margin-bottom:4px;}
+.vc-py{font-size:11px;color:var(--gold-light);margin-bottom:3px;}
+.vc-mn{font-size:12px;color:var(--muted);}
+.vc-mark{position:absolute;top:8px;right:8px;width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer;transition:all .2s;}
+.vc-mark.done{background:var(--green);border-color:var(--green);color:#fff;}
+.vc-play{position:absolute;bottom:8px;right:8px;font-size:13px;cursor:pointer;opacity:.4;}
+.vc-play:hover{opacity:1;}
+.vlist-pager{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px;font-size:12px;color:var(--muted);}
+.vpager-btn{padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--paper);font-size:12px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;transition:all .2s;}
+.vpager-btn:hover{border-color:var(--gold);color:var(--gold);}
+.vpager-btn:disabled{opacity:.3;cursor:default;}
+
+/* ═══════════════════════════════════════════════════════
+   TABS
+═══════════════════════════════════════════════════════ */
 .tabs{display:flex;gap:3px;background:rgba(255,255,255,.04);border-radius:14px;padding:4px;margin-bottom:24px;overflow-x:auto;scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex:1;min-width:100px;padding:9px 8px;border:none;border-radius:10px;background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .25s;white-space:nowrap;text-align:center;}
+.tab{flex:1;min-width:88px;padding:9px 6px;border:none;border-radius:10px;background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:11px;font-weight:500;cursor:pointer;transition:all .25s;white-space:nowrap;text-align:center;}
 .tab:hover{color:var(--paper);background:rgba(255,255,255,.06);}
 .tab.on{background:var(--red);color:var(--white);box-shadow:0 4px 15px rgba(192,57,43,.4);}
 .panel{display:none;animation:fi .3s ease;}
@@ -39,7 +132,12 @@ h1 span{color:var(--gold);}
 .out{background:transparent;border:1.5px solid rgba(255,255,255,.2);color:var(--paper);}
 .out:hover{border-color:var(--gold);color:var(--gold);}
 .grn{background:var(--green);color:var(--white);}
-/* FC */
+.pbar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-top:8px;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:2px;transition:width .4s ease;}
+
+/* ═══════════════════════════════════════════════════════
+   FLASHCARD
+═══════════════════════════════════════════════════════ */
 .fcwrap{perspective:1000px;margin-bottom:18px;}
 .fc{width:100%;min-height:180px;position:relative;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);cursor:pointer;border-radius:18px;}
 .fc.flip{transform:rotateY(180deg);}
@@ -52,9 +150,14 @@ h1 span{color:var(--gold);}
 .fcm{font-size:17px;color:var(--white);margin-bottom:5px;}
 .fct{font-size:11px;color:rgba(255,255,255,.45);}
 .fcctrl{display:flex;gap:10px;justify-content:center;margin-bottom:14px;}
-.pbar{height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;margin-top:8px;}
-.pfill{height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:2px;transition:width .4s ease;}
-/* MC */
+.fc-mark-row{display:flex;gap:8px;justify-content:center;margin-top:6px;}
+.fc-mark-btn{padding:6px 14px;border-radius:8px;font-size:12px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;border:1.5px solid;transition:all .2s;}
+.fc-mark-btn.learned{border-color:var(--green);color:var(--green-light);background:rgba(39,174,96,.1);}
+.fc-mark-btn.unlearned{border-color:rgba(255,255,255,.2);color:var(--muted);background:transparent;}
+
+/* ═══════════════════════════════════════════════════════
+   MULTIPLE CHOICE
+═══════════════════════════════════════════════════════ */
 .scbox{text-align:center;padding:16px;background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:14px;margin-bottom:16px;}
 .scbig{font-family:'Noto Serif SC',serif;font-size:44px;color:var(--gold);line-height:1;}
 .sclbl{font-size:12px;color:var(--muted);margin-top:3px;}
@@ -71,7 +174,10 @@ h1 span{color:var(--gold);}
 .mcfb.on{display:block;}
 .mcfb.ok{background:rgba(39,174,96,.15);color:var(--green-light);}
 .mcfb.no{background:rgba(192,57,43,.15);color:#E74C3C;}
-/* MATCH */
+
+/* ═══════════════════════════════════════════════════════
+   MATCHING
+═══════════════════════════════════════════════════════ */
 .mgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
 .mcol{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:7px;font-weight:600;text-align:center;}
 .mitems{display:flex;flex-direction:column;gap:7px;}
@@ -82,20 +188,71 @@ h1 span{color:var(--gold);}
 .mi.mat{border-color:var(--green);background:rgba(39,174,96,.1);color:var(--green-light);cursor:default;}
 @keyframes shk{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
 .mi.shk{animation:shk .4s;}
-/* FIB */
+
+/* ═══════════════════════════════════════════════════════
+   FILL IN BLANK
+═══════════════════════════════════════════════════════ */
 .fibq{font-size:19px;text-align:center;margin-bottom:12px;line-height:1.9;color:var(--white);}
 .fibblank{display:inline-block;min-width:70px;border-bottom:2px solid var(--gold);padding:0 6px 2px;color:var(--gold);font-family:'Noto Serif SC',serif;font-size:19px;}
 .fibin{width:100%;padding:9px 13px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.15);border-radius:9px;color:var(--white);font-size:15px;font-family:'Noto Serif SC',serif;outline:none;transition:border-color .2s;margin-bottom:10px;}
 .fibin:focus{border-color:var(--gold);}
 .fibin.ok{border-color:var(--green);background:rgba(39,174,96,.1);}
 .fibin.no{border-color:var(--red);background:rgba(192,57,43,.1);}
-/* TRANS */
+
+/* ═══════════════════════════════════════════════════════
+   TRANSLATE (AI-POWERED)
+═══════════════════════════════════════════════════════ */
 .trq{font-size:17px;color:var(--paper);line-height:1.8;padding:14px 18px;background:rgba(212,168,67,.07);border-left:3px solid var(--gold);border-radius:0 12px 12px 0;margin-bottom:12px;font-family:'Noto Serif SC',serif;}
 .trta{width:100%;min-height:68px;padding:11px 13px;background:rgba(255,255,255,.05);border:1.5px solid rgba(255,255,255,.12);border-radius:11px;color:var(--white);font-size:13px;font-family:'Be Vietnam Pro',sans-serif;resize:vertical;outline:none;transition:border-color .2s;margin-bottom:8px;}
 .trta:focus{border-color:var(--gold);}
+.ai-check-btn{padding:8px 16px;background:linear-gradient(135deg,var(--blue),#1a3a5c);border:none;border-radius:8px;color:#fff;font-size:12px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.ai-check-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(36,113,163,.4);}
+.ai-fb{display:none;margin-top:10px;padding:12px 16px;border-radius:10px;font-size:13px;line-height:1.7;}
+.ai-fb.on{display:block;}
+.ai-fb.great{background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.25);}
+.ai-fb.ok{background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);}
+.ai-fb.bad{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.25);}
+.ai-loading{display:inline-flex;gap:4px;align-items:center;}
+.dot{width:5px;height:5px;background:var(--muted);border-radius:50%;animation:blink 1.2s infinite;}
+.dot:nth-child(2){animation-delay:.2s;}
+.dot:nth-child(3){animation-delay:.4s;}
+@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
 .ansbox{display:none;padding:10px 14px;background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);border-radius:9px;font-size:13px;color:var(--green-light);margin-top:6px;}
 .ansbox.on{display:block;}
-/* HW */
+.tr-item{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,.06);}
+.tr-item:last-child{border-bottom:none;}
+
+/* ═══════════════════════════════════════════════════════
+   LISTENING
+═══════════════════════════════════════════════════════ */
+.listen-card{background:linear-gradient(135deg,rgba(36,113,163,.15),rgba(26,26,46,.9));border:1px solid rgba(36,113,163,.3);border-radius:16px;padding:20px;margin-bottom:16px;}
+.listen-title{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#5DADE2;margin-bottom:8px;}
+.listen-zh{font-family:'Noto Serif SC',serif;font-size:16px;color:var(--white);line-height:2;margin-bottom:10px;display:none;}
+.listen-zh.show{display:block;}
+.listen-controls{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;}
+.play-btn{width:48px;height:48px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .25s;background:linear-gradient(135deg,var(--blue),#1a3a5c);box-shadow:0 4px 14px rgba(36,113,163,.4);}
+.play-btn:hover{transform:scale(1.08);}
+.play-btn.playing{background:linear-gradient(135deg,var(--red),#8B1A1A);animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.5)}50%{box-shadow:0 0 0 10px rgba(192,57,43,0)}}
+.listen-speed{padding:5px 10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:7px;color:var(--paper);font-size:12px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;outline:none;}
+.listen-speed option{background:#1A1A2E;}
+.show-text-btn{padding:5px 12px;background:transparent;border:1px solid rgba(255,255,255,.15);border-radius:7px;color:var(--muted);font-size:12px;font-family:'Be Vietnam Pro',sans-serif;cursor:pointer;transition:all .2s;}
+.show-text-btn:hover{border-color:var(--gold);color:var(--gold);}
+.listen-qs{margin-top:14px;}
+.lq-item{margin-bottom:14px;}
+.lq-text{font-size:14px;color:var(--paper);margin-bottom:8px;font-weight:500;}
+.lq-opts{display:flex;flex-direction:column;gap:6px;}
+.lq-opt{padding:9px 14px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:9px;font-size:13px;cursor:pointer;transition:all .2s;font-family:'Be Vietnam Pro',sans-serif;color:var(--paper);text-align:left;}
+.lq-opt:hover:not(:disabled){border-color:var(--blue);color:#5DADE2;background:rgba(36,113,163,.08);}
+.lq-opt.ok{background:rgba(39,174,96,.12);border-color:var(--green);color:var(--green-light);}
+.lq-opt.no{background:rgba(192,57,43,.12);border-color:var(--red);color:#E74C3C;}
+.lq-opt:disabled{cursor:default;}
+.listen-score{display:none;text-align:center;padding:14px;background:rgba(212,168,67,.08);border:1px solid rgba(212,168,67,.2);border-radius:12px;margin-top:12px;}
+.listen-score.show{display:block;}
+
+/* ═══════════════════════════════════════════════════════
+   HANDWRITING
+═══════════════════════════════════════════════════════ */
 .hwlay{display:grid;grid-template-columns:270px 1fr;gap:16px;margin-bottom:16px;}
 .hwleft{display:flex;flex-direction:column;gap:11px;}
 .hwprom{background:linear-gradient(135deg,rgba(192,57,43,.12),rgba(212,168,67,.08));border:1px solid rgba(192,57,43,.25);border-radius:14px;padding:17px;text-align:center;}
@@ -119,7 +276,6 @@ h1 span{color:var(--gold);}
 .hwmfb.on{display:block;}
 .hwmfb.ok{background:rgba(39,174,96,.12);color:var(--green-light);}
 .hwmfb.no{background:rgba(192,57,43,.12);color:#E74C3C;}
-/* CANVAS */
 .hwright{display:flex;flex-direction:column;gap:10px;}
 .cvouter{position:relative;border-radius:14px;border:1.5px solid rgba(255,255,255,.15);overflow:hidden;background:#F5EFE6;}
 #hwcv{display:block;width:100%;height:280px;touch-action:none;cursor:crosshair;}
@@ -138,8 +294,10 @@ h1 span{color:var(--gold);}
 .hwni{text-align:center;}
 .hwncnt{font-size:18px;font-weight:700;color:var(--gold-light);}
 .hwnch{font-family:'Noto Serif SC',serif;font-size:18px;color:var(--gold);margin-top:2px;}
-footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opacity:.6;}
-/* SPEAKING */
+
+/* ═══════════════════════════════════════════════════════
+   SPEAKING
+═══════════════════════════════════════════════════════ */
 .sp-modes{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
 .sp-mode{flex:1;min-width:130px;padding:12px 10px;border:1.5px solid rgba(255,255,255,.1);border-radius:12px;background:transparent;color:var(--muted);font-family:'Be Vietnam Pro',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .2s;text-align:center;}
 .sp-mode:hover{border-color:var(--gold);color:var(--gold);}
@@ -156,7 +314,6 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 .mic-btn.idle:hover{transform:scale(1.05);box-shadow:0 8px 28px rgba(192,57,43,.6);}
 .mic-btn.rec{background:linear-gradient(135deg,#E74C3C,var(--red));animation:pulse 1.2s infinite;}
 .mic-btn.thinking{background:linear-gradient(135deg,var(--blue),#1a3a5c);box-shadow:0 6px 20px rgba(36,113,163,.4);}
-@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(192,57,43,.5),0 6px 20px rgba(192,57,43,.4)}50%{box-shadow:0 0 0 14px rgba(192,57,43,0),0 6px 20px rgba(192,57,43,.4)}}
 .mic-label{font-size:13px;color:var(--muted);text-align:center;}
 .sp-transcript{min-height:52px;padding:14px 16px;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.1);border-radius:12px;font-size:15px;color:var(--paper);font-family:'Noto Serif SC',serif;text-align:center;line-height:1.6;margin-bottom:14px;transition:border-color .3s;}
 .sp-transcript.active{border-color:var(--gold);}
@@ -170,7 +327,6 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 .sp-sc.a{background:rgba(39,174,96,.2);color:var(--green-light);}
 .sp-sc.b{background:rgba(212,168,67,.2);color:var(--gold-light);}
 .sp-sc.c{background:rgba(192,57,43,.2);color:#E74C3C;}
-/* CHAT MODE */
 .sp-chat{display:flex;flex-direction:column;gap:0;}
 .chat-history{min-height:200px;max-height:380px;overflow-y:auto;padding:14px;background:rgba(0,0,0,.2);border-radius:14px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px;scrollbar-width:thin;}
 .chat-history::-webkit-scrollbar{width:4px;}
@@ -180,58 +336,128 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 .msg.user{align-self:flex-end;background:rgba(192,57,43,.18);border:1px solid rgba(192,57,43,.25);color:var(--paper);text-align:right;border-bottom-right-radius:4px;}
 .msg.ai .msg-hanzi{font-family:'Noto Serif SC',serif;font-size:16px;color:var(--gold-light);display:block;margin-bottom:3px;}
 .msg-typing{display:flex;gap:4px;align-items:center;padding:12px 16px;}
-.dot{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:blink 1.2s infinite;}
-.dot:nth-child(2){animation-delay:.2s;}
-.dot:nth-child(3){animation-delay:.4s;}
-@keyframes blink{0%,80%,100%{opacity:.3}40%{opacity:1}}
 .sp-chat-input{display:flex;gap:8px;align-items:center;}
 .sp-chat-text{flex:1;padding:10px 14px;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.12);border-radius:10px;color:var(--white);font-size:13px;font-family:'Be Vietnam Pro',sans-serif;outline:none;transition:border-color .2s;}
 .sp-chat-text:focus{border-color:var(--gold);}
 .sp-nav{display:flex;gap:10px;justify-content:center;margin-top:4px;flex-wrap:wrap;}
+
+footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opacity:.6;}
+
+/* ═══════════════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════════════ */
 @media(max-width:640px){
   .mcopts{grid-template-columns:1fr;}
   .mgrid{grid-template-columns:1fr;}
   .hwlay{grid-template-columns:1fr;}
   #hwcv{height:220px;}
-  .tab{font-size:11px;padding:8px 6px;}
+  .tab{font-size:10px;padding:7px 4px;min-width:70px;}
   .sp-hanzi{font-size:52px;}
+  .vlist{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));}
+  .progress-stats{gap:8px;}
 }
 </style>
 </head>
 <body>
 <div class="wrap">
+
+<!-- HEADER -->
 <header>
-  <div class="badge">🏮 Luyện tập HSK3</div>
+  <div class="badge">🏮 Luyện tập HSK</div>
   <h1>Từ Vựng <span>汉语水平考试</span></h1>
-  <p class="sub">Ôn tập toàn diện qua 6 loại bài tập</p>
+  <p class="sub">Hệ thống học toàn diện · HSK3 đến HSK6</p>
 </header>
-<div class="pills">
-  <div class="pill">📚 <strong>85</strong> từ vựng</div>
-  <div class="pill">✏️ <strong>30</strong> câu điền từ</div>
-  <div class="pill">🈯 <strong>20</strong> câu dịch</div>
-  <div class="pill">✍️ Bảng viết chữ Hán</div>
+
+<!-- HSK LEVEL SELECTOR -->
+<div class="level-bar">
+  <button class="lvl-btn on" data-lvl="3" onclick="setLevel(3,this)">HSK 3</button>
+  <button class="lvl-btn" data-lvl="4" onclick="setLevel(4,this)">HSK 4</button>
+  <button class="lvl-btn" data-lvl="5" onclick="setLevel(5,this)">HSK 5</button>
+  <button class="lvl-btn" data-lvl="6" onclick="setLevel(6,this)">HSK 6</button>
 </div>
+
+<!-- PROGRESS DASHBOARD -->
+<div class="progress-dash">
+  <div class="progress-dash-top">
+    <div class="progress-title">📊 Tiến độ học · <span id="prog-level-lbl" style="color:var(--gold-light)">HSK 3</span></div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="reset-prog" onclick="resetProgress()">🗑 Đặt lại</button>
+    </div>
+  </div>
+  <div class="progress-stats">
+    <div class="pstat"><div class="pstat-num" id="prog-learned">0</div><div class="pstat-lbl">Đã học</div></div>
+    <div class="pstat"><div class="pstat-num" id="prog-total">0</div><div class="pstat-lbl">Tổng từ</div></div>
+    <div class="pstat"><div class="pstat-num" id="prog-exercises">0</div><div class="pstat-lbl">Bài tập</div></div>
+    <div class="pstat"><div class="pstat-num" id="prog-streak">0</div><div class="pstat-lbl">Ngày streak</div></div>
+    <div class="pstat"><div class="pstat-num" id="prog-avg">—</div><div class="pstat-lbl">Điểm TB</div></div>
+  </div>
+  <div style="margin-top:10px">
+    <div class="pbar-outer"><div class="pbar-fill" id="prog-bar" style="width:0%"></div></div>
+    <div class="pbar-label"><span id="prog-pct">0%</span><span id="prog-words-label"></span></div>
+  </div>
+</div>
+
+<!-- SEARCH BAR -->
+<div class="search-bar" id="search-container">
+  <span class="search-icon">🔍</span>
+  <input type="text" id="search-input" placeholder="Tìm chữ Hán, pinyin, nghĩa tiếng Việt/Anh..." autocomplete="off" oninput="onSearch(this.value)" onfocus="showSearchDrop()" />
+  <button class="search-clear" id="search-clear" onclick="clearSearch()">✕</button>
+  <div class="search-results" id="search-results"></div>
+</div>
+
+<!-- TABS -->
 <div class="tabs">
-  <button class="tab on" onclick="go('fc',this)">🃏 Thẻ nhớ</button>
+  <button class="tab on" onclick="go('vl',this)">📚 Từ vựng</button>
+  <button class="tab" onclick="go('fc',this)">🃏 Thẻ nhớ</button>
   <button class="tab" onclick="go('mc',this)">🎯 Trắc nghiệm</button>
   <button class="tab" onclick="go('mt',this)">🔗 Nối từ</button>
   <button class="tab" onclick="go('fi',this)">✏️ Điền từ</button>
   <button class="tab" onclick="go('tr',this)">🈯 Dịch câu</button>
-  <button class="tab" onclick="go('hw',this)">✍️ Luyện viết</button>
+  <button class="tab" onclick="go('li',this)">👂 Luyện nghe</button>
+  <button class="tab" onclick="go('hw',this)">✍️ Viết chữ</button>
   <button class="tab" onclick="go('sp',this)">🎙 Luyện nói</button>
 </div>
 
-<!-- FLASHCARD -->
-<div class="panel on" id="panel-fc">
+<!-- ══════════════════════════════════════════════════
+     PANEL: VOCAB LIST
+══════════════════════════════════════════════════ -->
+<div class="panel on" id="panel-vl">
+<div class="card">
+  <div class="xhdr"><div class="xicon">📚</div><div><div class="xtitle">Danh sách từ vựng</div><div class="xsub" id="vl-sub">Bấm ✓ để đánh dấu đã học · Bấm từ để nghe phát âm</div></div></div>
+  <div class="vlist-header">
+    <div class="vlist-filters">
+      <button class="vf-btn on" id="vf-all" onclick="setVFilter('all',this)">Tất cả</button>
+      <button class="vf-btn" id="vf-unlearned" onclick="setVFilter('unlearned',this)">Chưa học</button>
+      <button class="vf-btn" id="vf-learned" onclick="setVFilter('learned',this)">Đã học</button>
+    </div>
+    <div style="font-size:12px;color:var(--muted)" id="vl-count-lbl"></div>
+  </div>
+  <div class="vlist" id="vlist"></div>
+  <div class="vlist-pager">
+    <button class="vpager-btn" id="vl-prev" onclick="vlPage(-1)">← Trước</button>
+    <span id="vl-page-info" style="min-width:80px;text-align:center"></span>
+    <button class="vpager-btn" id="vl-next" onclick="vlPage(1)">Tiếp →</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PANEL: FLASHCARD
+══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-fc">
 <div class="card">
   <div class="xhdr"><div class="xicon">🃏</div><div><div class="xtitle">Thẻ ghi nhớ từ vựng</div><div class="xsub">Nhấn thẻ để lật · Dùng nút điều hướng</div></div></div>
   <div style="text-align:center;font-size:13px;color:var(--muted);margin-bottom:12px">
-    <span id="fccnt">1 / 85</span>
+    <span id="fccnt">1 / ?</span>
     <div class="pbar"><div class="pfill" id="fcbar" style="width:1%"></div></div>
   </div>
   <div class="fcwrap">
     <div class="fc" id="fcard" onclick="flipFC()">
-      <div class="fcf"><div class="fch" id="fch">爱好</div><div class="fchint">Nhấn để xem nghĩa ↻</div></div>
+      <div class="fcf">
+        <div class="fch" id="fch">爱好</div>
+        <div class="fchint">Nhấn để xem nghĩa ↻</div>
+        <div style="margin-top:10px;font-size:12px;cursor:pointer;color:rgba(255,255,255,.4)" onclick="event.stopPropagation();speak(document.getElementById('fch').textContent)">🔊 Nghe</div>
+      </div>
       <div class="fcb">
         <div class="fcp" id="fcp">ài hào</div>
         <div class="fcm" id="fcm">sở thích</div>
@@ -244,13 +470,18 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
     <button class="btn gold" onclick="flipFC()">Lật thẻ</button>
     <button class="btn out" onclick="fcNext()">Sau →</button>
   </div>
+  <div class="fc-mark-row">
+    <button class="fc-mark-btn unlearned" id="fc-mark-btn" onclick="fcToggleLearned()">☐ Đánh dấu đã học</button>
+  </div>
   <div style="text-align:center;margin-top:10px">
     <button class="btn out" onclick="fcShuffle()" style="font-size:12px;padding:7px 14px">🔀 Xáo bài ngẫu nhiên</button>
   </div>
 </div>
 </div>
 
-<!-- MULTIPLE CHOICE -->
+<!-- ══════════════════════════════════════════════════
+     PANEL: MULTIPLE CHOICE
+══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-mc">
 <div class="card">
   <div class="xhdr"><div class="xicon">🎯</div><div><div class="xtitle">Trắc nghiệm chọn nghĩa</div><div class="xsub">Chọn nghĩa tiếng Việt đúng · 15 câu / lượt</div></div></div>
@@ -265,7 +496,9 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 </div>
 </div>
 
-<!-- MATCHING -->
+<!-- ══════════════════════════════════════════════════
+     PANEL: MATCHING
+══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-mt">
 <div class="card">
   <div class="xhdr"><div class="xicon">🔗</div><div><div class="xtitle">Nối chữ Hán – Nghĩa Việt</div><div class="xsub">Nhấn từ bên trái → nhấn nghĩa bên phải · 10 cặp</div></div></div>
@@ -278,10 +511,12 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 </div>
 </div>
 
-<!-- FILL IN BLANK -->
+<!-- ══════════════════════════════════════════════════
+     PANEL: FILL IN BLANK
+══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-fi">
 <div class="card">
-  <div class="xhdr"><div class="xicon">✏️</div><div><div class="xtitle">Điền chữ Hán vào chỗ trống</div><div class="xsub">Có gợi ý pinyin · 8 câu / lượt trong 30 câu</div></div></div>
+  <div class="xhdr"><div class="xicon">✏️</div><div><div class="xtitle">Điền chữ Hán vào chỗ trống</div><div class="xsub">Có gợi ý pinyin · 8 câu / lượt</div></div></div>
   <div id="fiwrap"></div>
   <div style="text-align:center;margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
     <button class="btn gold" onclick="checkFI()">✅ Kiểm tra tất cả</button>
@@ -290,19 +525,35 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 </div>
 </div>
 
-<!-- TRANSLATE -->
+<!-- ══════════════════════════════════════════════════
+     PANEL: TRANSLATE (AI-POWERED)
+══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-tr">
 <div class="card">
-  <div class="xhdr"><div class="xicon">🈯</div><div><div class="xtitle">Dịch câu sang tiếng Việt</div><div class="xsub">Đọc câu tiếng Trung → viết nghĩa · 6 câu trong 20 câu</div></div></div>
+  <div class="xhdr"><div class="xicon">🈯</div><div><div class="xtitle">Dịch câu có AI chấm điểm</div><div class="xsub">Dịch câu tiếng Trung → AI phân tích lỗi & giải thích chi tiết</div></div></div>
   <div id="trwrap"></div>
   <div style="text-align:center;margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-    <button class="btn gold" onclick="showAllAns()">👁 Xem hết đáp án</button>
     <button class="btn out" onclick="initTR()">🔄 Đề mới</button>
   </div>
 </div>
 </div>
 
-<!-- HANDWRITING -->
+<!-- ══════════════════════════════════════════════════
+     PANEL: LISTENING
+══════════════════════════════════════════════════ -->
+<div class="panel" id="panel-li">
+<div class="card">
+  <div class="xhdr"><div class="xicon">👂</div><div><div class="xtitle">Luyện nghe hội thoại</div><div class="xsub">Nghe đoạn hội thoại → trả lời câu hỏi trắc nghiệm</div></div></div>
+  <div id="li-content"></div>
+  <div style="text-align:center;margin-top:14px">
+    <button class="btn gold" onclick="initLI()">🔄 Đoạn hội thoại mới</button>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════
+     PANEL: HANDWRITING
+══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-hw">
 <div class="card">
   <div class="xhdr"><div class="xicon">✍️</div><div><div class="xtitle">Luyện viết chữ Hán + điền nghĩa</div><div class="xsub">Nhìn pinyin → viết chữ Hán lên bảng → điền nghĩa tiếng Việt</div></div></div>
@@ -320,16 +571,11 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
         <div class="hwptp" id="hwtp">Danh từ</div>
       </div>
       <div class="hwref" onclick="toggleRef()">
-        <div class="hwrlbl">👁 Xem mẫu chữ (nhấn để hiện/ẩn)</div>
+        <div class="hwrlbl">👁 Xem mẫu chữ</div>
         <div class="hwrch" id="hwref">愛好</div>
         <div class="hwrtip">Nhấn để hiện · nhấn lại để ẩn</div>
       </div>
-      <div class="hwhint">
-        💡 Quy tắc viết nét chữ:<br>
-        Trái → phải · Trên → dưới<br>
-        Nét ngang trước nét dọc<br>
-        Ngoài trước, trong sau
-      </div>
+      <div class="hwhint">💡 Quy tắc viết nét chữ:<br>Trái → phải · Trên → dưới<br>Nét ngang trước nét dọc<br>Ngoài trước, trong sau</div>
       <div class="hwmbox">
         <div class="hwmlbl">📖 Điền nghĩa tiếng Việt:</div>
         <input class="hwmi" id="hwmi" placeholder="Nhập nghĩa tiếng Việt..." autocomplete="off" onkeydown="if(event.key==='Enter')checkHWM()"/>
@@ -353,13 +599,7 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
         <button class="cvbtn" onclick="clearCV()">🗑 Xóa</button>
         <button class="cvbtn" onclick="undoCV()">↩ Hoàn tác</button>
       </div>
-      <div class="hwtips">
-        <strong style="color:var(--paper)">Cách học hiệu quả:</strong><br>
-        1. Đọc pinyin → tưởng tượng mặt chữ<br>
-        2. Nhìn mẫu mờ → tập viết theo<br>
-        3. Ẩn mẫu → tự viết từ trí nhớ<br>
-        4. Điền nghĩa → kiểm tra ghi nhớ
-      </div>
+      <div class="hwtips"><strong style="color:var(--paper)">Cách học hiệu quả:</strong><br>1. Đọc pinyin → tưởng tượng mặt chữ<br>2. Nhìn mẫu mờ → tập viết theo<br>3. Ẩn mẫu → tự viết từ trí nhớ<br>4. Điền nghĩa → kiểm tra ghi nhớ</div>
     </div>
   </div>
   <div class="hwnav">
@@ -377,22 +617,21 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
 </div>
 </div>
 
-<!-- SPEAKING -->
+<!-- ══════════════════════════════════════════════════
+     PANEL: SPEAKING
+══════════════════════════════════════════════════ -->
 <div class="panel" id="panel-sp">
 <div class="card">
-  <div class="xhdr"><div class="xicon">🎙</div><div><div class="xtitle">Luyện nói với AI · Phát âm & Hội thoại</div><div class="xsub">Dùng giọng nói · AI nhận xét phát âm & dạy hội thoại tiếng Trung</div></div></div>
-
-  <!-- Mode selector -->
+  <div class="xhdr"><div class="xicon">🎙</div><div><div class="xtitle">Luyện nói với AI</div><div class="xsub">Phát âm từ · Đọc câu · Hội thoại tự do</div></div></div>
   <div class="sp-modes">
     <button class="sp-mode on" id="mode-btn-pronounce" onclick="setMode('pronounce')">🔊 Luyện phát âm từ</button>
     <button class="sp-mode" id="mode-btn-sentence" onclick="setMode('sentence')">📢 Đọc câu hoàn chỉnh</button>
-    <button class="sp-mode" id="mode-btn-chat" onclick="setMode('chat')">💬 Hội thoại tự do với AI</button>
+    <button class="sp-mode" id="mode-btn-chat" onclick="setMode('chat')">💬 Hội thoại tự do</button>
   </div>
-
   <!-- PRONOUNCE MODE -->
   <div id="sp-pronounce">
-    <div class="sp-prog"><span id="sp-idx">1</span>/<span id="sp-tot">15</span> từ · Nhấn mic và đọc to từ bên dưới</div>
-    <div class="progress-bar" style="margin-bottom:16px"><div class="pfill" id="sp-bar" style="width:6%"></div></div>
+    <div class="sp-prog"><span id="sp-idx">1</span>/<span id="sp-tot">15</span> từ</div>
+    <div class="pbar" style="margin-bottom:16px"><div class="pfill" id="sp-bar" style="width:6%"></div></div>
     <div class="sp-word-card">
       <div class="sp-hanzi" id="sp-hanzi">爱好</div>
       <div class="sp-pinyin" id="sp-pinyin">ài hào</div>
@@ -411,10 +650,9 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
       <button class="btn out" onclick="initSP()" style="font-size:12px;padding:8px 14px">🔀 Bộ từ mới</button>
     </div>
   </div>
-
   <!-- SENTENCE MODE -->
   <div id="sp-sentence" style="display:none">
-    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;text-align:center">Đọc to câu tiếng Trung bên dưới · AI sẽ chấm điểm phát âm của bạn</div>
+    <div style="font-size:13px;color:var(--muted);margin-bottom:14px;text-align:center">Đọc to câu tiếng Trung · AI chấm điểm phát âm</div>
     <div class="sp-word-card" style="margin-bottom:16px">
       <div id="sp-sent-zh" style="font-family:'Noto Serif SC',serif;font-size:22px;color:var(--white);line-height:1.6;margin-bottom:10px"></div>
       <div id="sp-sent-py" style="font-size:15px;color:var(--gold-light);margin-bottom:6px"></div>
@@ -424,17 +662,14 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
       <button class="mic-btn idle" id="mic-btn-s" onclick="toggleMicS()">🎙</button>
       <div class="mic-label" id="mic-label-s">Nhấn để đọc câu trên</div>
     </div>
-    <div class="sp-transcript" id="sp-trans-s">Lời đọc của bạn sẽ hiện ở đây...</div>
+    <div class="sp-transcript" id="sp-trans-s">Lời đọc sẽ hiện ở đây...</div>
     <div class="sp-result" id="sp-result-s"></div>
-    <div class="sp-nav">
-      <button class="btn gold" onclick="nextSentence()">↻ Câu mới</button>
-    </div>
+    <div class="sp-nav"><button class="btn gold" onclick="nextSentence()">↻ Câu mới</button></div>
   </div>
-
   <!-- CHAT MODE -->
   <div id="sp-chat-panel" style="display:none">
     <div style="font-size:13px;color:var(--muted);margin-bottom:12px;text-align:center;padding:10px;background:rgba(36,113,163,.08);border-radius:10px;border:1px solid rgba(36,113,163,.15)">
-      💡 Nói hoặc gõ tiếng Trung/Việt · AI sẽ trả lời bằng tiếng Trung kèm giải thích tiếng Việt
+      💡 Nói hoặc gõ tiếng Trung/Việt · AI trả lời kèm giải thích tiếng Việt
     </div>
     <div class="chat-history" id="chat-history"></div>
     <div class="sp-chat-input">
@@ -447,162 +682,628 @@ footer{text-align:center;padding:28px 16px;font-size:12px;color:var(--muted);opa
       <button class="btn out" onclick="suggestTopic()" style="font-size:12px;padding:7px 14px;margin-left:8px">💡 Gợi ý chủ đề</button>
     </div>
   </div>
-
 </div>
 </div>
 
-</div>
-<footer>HSK3 Vocabulary Practice · Luyện tập hàng ngày · 加油！💪</footer>
+</div><!-- /wrap -->
+<footer>HSK Vocabulary Practice · Luyện tập hàng ngày · 加油！💪</footer>
 
 <script>
-// ── DATA ──────────────────────────────────────────────────────────
-const V=[
-  ["爱好","ài hào","sở thích","Danh từ"],["帮助","bāng zhù","giúp đỡ","Động từ"],
-  ["比较","bǐ jiào","so sánh, tương đối","Phó từ"],["变化","biàn huà","thay đổi","Danh từ"],
-  ["参加","cān jiā","tham gia","Động từ"],["超市","chāo shì","siêu thị","Danh từ"],
-  ["成绩","chéng jì","thành tích, điểm số","Danh từ"],["城市","chéng shì","thành phố","Danh từ"],
-  ["聪明","cōng ming","thông minh","Tính từ"],["打算","dǎ suàn","dự định","Động từ"],
-  ["担心","dān xīn","lo lắng","Động từ"],["当然","dāng rán","tất nhiên","Phó từ"],
-  ["地方","dì fāng","địa điểm, nơi chốn","Danh từ"],["地铁","dì tiě","tàu điện ngầm","Danh từ"],
-  ["动物","dòng wù","động vật","Danh từ"],["锻炼","duàn liàn","luyện tập thể dục","Động từ"],
-  ["发现","fā xiàn","phát hiện","Động từ"],["方便","fāng biàn","tiện lợi, thuận tiện","Tính từ"],
-  ["放心","fàng xīn","yên tâm","Động từ"],["附近","fù jìn","gần đây, lân cận","Danh từ"],
-  ["复习","fù xí","ôn tập","Động từ"],["刚才","gāng cái","vừa rồi, lúc nãy","Phó từ"],
-  ["关心","guān xīn","quan tâm, lo lắng cho","Động từ"],["害怕","hài pà","sợ hãi","Động từ"],
-  ["护照","hù zhào","hộ chiếu","Danh từ"],["环境","huán jìng","môi trường","Danh từ"],
-  ["回答","huí dá","trả lời","Động từ"],["机会","jī huì","cơ hội","Danh từ"],
-  ["检查","jiǎn chá","kiểm tra","Động từ"],["简单","jiǎn dān","đơn giản","Tính từ"],
-  ["健康","jiàn kāng","khỏe mạnh, sức khỏe","Tính từ"],["见面","jiàn miàn","gặp mặt","Động từ"],
-  ["节日","jié rì","ngày lễ, ngày hội","Danh từ"],["结婚","jié hūn","kết hôn","Động từ"],
-  ["结束","jié shù","kết thúc","Động từ"],["解决","jiě jué","giải quyết","Động từ"],
-  ["经常","jīng cháng","thường xuyên","Phó từ"],["经理","jīng lǐ","giám đốc, quản lý","Danh từ"],
-  ["决定","jué dìng","quyết định","Động từ"],["可爱","kě ài","đáng yêu","Tính từ"],
-  ["空调","kōng tiáo","điều hòa nhiệt độ","Danh từ"],["离开","lí kāi","rời đi, rời khỏi","Động từ"],
-  ["礼物","lǐ wù","quà tặng","Danh từ"],["历史","lì shǐ","lịch sử","Danh từ"],
-  ["了解","liǎo jiě","hiểu rõ, tìm hiểu","Động từ"],["流利","liú lì","lưu loát","Tính từ"],
-  ["马上","mǎ shàng","ngay lập tức","Phó từ"],["满意","mǎn yì","hài lòng, thỏa mãn","Tính từ"],
-  ["明白","míng bai","hiểu rõ, rõ ràng","Động từ"],["努力","nǔ lì","cố gắng, nỗ lực","Tính từ"],
-  ["其实","qí shí","thực ra, thật ra","Phó từ"],["清楚","qīng chǔ","rõ ràng, tường tận","Tính từ"],
-  ["然后","rán hòu","sau đó, rồi thì","Liên từ"],["热情","rè qíng","nhiệt tình, hào hứng","Tính từ"],
-  ["认为","rèn wéi","cho rằng, nghĩ rằng","Động từ"],["认真","rèn zhēn","nghiêm túc, chăm chỉ","Tính từ"],
-  ["容易","róng yì","dễ dàng","Tính từ"],["如果","rú guǒ","nếu như, nếu mà","Liên từ"],
-  ["上网","shàng wǎng","lên mạng, lướt web","Động từ"],["生气","shēng qì","tức giận, nổi giận","Tính từ"],
-  ["世界","shì jiè","thế giới","Danh từ"],["舒服","shū fu","thoải mái, dễ chịu","Tính từ"],
-  ["虽然","suī rán","tuy rằng, mặc dù","Liên từ"],["太阳","tài yáng","mặt trời","Danh từ"],
-  ["特别","tè bié","đặc biệt, khác thường","Tính từ"],["提高","tí gāo","nâng cao, cải thiện","Động từ"],
-  ["同意","tóng yì","đồng ý, chấp thuận","Động từ"],["突然","tū rán","đột nhiên, bỗng nhiên","Phó từ"],
-  ["完成","wán chéng","hoàn thành","Động từ"],["忘记","wàng jì","quên, không nhớ","Động từ"],
-  ["为了","wèi le","vì, để, nhằm mục đích","Giới từ"],["文化","wén huà","văn hóa","Danh từ"],
-  ["习惯","xí guàn","thói quen, quen với","Danh từ"],["相信","xiāng xìn","tin tưởng, tin vào","Động từ"],
-  ["小心","xiǎo xīn","cẩn thận, thận trọng","Tính từ"],["需要","xū yào","cần, cần thiết","Động từ"],
-  ["选择","xuǎn zé","lựa chọn, chọn lựa","Động từ"],["要求","yāo qiú","yêu cầu, đòi hỏi","Động từ"],
-  ["也许","yě xǔ","có lẽ, có thể","Phó từ"],["一定","yí dìng","nhất định, chắc chắn","Phó từ"],
-  ["一直","yì zhí","suốt, cứ mãi, liên tục","Phó từ"],["意思","yì si","ý nghĩa, ý tứ","Danh từ"],
-  ["影响","yǐng xiǎng","ảnh hưởng, tác động","Động từ"],
-];
+/* ════════════════════════════════════════════════════════════════
+   VOCABULARY DATABASE – HSK 3 / 4 / 5 / 6
+   Cấu trúc: [hanzi, pinyin, meaning_vi, type]
+════════════════════════════════════════════════════════════════ */
+const DB = {
+  3: [
+    ["爱好","ài hào","sở thích","Danh từ"],["帮助","bāng zhù","giúp đỡ","Động từ"],
+    ["比较","bǐ jiào","so sánh, tương đối","Phó từ"],["变化","biàn huà","thay đổi","Danh từ"],
+    ["参加","cān jiā","tham gia","Động từ"],["超市","chāo shì","siêu thị","Danh từ"],
+    ["成绩","chéng jì","thành tích, điểm số","Danh từ"],["城市","chéng shì","thành phố","Danh từ"],
+    ["聪明","cōng ming","thông minh","Tính từ"],["打算","dǎ suàn","dự định","Động từ"],
+    ["担心","dān xīn","lo lắng","Động từ"],["当然","dāng rán","tất nhiên","Phó từ"],
+    ["地方","dì fāng","địa điểm, nơi chốn","Danh từ"],["地铁","dì tiě","tàu điện ngầm","Danh từ"],
+    ["动物","dòng wù","động vật","Danh từ"],["锻炼","duàn liàn","luyện tập thể dục","Động từ"],
+    ["发现","fā xiàn","phát hiện","Động từ"],["方便","fāng biàn","tiện lợi, thuận tiện","Tính từ"],
+    ["放心","fàng xīn","yên tâm","Động từ"],["附近","fù jìn","gần đây, lân cận","Danh từ"],
+    ["复习","fù xí","ôn tập","Động từ"],["刚才","gāng cái","vừa rồi, lúc nãy","Phó từ"],
+    ["关心","guān xīn","quan tâm","Động từ"],["害怕","hài pà","sợ hãi","Động từ"],
+    ["护照","hù zhào","hộ chiếu","Danh từ"],["环境","huán jìng","môi trường","Danh từ"],
+    ["回答","huí dá","trả lời","Động từ"],["机会","jī huì","cơ hội","Danh từ"],
+    ["检查","jiǎn chá","kiểm tra","Động từ"],["简单","jiǎn dān","đơn giản","Tính từ"],
+    ["健康","jiàn kāng","khỏe mạnh, sức khỏe","Tính từ"],["见面","jiàn miàn","gặp mặt","Động từ"],
+    ["节日","jié rì","ngày lễ","Danh từ"],["结婚","jié hūn","kết hôn","Động từ"],
+    ["结束","jié shù","kết thúc","Động từ"],["解决","jiě jué","giải quyết","Động từ"],
+    ["经常","jīng cháng","thường xuyên","Phó từ"],["经理","jīng lǐ","giám đốc","Danh từ"],
+    ["决定","jué dìng","quyết định","Động từ"],["可爱","kě ài","đáng yêu","Tính từ"],
+    ["空调","kōng tiáo","điều hòa nhiệt độ","Danh từ"],["离开","lí kāi","rời đi","Động từ"],
+    ["礼物","lǐ wù","quà tặng","Danh từ"],["历史","lì shǐ","lịch sử","Danh từ"],
+    ["了解","liǎo jiě","hiểu rõ","Động từ"],["流利","liú lì","lưu loát","Tính từ"],
+    ["马上","mǎ shàng","ngay lập tức","Phó từ"],["满意","mǎn yì","hài lòng","Tính từ"],
+    ["明白","míng bai","hiểu rõ","Động từ"],["努力","nǔ lì","cố gắng, nỗ lực","Tính từ"],
+    ["其实","qí shí","thực ra","Phó từ"],["清楚","qīng chǔ","rõ ràng","Tính từ"],
+    ["然后","rán hòu","sau đó","Liên từ"],["热情","rè qíng","nhiệt tình","Tính từ"],
+    ["认为","rèn wéi","cho rằng","Động từ"],["认真","rèn zhēn","nghiêm túc","Tính từ"],
+    ["容易","róng yì","dễ dàng","Tính từ"],["如果","rú guǒ","nếu như","Liên từ"],
+    ["上网","shàng wǎng","lên mạng","Động từ"],["生气","shēng qì","tức giận","Tính từ"],
+    ["世界","shì jiè","thế giới","Danh từ"],["舒服","shū fu","thoải mái","Tính từ"],
+    ["虽然","suī rán","tuy rằng","Liên từ"],["太阳","tài yáng","mặt trời","Danh từ"],
+    ["特别","tè bié","đặc biệt","Tính từ"],["提高","tí gāo","nâng cao","Động từ"],
+    ["同意","tóng yì","đồng ý","Động từ"],["突然","tū rán","đột nhiên","Phó từ"],
+    ["完成","wán chéng","hoàn thành","Động từ"],["忘记","wàng jì","quên","Động từ"],
+    ["为了","wèi le","vì, để","Giới từ"],["文化","wén huà","văn hóa","Danh từ"],
+    ["习惯","xí guàn","thói quen","Danh từ"],["相信","xiāng xìn","tin tưởng","Động từ"],
+    ["小心","xiǎo xīn","cẩn thận","Tính từ"],["需要","xū yào","cần","Động từ"],
+    ["选择","xuǎn zé","lựa chọn","Động từ"],["要求","yāo qiú","yêu cầu","Động từ"],
+    ["也许","yě xǔ","có lẽ","Phó từ"],["一定","yí dìng","nhất định","Phó từ"],
+    ["一直","yì zhí","suốt, liên tục","Phó từ"],["意思","yì si","ý nghĩa","Danh từ"],
+    ["影响","yǐng xiǎng","ảnh hưởng","Động từ"],["以为","yǐ wéi","tưởng rằng","Động từ"],
+    ["有名","yǒu míng","nổi tiếng","Tính từ"],["愉快","yú kuài","vui vẻ","Tính từ"],
+  ],
+  4: [
+    ["安排","ān pái","sắp xếp","Động từ"],["保护","bǎo hù","bả�o vệ","Động từ"],
+    ["报名","bào míng","đăng ký","Động từ"],["抱怨","bào yuàn","phàn nàn","Động từ"],
+    ["不得不","bù dé bù","không thể không","Cụm từ"],["材料","cái liào","tài liệu, vật liệu","Danh từ"],
+    ["差距","chā jù","khoảng cách","Danh từ"],["成功","chéng gōng","thành công","Động từ"],
+    ["传统","chuán tǒng","truyền thống","Danh từ"],["存在","cún zài","tồn tại","Động từ"],
+    ["大概","dà gài","đại khái, khoảng","Phó từ"],["代表","dài biǎo","đại diện","Động từ"],
+    ["道德","dào dé","đạo đức","Danh từ"],["等","děng","chờ, v.v.","Động từ"],
+    ["地球","dì qiú","trái đất","Danh từ"],["调查","diào chá","điều tra","Động từ"],
+    ["对于","duì yú","đối với","Giới từ"],["发展","fā zhǎn","phát triển","Động từ"],
+    ["方面","fāng miàn","phương diện, mặt","Danh từ"],["否则","fǒu zé","nếu không","Liên từ"],
+    ["感谢","gǎn xiè","cảm ơn, biết ơn","Động từ"],["根据","gēn jù","căn cứ vào","Giới từ"],
+    ["购物","gòu wù","mua sắm","Động từ"],["广告","guǎng gào","quảng cáo","Danh từ"],
+    ["规律","guī lǜ","quy luật","Danh từ"],["好奇","hào qí","tò mò","Tính từ"],
+    ["互联网","hù lián wǎng","internet","Danh từ"],["积极","jī jí","tích cực, chủ động","Tính từ"],
+    ["即使","jí shǐ","dù cho, ngay cả khi","Liên từ"],["继续","jì xù","tiếp tục","Động từ"],
+    ["减少","jiǎn shǎo","giảm thiểu","Động từ"],["交流","jiāo liú","giao lưu","Động từ"],
+    ["竟然","jìng rán","bỗng nhiên, thật bất ngờ","Phó từ"],["举行","jǔ xíng","tổ chức","Động từ"],
+    ["理解","lǐ jiě","hiểu, thông cảm","Động từ"],["连","lián","ngay cả, cả","Liên từ"],
+    ["聊天","liáo tiān","trò chuyện","Động từ"],["目的","mù dì","mục đích","Danh từ"],
+    ["内容","nèi róng","nội dung","Danh từ"],["培养","péi yǎng","nuôi dưỡng, đào tạo","Động từ"],
+    ["批评","pī píng","phê bình","Động từ"],["其中","qí zhōng","trong số đó, trong đó","Phó từ"],
+    ["亲戚","qīn qi","họ hàng","Danh từ"],["全部","quán bù","toàn bộ","Tính từ"],
+    ["热闹","rè nào","náo nhiệt, sôi động","Tính từ"],["认识","rèn shi","quen biết","Động từ"],
+    ["社会","shè huì","xã hội","Danh từ"],["深刻","shēn kè","sâu sắc","Tính từ"],
+    ["实际","shí jì","thực tế","Tính từ"],["实现","shí xiàn","thực hiện","Động từ"],
+    ["收入","shōu rù","thu nhập","Danh từ"],["受到","shòu dào","được, bị, nhận","Động từ"],
+    ["顺便","shùn biàn","tiện thể","Phó từ"],["顺利","shùn lì","thuận lợi","Tính từ"],
+    ["态度","tài dù","thái độ","Danh từ"],["通过","tōng guò","thông qua","Giới từ"],
+    ["推迟","tuī chí","hoãn lại","Động từ"],["卫生","wèi shēng","vệ sinh","Danh từ"],
+    ["温度","wēn dù","nhiệt độ","Danh từ"],["污染","wū rǎn","ô nhiễm","Danh từ"],
+    ["误会","wù huì","hiểu nhầm","Động từ"],["消费","xiāo fèi","tiêu dùng","Động từ"],
+    ["严格","yán gé","nghiêm khắc","Tính từ"],["研究","yán jiū","nghiên cứu","Động từ"],
+    ["以为","yǐ wéi","tưởng rằng","Động từ"],["引起","yǐn qǐ","gây ra","Động từ"],
+    ["原因","yuán yīn","nguyên nhân","Danh từ"],["增加","zēng jiā","tăng thêm","Động từ"],
+    ["支持","zhī chí","ủng hộ","Động từ"],["政府","zhèng fǔ","chính phủ","Danh từ"],
+    ["指出","zhǐ chū","chỉ ra","Động từ"],["主要","zhǔ yào","chủ yếu","Tính từ"],
+    ["注意","zhù yì","chú ý","Động từ"],["总结","zǒng jié","tổng kết","Động từ"],
+    ["作用","zuò yòng","tác dụng","Danh từ"],["尊重","zūn zhòng","tôn trọng","Động từ"],
+  ],
+  5: [
+    ["保障","bǎo zhàng","bảo đảm","Động từ"],["辩论","biàn lùn","tranh luận","Động từ"],
+    ["冰箱","bīng xiāng","tủ lạnh","Danh từ"],["财富","cái fù","tài sản, của cải","Danh từ"],
+    ["参考","cān kǎo","tham khảo","Động từ"],["差异","chā yì","sự khác biệt","Danh từ"],
+    ["常识","cháng shí","kiến thức thường thức","Danh từ"],["程度","chéng dù","mức độ","Danh từ"],
+    ["处理","chǔ lǐ","xử lý","Động từ"],["促进","cù jìn","thúc đẩy","Động từ"],
+    ["担任","dān rèn","đảm nhận","Động từ"],["当地","dāng dì","địa phương, nơi đây","Danh từ"],
+    ["道路","dào lù","đường sá","Danh từ"],["多余","duō yú","dư thừa","Tính từ"],
+    ["发挥","fā huī","phát huy","Động từ"],["繁荣","fán róng","phồn vinh","Tính từ"],
+    ["方案","fāng àn","phương án","Danh từ"],["费用","fèi yòng","chi phí","Danh từ"],
+    ["分析","fēn xī","phân tích","Động từ"],["风险","fēng xiǎn","rủi ro","Danh từ"],
+    ["服从","fú cóng","phục tùng","Động từ"],["改善","gǎi shàn","cải thiện","Động từ"],
+    ["高效","gāo xiào","hiệu quả cao","Tính từ"],["贡献","gòng xiàn","đóng góp","Danh từ"],
+    ["挂念","guà niàn","nhớ mong","Động từ"],["规范","guī fàn","chuẩn mực","Danh từ"],
+    ["过程","guò chéng","quá trình","Danh từ"],["行动","xíng dòng","hành động","Động từ"],
+    ["基础","jī chǔ","cơ sở, nền tảng","Danh từ"],["激励","jī lì","khích lệ","Động từ"],
+    ["加强","jiā qiáng","tăng cường","Động từ"],["监督","jiān dū","giám sát","Động từ"],
+    ["紧张","jǐn zhāng","căng thẳng","Tính từ"],["进一步","jìn yī bù","tiến một bước","Phó từ"],
+    ["竞争","jìng zhēng","cạnh tranh","Động từ"],["克服","kè fú","khắc phục","Động từ"],
+    ["来得及","lái de jí","còn kịp","Cụm từ"],["利益","lì yì","lợi ích","Danh từ"],
+    ["联系","lián xì","liên hệ","Động từ"],["民主","mín zhǔ","dân chủ","Tính từ"],
+    ["明确","míng què","rõ ràng, minh xác","Tính từ"],["目标","mù biāo","mục tiêu","Danh từ"],
+    ["能力","néng lì","năng lực","Danh từ"],["培训","péi xùn","đào tạo","Động từ"],
+    ["评价","píng jià","đánh giá","Động từ"],["期望","qī wàng","kỳ vọng","Danh từ"],
+    ["确定","què dìng","xác định","Động từ"],["热爱","rè ài","yêu thích, nhiệt yêu","Động từ"],
+    ["认可","rèn kě","công nhận","Động từ"],["任务","rèn wù","nhiệm vụ","Danh từ"],
+    ["融合","róng hé","hòa nhập, kết hợp","Động từ"],["深入","shēn rù","đi sâu vào","Động từ"],
+    ["提倡","tí chàng","đề xướng","Động từ"],["体现","tǐ xiàn","thể hiện","Động từ"],
+    ["推广","tuī guǎng","phổ biến, mở rộng","Động từ"],["完善","wán shàn","hoàn thiện","Động từ"],
+    ["稳定","wěn dìng","ổn định","Tính từ"],["吸引","xī yǐn","thu hút","Động từ"],
+    ["限制","xiàn zhì","giới hạn","Động từ"],["协调","xié tiáo","phối hợp","Động từ"],
+    ["心理","xīn lǐ","tâm lý","Danh từ"],["形成","xíng chéng","hình thành","Động từ"],
+    ["修改","xiū gǎi","sửa đổi","Động từ"],["学术","xué shù","học thuật","Danh từ"],
+    ["严重","yán zhòng","nghiêm trọng","Tính từ"],["意义","yì yì","ý nghĩa","Danh từ"],
+    ["依据","yī jù","dựa vào","Giới từ"],["应用","yìng yòng","ứng dụng","Động từ"],
+    ["优先","yōu xiān","ưu tiên","Động từ"],["有效","yǒu xiào","hiệu quả","Tính từ"],
+    ["预防","yù fáng","phòng ngừa","Động từ"],["政策","zhèng cè","chính sách","Danh từ"],
+    ["重视","zhòng shì","coi trọng","Động từ"],["综合","zōng hé","tổng hợp","Tính từ"],
+  ],
+  6: [
+    ["阐述","chǎn shù","trình bày, diễn giải","Động từ"],["澄清","chéng qīng","làm rõ","Động từ"],
+    ["筹备","chóu bèi","chuẩn bị, lo liệu","Động từ"],["创新","chuàng xīn","sáng tạo","Động từ"],
+    ["崇高","chóng gāo","cao cả, cao thượng","Tính từ"],["此外","cǐ wài","ngoài ra","Phó từ"],
+    ["从事","cóng shì","theo đuổi, làm nghề","Động từ"],["催促","cuī cù","thúc giục","Động từ"],
+    ["倡导","chàng dǎo","đề xướng, vận động","Động từ"],["道义","dào yì","đạo nghĩa","Danh từ"],
+    ["典型","diǎn xíng","điển hình","Tính từ"],["调节","tiáo jié","điều tiết","Động từ"],
+    ["端正","duān zhèng","ngay thẳng, chỉnh tề","Tính từ"],["反思","fǎn sī","phản tư, suy nghĩ lại","Động từ"],
+    ["丰富","fēng fù","phong phú","Tính từ"],["复杂","fù zá","phức tạp","Tính từ"],
+    ["概念","gài niàn","khái niệm","Danh từ"],["贯彻","guàn chè","quán triệt","Động từ"],
+    ["规划","guī huà","quy hoạch","Động từ"],["合理","hé lǐ","hợp lý","Tính từ"],
+    ["合作","hé zuò","hợp tác","Động từ"],["核心","hé xīn","cốt lõi, trung tâm","Danh từ"],
+    ["弘扬","hóng yáng","phát huy, đề cao","Động từ"],["机制","jī zhì","cơ chế","Danh từ"],
+    ["积累","jī lěi","tích lũy","Động từ"],["鉴别","jiàn bié","phân biệt, giám định","Động từ"],
+    ["客观","kè guān","khách quan","Tính từ"],["理念","lǐ niàn","lý niệm, quan niệm","Danh từ"],
+    ["历程","lì chéng","hành trình, quá trình","Danh từ"],["领域","lǐng yù","lĩnh vực","Danh từ"],
+    ["磨练","mó liàn","rèn luyện gian khổ","Động từ"],["模糊","mó hu","mờ nhạt, không rõ","Tính từ"],
+    ["内涵","nèi hán","nội hàm, ý nghĩa sâu xa","Danh từ"],["批判","pī pàn","phê phán","Động từ"],
+    ["平衡","píng héng","cân bằng","Động từ"],["强调","qiáng diào","nhấn mạnh","Động từ"],
+    ["融入","róng rù","hòa nhập vào","Động từ"],["深化","shēn huà","thâm sâu, đi sâu thêm","Động từ"],
+    ["实质","shí zhì","thực chất","Danh từ"],["探索","tàn suǒ","khám phá, tìm tòi","Động từ"],
+    ["体制","tǐ zhì","thể chế","Danh từ"],["统一","tǒng yī","thống nhất","Động từ"],
+    ["突破","tū pò","đột phá","Động từ"],["维护","wéi hù","duy trì, bảo vệ","Động từ"],
+    ["文明","wén míng","văn minh","Danh từ"],["务必","wù bì","nhất thiết phải","Phó từ"],
+    ["显著","xiǎn zhù","nổi bật, rõ rệt","Tính từ"],["相互","xiāng hù","lẫn nhau","Phó từ"],
+    ["消除","xiāo chú","xóa bỏ, loại trừ","Động từ"],["协议","xié yì","hiệp nghị, thỏa thuận","Danh từ"],
+    ["循环","xún huán","tuần hoàn, vòng lặp","Động từ"],["严肃","yán sù","nghiêm túc, nghiêm trang","Tính từ"],
+    ["依赖","yī lài","phụ thuộc, dựa dẫm","Động từ"],["意志","yì zhì","ý chí","Danh từ"],
+    ["优势","yōu shì","ưu thế","Danh từ"],["战略","zhàn lüè","chiến lược","Danh từ"],
+    ["执行","zhí xíng","thực thi","Động từ"],["主导","zhǔ dǎo","chủ đạo, dẫn dắt","Động từ"],
+    ["自主","zì zhǔ","tự chủ","Tính từ"],["总体","zǒng tǐ","tổng thể","Danh từ"],
+  ]
+};
 
-const FIB=[
-  {s:"我的汉语老师非常___，每次上课都很积极。",a:"热情",h:"rè qíng",m:"nhiệt tình"},
-  {s:"他每天___学习，成绩越来越好。",a:"努力",h:"nǔ lì",m:"cố gắng"},
-  {s:"我们___参加这次比赛，因为机会很难得。",a:"决定",h:"jué dìng",m:"quyết định"},
-  {s:"请___检查你的护照和签证。",a:"小心",h:"xiǎo xīn",m:"cẩn thận"},
-  {s:"她的普通话说得很___，没有口音。",a:"流利",h:"liú lì",m:"lưu loát"},
-  {s:"这个城市的___很好，空气非常清新。",a:"环境",h:"huán jìng",m:"môi trường"},
-  {s:"我需要___这个重要的问题。",a:"解决",h:"jiě jué",m:"giải quyết"},
-  {s:"今天天气___变化，早上晴天下午下雨。",a:"突然",h:"tū rán",m:"đột nhiên"},
-  {s:"他___忘记了我们约好的时间。",a:"经常",h:"jīng cháng",m:"thường xuyên"},
-  {s:"这道菜做起来很___，十分钟就可以完成。",a:"简单",h:"jiǎn dān",m:"đơn giản"},
-  {s:"为了___身体，他每天早上跑步锻炼。",a:"锻炼",h:"duàn liàn",m:"luyện tập"},
-  {s:"她对新工作非常___，每天都很认真。",a:"满意",h:"mǎn yì",m:"hài lòng"},
-  {s:"___下雨，我们就不去爬山了。",a:"如果",h:"rú guǒ",m:"nếu như"},
-  {s:"我非常___我的老师，他教了我很多知识。",a:"相信",h:"xiāng xìn",m:"tin tưởng"},
-  {s:"她的歌声非常___，大家都喜欢听。",a:"特别",h:"tè bié",m:"đặc biệt"},
-  {s:"我___在家里上网学习新知识。",a:"一直",h:"yì zhí",m:"suốt, cứ mãi"},
-  {s:"她___了这次重要的工作任务。",a:"完成",h:"wán chéng",m:"hoàn thành"},
-  {s:"学好汉语___提高你找工作的机会。",a:"能",h:"néng",m:"có thể"},
-  {s:"他对中国___非常感兴趣，经常去博物馆。",a:"文化",h:"wén huà",m:"văn hóa"},
-  {s:"我们需要___这次重要的考试。",a:"复习",h:"fù xí",m:"ôn tập"},
-  {s:"这件事情对我影响很大，我需要___考虑。",a:"认真",h:"rèn zhēn",m:"nghiêm túc"},
-  {s:"他___接受了我们的意见。",a:"同意",h:"tóng yì",m:"đồng ý"},
-  {s:"妈妈很___我在外地读书的情况。",a:"担心",h:"dān xīn",m:"lo lắng"},
-  {s:"你们什么时候能来___？我很期待。",a:"见面",h:"jiàn miàn",m:"gặp mặt"},
-  {s:"我们应该___我们的学习目标，然后努力实现。",a:"选择",h:"xuǎn zé",m:"lựa chọn"},
-  {s:"老师___我们每天背十个生词。",a:"要求",h:"yāo qiú",m:"yêu cầu"},
-  {s:"学中文___容易，需要很多时间练习。",a:"不",h:"bù",m:"không"},
-  {s:"这个问题很重要，我们___马上解决。",a:"需要",h:"xū yào",m:"cần thiết"},
-  {s:"下周末我们___在公园里见面，好吗？",a:"约好",h:"yuē hǎo",m:"hẹn nhau"},
-  {s:"爸爸___工作很晚才回家，非常辛苦。",a:"经常",h:"jīng cháng",m:"thường xuyên"},
-];
+/* ════════════════════════════════════════════════════════════════
+   FILL-IN-BLANK DATA PER LEVEL
+════════════════════════════════════════════════════════════════ */
+const FIB_DATA = {
+  3: [
+    {s:"我的汉语老师非常___，每次上课都很积极。",a:"热情",h:"rè qíng",m:"nhiệt tình"},
+    {s:"他每天___学习，成绩越来越好。",a:"努力",h:"nǔ lì",m:"cố gắng"},
+    {s:"我们___参加这次比赛，因为机会很难得。",a:"决定",h:"jué dìng",m:"quyết định"},
+    {s:"请___检查你的护照和签证。",a:"小心",h:"xiǎo xīn",m:"cẩn thận"},
+    {s:"她的普通话说得很___，没有口音。",a:"流利",h:"liú lì",m:"lưu loát"},
+    {s:"这个城市的___很好，空气非常清新。",a:"环境",h:"huán jìng",m:"môi trường"},
+    {s:"我需要___这个重要的问题。",a:"解决",h:"jiě jué",m:"giải quyết"},
+    {s:"今天天气___变化，早上晴天下午下雨。",a:"突然",h:"tū rán",m:"đột nhiên"},
+    {s:"他___忘记了我们约好的时间。",a:"经常",h:"jīng cháng",m:"thường xuyên"},
+    {s:"这道菜做起来很___，十分钟就可以完成。",a:"简单",h:"jiǎn dān",m:"đơn giản"},
+  ],
+  4: [
+    {s:"政府正在___环境污染的问题。",a:"解决",h:"jiě jué",m:"giải quyết"},
+    {s:"他们通过___方式提高了工作效率。",a:"积极",h:"jī jí",m:"tích cực"},
+    {s:"这次活动将___在市中心广场举行。",a:"举行",h:"jǔ xíng",m:"tổ chức"},
+    {s:"我们要___学习汉语，不能放弃。",a:"继续",h:"jì xù",m:"tiếp tục"},
+    {s:"这项研究对___发展有重要意义。",a:"社会",h:"shè huì",m:"xã hội"},
+    {s:"你需要认真___这次考试内容。",a:"研究",h:"yán jiū",m:"nghiên cứu"},
+    {s:"请注意___环境卫生，保持清洁。",a:"卫生",h:"wèi shēng",m:"vệ sinh"},
+    {s:"他的___非常好，每年都有增长。",a:"收入",h:"shōu rù",m:"thu nhập"},
+  ],
+  5: [
+    {s:"我们需要___基础设施建设。",a:"加强",h:"jiā qiáng",m:"tăng cường"},
+    {s:"这个项目需要各部门相互___。",a:"协调",h:"xié tiáo",m:"phối hợp"},
+    {s:"员工的___水平直接影响企业发展。",a:"能力",h:"néng lì",m:"năng lực"},
+    {s:"他在这次会议中___了新思路。",a:"发挥",h:"fā huī",m:"phát huy"},
+    {s:"该政策旨在___经济持续增长。",a:"促进",h:"cù jìn",m:"thúc đẩy"},
+    {s:"我们要___传统文化的精华。",a:"继承",h:"jì chéng",m:"kế thừa"},
+    {s:"这次改革的___是提升工作效率。",a:"目标",h:"mù biāo",m:"mục tiêu"},
+    {s:"我们应该___预防各种疾病。",a:"积极",h:"jī jí",m:"tích cực"},
+  ],
+  6: [
+    {s:"领导人在会议上___了新的发展战略。",a:"阐述",h:"chǎn shù",m:"trình bày"},
+    {s:"该制度需要进一步___和完善。",a:"深化",h:"shēn huà",m:"thâm sâu"},
+    {s:"科学家们正在积极___新能源技术。",a:"探索",h:"tàn suǒ",m:"khám phá"},
+    {s:"我们要___社会主义核心价值观。",a:"弘扬",h:"hóng yáng",m:"phát huy"},
+    {s:"这两个概念的___需要仔细分析。",a:"鉴别",h:"jiàn bié",m:"phân biệt"},
+    {s:"该组织在国际事务中发挥___作用。",a:"主导",h:"zhǔ dǎo",m:"chủ đạo"},
+    {s:"改革的关键在于建立合理的___。",a:"机制",h:"jī zhì",m:"cơ chế"},
+    {s:"我们___遵守法律法规，维护社会秩序。",a:"务必",h:"wù bì",m:"nhất thiết phải"},
+  ]
+};
 
-const TR=[
-  {zh:"我非常喜欢学习汉语，因为汉语很有意思。",vi:"Tôi rất thích học tiếng Trung, vì tiếng Trung rất thú vị."},
-  {zh:"如果你努力学习，一定能提高你的中文水平。",vi:"Nếu bạn học tập cố gắng, nhất định có thể nâng cao trình độ tiếng Trung."},
-  {zh:"这个超市附近有一个很漂亮的花园。",vi:"Gần siêu thị này có một khu vườn rất đẹp."},
-  {zh:"他虽然很忙，但是每天都坚持锻炼身体。",vi:"Mặc dù anh ấy rất bận, nhưng mỗi ngày đều kiên trì luyện tập thể dục."},
-  {zh:"我需要检查护照，然后才能上飞机。",vi:"Tôi cần kiểm tra hộ chiếu, sau đó mới có thể lên máy bay."},
-  {zh:"她决定参加这次汉语比赛，因为这是一个很好的机会。",vi:"Cô ấy quyết định tham gia cuộc thi tiếng Trung, vì đây là cơ hội rất tốt."},
-  {zh:"今天天气突然变化，请小心注意健康。",vi:"Hôm nay thời tiết đột nhiên thay đổi, hãy cẩn thận chú ý sức khỏe."},
-  {zh:"他的汉语说得很流利，同事们都很满意。",vi:"Tiếng Trung của anh ấy nói rất lưu loát, các đồng nghiệp đều rất hài lòng."},
-  {zh:"我认为学好汉语需要每天坚持练习。",vi:"Tôi cho rằng học tốt tiếng Trung cần kiên trì luyện tập mỗi ngày."},
-  {zh:"她虽然刚来中国，但是对这里的文化已经很了解了。",vi:"Dù cô ấy vừa đến Trung Quốc, nhưng đã hiểu rõ văn hóa nơi đây rồi."},
-  {zh:"这个地方环境很好，空气新鲜，适合居住。",vi:"Nơi này môi trường rất tốt, không khí trong lành, thích hợp để ở."},
-  {zh:"为了完成这个任务，他工作到很晚。",vi:"Để hoàn thành nhiệm vụ này, anh ấy đã làm việc đến rất khuya."},
-  {zh:"经理要求我们按时完成所有的工作。",vi:"Giám đốc yêu cầu chúng tôi hoàn thành tất cả công việc đúng hạn."},
-  {zh:"我一直相信只要努力就能成功。",vi:"Tôi luôn tin rằng chỉ cần cố gắng là có thể thành công."},
-  {zh:"他们在附近的公园见面，然后一起去超市购物。",vi:"Họ gặp nhau ở công viên gần đó, sau đó cùng đi siêu thị mua sắm."},
-  {zh:"这次考试结束以后，我打算去旅行放松一下。",vi:"Sau khi kết thúc kỳ thi, tôi dự định đi du lịch để thư giãn."},
-  {zh:"你应该认真复习，不要忘记考试的时间。",vi:"Bạn nên ôn tập nghiêm túc, đừng quên thời gian thi."},
-  {zh:"她对工作非常认真，从来不会忘记重要的事情。",vi:"Cô ấy rất nghiêm túc với công việc, không bao giờ quên những việc quan trọng."},
-  {zh:"如果你有什么问题，可以随时来找我帮助。",vi:"Nếu bạn có vấn đề gì, có thể đến tìm tôi giúp đỡ bất cứ lúc nào."},
-  {zh:"学好一门外语不容易，需要长时间的练习和努力。",vi:"Học giỏi một ngoại ngữ không dễ, cần thời gian dài luyện tập và cố gắng."},
-];
+/* ════════════════════════════════════════════════════════════════
+   TRANSLATE DATA PER LEVEL
+════════════════════════════════════════════════════════════════ */
+const TR_DATA = {
+  3: [
+    {zh:"我非常喜欢学习汉语，因为汉语很有意思。",vi:"Tôi rất thích học tiếng Trung, vì tiếng Trung rất thú vị."},
+    {zh:"如果你努力学习，一定能提高你的中文水平。",vi:"Nếu bạn học tập cố gắng, nhất định có thể nâng cao trình độ tiếng Trung."},
+    {zh:"这个超市附近有一个很漂亮的花园。",vi:"Gần siêu thị này có một khu vườn rất đẹp."},
+    {zh:"他虽然很忙，但是每天都坚持锻炼身体。",vi:"Mặc dù anh ấy rất bận, nhưng mỗi ngày đều kiên trì luyện tập thể dục."},
+    {zh:"今天天气突然变化，请小心注意健康。",vi:"Hôm nay thời tiết đột nhiên thay đổi, hãy cẩn thận chú ý sức khỏe."},
+    {zh:"她决定参加这次汉语比赛，因为这是一个很好的机会。",vi:"Cô ấy quyết định tham gia cuộc thi tiếng Trung, vì đây là cơ hội rất tốt."},
+  ],
+  4: [
+    {zh:"政府决定通过多种方式解决环境污染问题。",vi:"Chính phủ quyết định giải quyết vấn đề ô nhiễm môi trường bằng nhiều cách."},
+    {zh:"虽然这次调查结果不理想，但是对未来发展很有参考价值。",vi:"Dù kết quả điều tra lần này không lý tưởng, nhưng có giá trị tham khảo lớn cho sự phát triển tương lai."},
+    {zh:"互联网的发展改变了人们的购物习惯和生活方式。",vi:"Sự phát triển của internet đã thay đổi thói quen mua sắm và lối sống của mọi người."},
+    {zh:"他对待工作的态度非常积极，深受同事们的尊重。",vi:"Thái độ của anh ấy đối với công việc rất tích cực, được đồng nghiệp tôn trọng."},
+    {zh:"根据最新数据，这个城市的收入水平比去年增加了不少。",vi:"Theo dữ liệu mới nhất, mức thu nhập của thành phố này đã tăng đáng kể so với năm ngoài."},
+    {zh:"如果不注意卫生，就容易引起各种疾病，影响健康。",vi:"Nếu không chú ý vệ sinh, sẽ dễ gây ra các bệnh, ảnh hưởng đến sức khỏe."},
+  ],
+  5: [
+    {zh:"在全球化背景下，各国之间的文化交流日益频繁，相互影响也在不断加深。",vi:"Trong bối cảnh toàn cầu hóa, giao lưu văn hóa giữa các nước ngày càng thường xuyên, ảnh hưởng lẫn nhau không ngừng sâu sắc thêm."},
+    {zh:"创新是推动社会进步的核心动力，需要整个社会共同努力培育创新精神。",vi:"Đổi mới sáng tạo là động lực cốt lõi thúc đẩy tiến bộ xã hội, cần toàn xã hội cùng nỗ lực nuôi dưỡng tinh thần sáng tạo."},
+    {zh:"可持续发展要求我们在追求经济增长的同时，积极保护自然环境和生态平衡。",vi:"Phát triển bền vững đòi hỏi chúng ta trong khi theo đuổi tăng trưởng kinh tế, phải tích cực bảo vệ môi trường tự nhiên và cân bằng sinh thái."},
+    {zh:"高质量的教育能够有效培养学生的综合能力，为国家未来的发展奠定坚实基础。",vi:"Giáo dục chất lượng cao có thể hiệu quả bồi dưỡng năng lực tổng hợp của học sinh, đặt nền tảng vững chắc cho sự phát triển tương lai của đất nước."},
+  ],
+  6: [
+    {zh:"人类文明的进步不仅依赖于科技的创新，更根植于对道德伦理的深刻反思与坚守。",vi:"Sự tiến bộ của văn minh nhân loại không chỉ dựa vào sự đổi mới của khoa học kỹ thuật, mà còn bắt nguồn từ sự phản tư sâu sắc và kiên trì về đạo đức luân lý."},
+    {zh:"在当今复杂多变的国际形势下，各国唯有加强合作、相互尊重，才能共同维护世界和平与稳定。",vi:"Trong tình hình quốc tế phức tạp và đa biến hiện nay, các quốc gia chỉ có tăng cường hợp tác, tôn trọng lẫn nhau mới có thể cùng duy trì hòa bình và ổn định thế giới."},
+    {zh:"构建和谐社会需要每个公民发挥主体作用，在维护自身权益的同时，积极履行社会责任。",vi:"Xây dựng xã hội hòa hợp cần mỗi công dân phát huy vai trò chủ thể, trong khi bảo vệ quyền lợi bản thân, tích cực thực hiện trách nhiệm xã hội."},
+    {zh:"文化遗产是人类共同的精神财富，保护和传承这些珍贵遗产是当代人不可推卸的历史责任。",vi:"Di sản văn hóa là tài sản tinh thần chung của nhân loại, bảo vệ và truyền thừa những di sản quý báu này là trách nhiệm lịch sử không thể thoái thác của người đương đại."},
+  ]
+};
 
-// ── UTILS ─────────────────────────────────────────────────────────
-const sh=a=>{const b=[...a];for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];}return b;};
-const pick=(a,n)=>sh(a).slice(0,n);
+/* ════════════════════════════════════════════════════════════════
+   LISTENING DATA PER LEVEL
+════════════════════════════════════════════════════════════════ */
+const LI_DATA = {
+  3: [
+    {
+      title:"对话：问路",
+      zh:"甲：请问，附近有超市吗？\n乙：有，就在地铁站旁边。\n甲：远吗？\n乙：不远，走路大概五分钟就到了。\n甲：谢谢！\n乙：不客气，小心过马路。",
+      vi:"A: Xin hỏi, gần đây có siêu thị không?\nB: Có, ngay cạnh ga tàu điện ngầm.\nA: Có xa không?\nB: Không xa, đi bộ khoảng năm phút là đến.\nA: Cảm ơn!\nB: Không có gì, cẩn thận qua đường.",
+      questions:[
+        {q:"超市在哪里？",opts:["地铁站旁边","学校旁边","公园旁边","商场里"],ans:0},
+        {q:"走路需要多长时间？",opts:["两分钟","三分钟","五分钟","十分钟"],ans:2},
+        {q:"乙最后说了什么？",opts:["再见","谢谢","小心过马路","路上注意安全"],ans:2},
+      ]
+    },
+    {
+      title:"对话：学习计划",
+      zh:"甲：你最近在做什么？\n乙：我在复习汉语，下个月有HSK考试。\n甲：你准备得怎么样了？\n乙：还可以，但是词汇还需要多练习。\n甲：要不要一起学习？\n乙：当然，机会难得！",
+      vi:"A: Dạo này bạn đang làm gì?\nB: Tôi đang ôn tiếng Trung, tháng sau có thi HSK.\nA: Bạn chuẩn bị như thế nào rồi?\nB: Cũng được, nhưng từ vựng vẫn cần luyện nhiều hơn.\nA: Có muốn học cùng không?\nB: Tất nhiên, cơ hội hiếm có!",
+      questions:[
+        {q:"乙为什么复习汉语？",opts:["因为喜欢","因为下个月有HSK考试","因为老师要求","因为朋友邀请"],ans:1},
+        {q:"乙觉得什么还需要多练习？",opts:["语法","听力","词汇","写作"],ans:2},
+        {q:"最后他们决定怎么做？",opts:["各自回家","一起学习","去图书馆","打电话"],ans:1},
+      ]
+    },
+  ],
+  4: [
+    {
+      title:"讨论：环境保护",
+      zh:"甲：你认为现在最重要的环境问题是什么？\n乙：我觉得是城市污染，工厂排放的废气对健康影响很大。\n甲：那我们应该怎么做？\n乙：政府应该制定更严格的法律，企业也要承担社会责任。\n甲：个人方面呢？\n乙：减少使用一次性产品，多乘坐公共交通。",
+      vi:"A: Bạn nghĩ vấn đề môi trường quan trọng nhất hiện nay là gì?\nB: Tôi nghĩ là ô nhiễm thành thị, khí thải từ nhà máy ảnh hưởng rất lớn đến sức khỏe.\nA: Vậy chúng ta nên làm gì?\nB: Chính phủ nên ban hành luật nghiêm khắc hơn, doanh nghiệp cũng phải gánh vác trách nhiệm xã hội.\nA: Còn về cá nhân?\nB: Giảm sử dụng sản phẩm dùng một lần, đi phương tiện công cộng nhiều hơn.",
+      questions:[
+        {q:"乙认为最重要的环境问题是什么？",opts:["水污染","城市污染","农村问题","森林破坏"],ans:1},
+        {q:"乙建议政府做什么？",opts:["减少工厂","制定严格法律","种更多树","限制人口"],ans:1},
+        {q:"个人可以怎样保护环境？",opts:["买电动车","少用一次性产品","种树","不吃肉"],ans:1},
+      ]
+    },
+  ],
+  5: [
+    {
+      title:"演讲：科技与教育",
+      zh:"随着科技的不断发展，在线教育已经成为传统教育的重要补充。网络课程打破了地域限制，让更多人有机会接受优质教育。然而，在线学习也面临一些挑战，比如缺乏面对面交流、自律性要求较高等。未来，如何将科技与教育有机结合，将是教育工作者面临的重要课题。",
+      vi:"Với sự phát triển không ngừng của khoa học công nghệ, giáo dục trực tuyến đã trở thành sự bổ sung quan trọng cho giáo dục truyền thống. Khóa học trực tuyến phá vỡ rào cản địa lý, giúp nhiều người hơn có cơ hội tiếp nhận giáo dục chất lượng cao. Tuy nhiên, học trực tuyến cũng đối mặt với một số thách thức như thiếu giao tiếp trực tiếp, yêu cầu tính tự giác cao. Trong tương lai, cách kết hợp hữu cơ giữa công nghệ và giáo dục sẽ là vấn đề quan trọng mà các nhà giáo dục phải đối mặt.",
+      questions:[
+        {q:"在线教育打破了什么限制？",opts:["时间限制","地域限制","语言限制","年龄限制"],ans:1},
+        {q:"在线学习的挑战是什么？",opts:["费用贵","缺乏面对面交流","内容太难","网速不好"],ans:1},
+        {q:"这段话的主要观点是什么？",opts:["科技有害","在线教育完美","科技与教育如何结合","传统教育更好"],ans:2},
+      ]
+    },
+  ],
+  6: [
+    {
+      title:"论述：文化传承与创新",
+      zh:"文化传承与创新是一个民族永恒的主题。传统文化是历史的积淀，凝结着先人的智慧与情感。然而，固守传统并不意味着停滞不前，真正的文化传承在于取其精华、去其糟粕，在继承的基础上不断创新。当代年轻人应当具备文化自信，既要深入了解本民族优秀传统文化，也要以开放的心态融合吸收外来文化的精华，从而推动文化的持续发展与繁荣。",
+      vi:"Truyền thừa và đổi mới văn hóa là chủ đề vĩnh cửu của một dân tộc. Văn hóa truyền thống là sự tích lũy của lịch sử, kết tụ trí tuệ và tình cảm của tiền nhân. Tuy nhiên, gìn giữ truyền thống không có nghĩa là dậm chân tại chỗ, truyền thừa văn hóa thật sự là lấy tinh túy, bỏ bã bèo, không ngừng đổi mới trên cơ sở kế thừa. Thanh niên đương đại cần có sự tự tin văn hóa, vừa phải hiểu sâu sắc văn hóa truyền thống ưu tú của dân tộc mình, vừa phải với tâm thế cởi mở tiếp thu tinh hoa văn hóa nước ngoài, từ đó thúc đẩy sự phát triển và phồn thịnh bền vững của văn hóa.",
+      questions:[
+        {q:"真正的文化传承是什么意思？",opts:["完全保留传统","取精华去糟粕并创新","只学外来文化","拒绝所有改变"],ans:1},
+        {q:"当代年轻人应具备什么？",opts:["技术能力","文化自信","外语能力","创业精神"],ans:1},
+        {q:"这段话的核心论点是什么？",opts:["传统文化已过时","要拒绝外来文化","传承与创新并重","年轻人不懂文化"],ans:2},
+      ]
+    },
+  ]
+};
 
-// ── TABS ──────────────────────────────────────────────────────────
-function go(id,btn){
+/* ════════════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════════════ */
+let currentLevel = 3;
+let V = []; // active vocab for current level
+
+/* ════════════════════════════════════════════════════════════════
+   LOCAL STORAGE – PROGRESS
+════════════════════════════════════════════════════════════════ */
+function getStorageKey(key){ return `hsk_${currentLevel}_${key}`; }
+function getLS(key, def){ try{ const v=localStorage.getItem(getStorageKey(key)); return v!==null?JSON.parse(v):def; }catch(e){ return def; } }
+function setLS(key, val){ try{ localStorage.setItem(getStorageKey(key), JSON.stringify(val)); }catch(e){} }
+
+function getLearned(){ return getLS('learned', {}); }
+function setLearned(obj){ setLS('learned', obj); }
+function isLearned(hanzi){ return !!getLearned()[hanzi]; }
+function toggleLearned(hanzi){
+  const m = getLearned();
+  if(m[hanzi]) delete m[hanzi]; else m[hanzi] = 1;
+  setLearned(m);
+  updateProgress();
+  return !!m[hanzi];
+}
+
+function getExercisesCount(){ return getLS('exercises', 0); }
+function addExercise(){ setLS('exercises', getExercisesCount()+1); updateProgress(); }
+
+function getScores(){ return getLS('scores', []); }
+function addScore(score){ const s=getScores(); s.push(score); if(s.length>50)s.shift(); setLS('scores',s); }
+
+function getStreak(){
+  const today = new Date().toDateString();
+  const saved = getLS('streak_data', {date:'', count:0});
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  if(saved.date === today) return saved.count;
+  if(saved.date === yesterday) return saved.count;
+  return 0;
+}
+function touchStreak(){
+  const today = new Date().toDateString();
+  const saved = getLS('streak_data', {date:'', count:0});
+  const yesterday = new Date(Date.now()-86400000).toDateString();
+  let count = 1;
+  if(saved.date === today) count = saved.count;
+  else if(saved.date === yesterday) count = saved.count + 1;
+  setLS('streak_data', {date: today, count});
+  return count;
+}
+
+function updateProgress(){
+  const learned = getLearned();
+  const learnedCount = Object.keys(learned).length;
+  const total = V.length;
+  const pct = total > 0 ? Math.round(learnedCount / total * 100) : 0;
+  const scores = getScores();
+  const avg = scores.length > 0 ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+
+  document.getElementById('prog-level-lbl').textContent = `HSK ${currentLevel}`;
+  document.getElementById('prog-learned').textContent = learnedCount;
+  document.getElementById('prog-total').textContent = total;
+  document.getElementById('prog-exercises').textContent = getExercisesCount();
+  document.getElementById('prog-streak').textContent = getStreak();
+  document.getElementById('prog-avg').textContent = avg !== null ? avg+'%' : '—';
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-words-label').textContent = `${learnedCount} / ${total} từ`;
+}
+
+function resetProgress(){
+  if(!confirm(`Đặt lại tiến độ HSK ${currentLevel}?`)) return;
+  ['learned','exercises','scores','streak_data'].forEach(k => {
+    try{ localStorage.removeItem(getStorageKey(k)); }catch(e){}
+  });
+  updateProgress();
+  renderVocabList();
+  drawFC();
+}
+
+/* ════════════════════════════════════════════════════════════════
+   LEVEL SELECTOR
+════════════════════════════════════════════════════════════════ */
+function setLevel(lvl, btn){
+  currentLevel = lvl;
+  V = DB[lvl] || [];
+  document.querySelectorAll('.lvl-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  // Reset all sub-modules with new vocab
+  touchStreak();
+  updateProgress();
+  renderVocabList();
+  // Reset active modules
+  fcL=[...V]; fcI=0; drawFC();
+  initMC(); initMT(); initFI(); initTR(); initHW(false); initLI(); initSP();
+}
+
+/* ════════════════════════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════════════════════════ */
+const sh = a => { const b=[...a]; for(let i=b.length-1;i>0;i--){const j=0|Math.random()*(i+1);[b[i],b[j]]=[b[j],b[i]];} return b; };
+const pick = (a, n) => sh(a).slice(0, Math.min(n, a.length));
+function speak(text, lang='zh-CN'){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = lang; u.rate = 0.85; u.pitch = 1;
+  window.speechSynthesis.speak(u);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TABS
+════════════════════════════════════════════════════════════════ */
+function go(id, btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
   document.getElementById('panel-'+id).classList.add('on');
   btn.classList.add('on');
-  if(id==='hw')setTimeout(setupCV,60);
+  if(id==='hw') setTimeout(setupCV, 60);
 }
 
-// ── FLASHCARD ─────────────────────────────────────────────────────
-let fcL=[...V],fcI=0,fcF=false;
+/* ════════════════════════════════════════════════════════════════
+   SEARCH
+════════════════════════════════════════════════════════════════ */
+let searchTimer = null;
+function onSearch(q){
+  clearTimeout(searchTimer);
+  document.getElementById('search-clear').classList.toggle('show', q.length > 0);
+  if(!q.trim()){ hideSearchDrop(); return; }
+  searchTimer = setTimeout(()=>doSearch(q.trim()), 180);
+}
+function doSearch(q){
+  const qLow = q.toLowerCase();
+  // Search ALL levels
+  let results = [];
+  [3,4,5,6].forEach(lvl => {
+    (DB[lvl]||[]).forEach(v => {
+      if(v[0].includes(q) || v[1].toLowerCase().includes(qLow) || v[2].toLowerCase().includes(qLow)){
+        results.push({v, lvl});
+      }
+    });
+  });
+  results = results.slice(0,20);
+  const sr = document.getElementById('search-results');
+  if(results.length === 0){
+    sr.innerHTML = '<div class="search-hint">Không tìm thấy từ nào.</div>';
+  } else {
+    sr.innerHTML = results.map(({v, lvl}) => {
+      const lrn = isLearned(v[0]) ? 'done' : '';
+      return `<div class="sr-item">
+        <div class="sr-hz">${v[0]}</div>
+        <div class="sr-info">
+          <div class="sr-py">${v[1]}</div>
+          <div class="sr-mn">${v[2]} · <span style="color:var(--muted);font-size:11px">${v[3]}</span></div>
+        </div>
+        <span class="sr-badge l${lvl}">HSK${lvl}</span>
+        <button class="sr-play" onclick="event.stopPropagation();speak('${v[0]}')" title="Nghe phát âm">🔊</button>
+        <button class="sr-learned ${lrn}" onclick="event.stopPropagation();srToggleLearned(this,'${v[0]}')">${lrn?'✓ Học rồi':'+ Đánh dấu'}</button>
+      </div>`;
+    }).join('');
+  }
+  sr.classList.add('show');
+}
+function srToggleLearned(btn, hanzi){
+  const done = toggleLearned(hanzi);
+  btn.textContent = done ? '✓ Học rồi' : '+ Đánh dấu';
+  btn.className = 'sr-learned' + (done ? ' done' : '');
+  renderVocabList();
+}
+function showSearchDrop(){
+  const q = document.getElementById('search-input').value.trim();
+  if(q) doSearch(q);
+}
+function hideSearchDrop(){ document.getElementById('search-results').classList.remove('show'); }
+function clearSearch(){
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').classList.remove('show');
+  hideSearchDrop();
+}
+document.addEventListener('click', e => {
+  if(!document.getElementById('search-container').contains(e.target)) hideSearchDrop();
+});
+
+/* ════════════════════════════════════════════════════════════════
+   VOCAB LIST
+════════════════════════════════════════════════════════════════ */
+let vlFilter = 'all';
+let vlPage = 0;
+const VL_PER_PAGE = 30;
+
+function setVFilter(f, btn){
+  vlFilter = f;
+  vlPage = 0;
+  document.querySelectorAll('.vf-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderVocabList();
+}
+
+function getFilteredVocab(){
+  const learned = getLearned();
+  if(vlFilter === 'learned') return V.filter(v => learned[v[0]]);
+  if(vlFilter === 'unlearned') return V.filter(v => !learned[v[0]]);
+  return V;
+}
+
+function renderVocabList(){
+  const filtered = getFilteredVocab();
+  const totalPages = Math.ceil(filtered.length / VL_PER_PAGE);
+  const slice = filtered.slice(vlPage * VL_PER_PAGE, (vlPage+1) * VL_PER_PAGE);
+  const learned = getLearned();
+
+  document.getElementById('vl-sub').textContent = `HSK ${currentLevel} · ${V.length} từ vựng`;
+  document.getElementById('vl-count-lbl').textContent = `${filtered.length} từ`;
+
+  const container = document.getElementById('vlist');
+  container.innerHTML = slice.map(v => {
+    const lrn = !!learned[v[0]];
+    return `<div class="vcard ${lrn?'learned':''}" onclick="speak('${v[0]}')">
+      <div class="vc-mark ${lrn?'done':''}" onclick="event.stopPropagation();vcToggle(this,'${v[0]}')">
+        ${lrn?'✓':''}
+      </div>
+      <div class="vc-hz">${v[0]}</div>
+      <div class="vc-py">${v[1]}</div>
+      <div class="vc-mn">${v[2]}</div>
+      <div class="vc-play" onclick="event.stopPropagation();speak('${v[0]}')">🔊</div>
+    </div>`;
+  }).join('') || '<div style="padding:20px;text-align:center;color:var(--muted)">Không có từ nào.</div>';
+
+  document.getElementById('vl-page-info').textContent = totalPages > 1 ? `${vlPage+1} / ${totalPages}` : '';
+  document.getElementById('vl-prev').disabled = vlPage === 0;
+  document.getElementById('vl-next').disabled = vlPage >= totalPages - 1;
+}
+
+function vcToggle(btn, hanzi){
+  const done = toggleLearned(hanzi);
+  btn.textContent = done ? '✓' : '';
+  btn.className = 'vc-mark' + (done ? ' done' : '');
+  const card = btn.closest('.vcard');
+  card.classList.toggle('learned', done);
+}
+
+// Override vlPage to avoid name collision
+window.vlPageFn = function(d){
+  vlPage = Math.max(0, vlPage + d);
+  renderVocabList();
+};
+document.querySelectorAll('.vpager-btn').forEach((b,i) => {
+  b.onclick = () => window.vlPageFn(i===0 ? -1 : 1);
+});
+
+/* ════════════════════════════════════════════════════════════════
+   FLASHCARD
+════════════════════════════════════════════════════════════════ */
+let fcL = [], fcI = 0, fcFlipped = false;
+
 function drawFC(){
-  const v=fcL[fcI];
-  document.getElementById('fch').textContent=v[0];
-  document.getElementById('fcp').textContent=v[1];
-  document.getElementById('fcm').textContent=v[2];
-  document.getElementById('fct').textContent=v[3];
-  document.getElementById('fccnt').textContent=`${fcI+1} / ${fcL.length}`;
-  document.getElementById('fcbar').style.width=`${(fcI+1)/fcL.length*100}%`;
+  if(!V.length){ return; }
+  if(!fcL.length) fcL = [...V];
+  const v = fcL[Math.min(fcI, fcL.length-1)];
+  document.getElementById('fch').textContent = v[0];
+  document.getElementById('fcp').textContent = v[1];
+  document.getElementById('fcm').textContent = v[2];
+  document.getElementById('fct').textContent = v[3];
+  document.getElementById('fccnt').textContent = `${fcI+1} / ${fcL.length}`;
+  document.getElementById('fcbar').style.width = `${(fcI+1)/fcL.length*100}%`;
   document.getElementById('fcard').classList.remove('flip');
-  fcF=false;
+  fcFlipped = false;
+  updateFCMarkBtn(v[0]);
 }
-function flipFC(){fcF=!fcF;document.getElementById('fcard').classList.toggle('flip',fcF);}
-function fcNext(){fcI=(fcI+1)%fcL.length;drawFC();}
-function fcPrev(){fcI=(fcI-1+fcL.length)%fcL.length;drawFC();}
-function fcShuffle(){fcL=sh(V);fcI=0;drawFC();}
+function updateFCMarkBtn(hanzi){
+  const btn = document.getElementById('fc-mark-btn');
+  const done = isLearned(hanzi);
+  btn.textContent = done ? '✓ Đã học' : '☐ Đánh dấu đã học';
+  btn.className = 'fc-mark-btn ' + (done ? 'learned' : 'unlearned');
+}
+function fcToggleLearned(){
+  const v = fcL[fcI];
+  toggleLearned(v[0]);
+  updateFCMarkBtn(v[0]);
+  renderVocabList();
+}
+function flipFC(){ fcFlipped=!fcFlipped; document.getElementById('fcard').classList.toggle('flip',fcFlipped); }
+function fcNext(){ fcI=(fcI+1)%fcL.length; drawFC(); }
+function fcPrev(){ fcI=(fcI-1+fcL.length)%fcL.length; drawFC(); }
+function fcShuffle(){ fcL=sh([...V]); fcI=0; drawFC(); }
 
-// ── MULTIPLE CHOICE ───────────────────────────────────────────────
-let mcQ=[],mcI=0,mcS=0;
+/* ════════════════════════════════════════════════════════════════
+   MULTIPLE CHOICE
+════════════════════════════════════════════════════════════════ */
+let mcQ=[], mcI=0, mcS=0;
 function initMC(){
-  mcQ=pick(V,15);mcI=0;mcS=0;
+  if(V.length < 4) return;
+  mcQ=pick(V,15); mcI=0; mcS=0;
   document.getElementById('mcs').textContent=0;
-  document.getElementById('mct').textContent=15;
+  document.getElementById('mct').textContent=Math.min(15,V.length);
   document.getElementById('mcrs').style.display='none';
   drawMCQ();
 }
 function drawMCQ(){
   if(mcI>=mcQ.length){
+    const pct = Math.round(mcS/mcQ.length*100);
     const fb=document.getElementById('mcfb');
-    fb.className='mcfb on ok';fb.textContent=`🎉 Hoàn thành! Điểm: ${mcS}/15`;
+    fb.className='mcfb on ok';
+    fb.textContent=`🎉 Hoàn thành! ${mcS}/${mcQ.length} (${pct}%)`;
+    addScore(pct); addExercise();
     document.getElementById('mcnxt').style.display='none';
-    document.getElementById('mcrs').style.display='inline-block';return;
+    document.getElementById('mcrs').style.display='inline-block';
+    return;
   }
   const q=mcQ[mcI];
   document.getElementById('mcn').textContent=mcI+1;
@@ -612,10 +1313,10 @@ function drawMCQ(){
   document.getElementById('mcnxt').style.display='none';
   const wrong=pick(V.filter(v=>v[0]!==q[0]),3);
   const opts=sh([q,...wrong]);
-  const c=document.getElementById('mcopts');c.innerHTML='';
+  const c=document.getElementById('mcopts'); c.innerHTML='';
   opts.forEach(o=>{
     const b=document.createElement('button');
-    b.className='mcopt';b.textContent=o[2];
+    b.className='mcopt'; b.textContent=o[2];
     b.onclick=()=>chkMC(o[0]===q[0],b,q[2]);
     c.appendChild(b);
   });
@@ -629,45 +1330,52 @@ function chkMC(ok,btn,correct){
 }
 function mcNext(){drawMCQ();}
 
-// ── MATCHING ──────────────────────────────────────────────────────
-let mSel=null,mP=[],mDn=0;
+/* ════════════════════════════════════════════════════════════════
+   MATCHING
+════════════════════════════════════════════════════════════════ */
+let mSel=null, mP=[], mDn=0;
 function initMT(){
-  mSel=null;mDn=0;mP=pick(V,10);
+  if(V.length < 4) return;
+  mSel=null; mDn=0; mP=pick(V,10);
   const R=sh(mP.map(v=>v[2]));
   document.getElementById('mtdn').textContent='0';
-  const L=document.getElementById('mtL'),Ri=document.getElementById('mtR');
-  L.innerHTML='';Ri.innerHTML='';
+  const L=document.getElementById('mtL'), Ri=document.getElementById('mtR');
+  L.innerHTML=''; Ri.innerHTML='';
   mP.forEach((v,i)=>{
     const el=document.createElement('div');
-    el.className='mi hz';el.textContent=v[0];el.dataset.i=i;el.dataset.s='L';
-    el.onclick=()=>doMT(el);L.appendChild(el);
+    el.className='mi hz'; el.textContent=v[0]; el.dataset.i=i; el.dataset.s='L';
+    el.onclick=()=>doMT(el); L.appendChild(el);
   });
   R.forEach(m=>{
     const el=document.createElement('div');
-    el.className='mi';el.textContent=m;el.dataset.m=m;el.dataset.s='R';
-    el.onclick=()=>doMT(el);Ri.appendChild(el);
+    el.className='mi'; el.textContent=m; el.dataset.m=m; el.dataset.s='R';
+    el.onclick=()=>doMT(el); Ri.appendChild(el);
   });
 }
 function doMT(el){
-  if(el.classList.contains('mat'))return;
-  if(el.dataset.s==='R'&&!mSel)return;
+  if(el.classList.contains('mat')) return;
+  if(el.dataset.s==='R'&&!mSel) return;
   if(el.dataset.s==='L'){if(mSel)mSel.classList.remove('sel');el.classList.add('sel');mSel=el;return;}
   const correct=mP[+mSel.dataset.i][2];
   if(el.dataset.m===correct){
     mSel.classList.remove('sel');mSel.classList.add('mat');el.classList.add('mat');
     mDn++;document.getElementById('mtdn').textContent=mDn;
+    if(mDn===mP.length){ addExercise(); }
   } else {
     [mSel,el].forEach(x=>{x.classList.remove('sel');x.classList.add('shk');setTimeout(()=>x.classList.remove('shk'),420);});
   }
   mSel=null;
 }
 
-// ── FILL IN BLANK ─────────────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════════
+   FILL IN BLANK
+════════════════════════════════════════════════════════════════ */
 function initFI(){
-  const qs=pick(FIB,8);
-  const w=document.getElementById('fiwrap');w.innerHTML='';
+  const data = FIB_DATA[currentLevel] || FIB_DATA[3];
+  const qs = pick(data, 8);
+  const w = document.getElementById('fiwrap'); w.innerHTML='';
   qs.forEach((q,i)=>{
-    const d=document.createElement('div');d.style.marginBottom='22px';
+    const d=document.createElement('div'); d.style.marginBottom='22px';
     const disp=q.s.replace('___','<span class="fibblank">___</span>');
     d.innerHTML=`<div style="font-size:12px;color:var(--muted);margin-bottom:5px">Câu ${i+1} · Gợi ý: <span style="color:var(--gold-light)">${q.h}</span> (${q.m})</div>
     <div class="fibq">${disp}</div>
@@ -677,595 +1385,514 @@ function initFI(){
   });
 }
 function checkFI(){
+  let correct=0, total=0;
   document.querySelectorAll('.fibin').forEach((inp,i)=>{
-    const a=inp.dataset.a,v=inp.value.trim();
-    inp.classList.remove('ok','no');inp.classList.add(v===a?'ok':'no');
-    const b=document.getElementById('fa'+i);if(b)b.classList.add('on');
+    total++;
+    const a=inp.dataset.a, v=inp.value.trim();
+    inp.classList.remove('ok','no'); inp.classList.add(v===a?'ok':'no');
+    if(v===a) correct++;
+    const b=document.getElementById('fa'+i); if(b)b.classList.add('on');
   });
+  if(total>0){ addScore(Math.round(correct/total*100)); addExercise(); }
 }
 
-// ── TRANSLATE ─────────────────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════════
+   TRANSLATE – AI POWERED
+════════════════════════════════════════════════════════════════ */
 function initTR(){
-  const qs=pick(TR,6);
-  const w=document.getElementById('trwrap');w.innerHTML='';
+  const data = TR_DATA[currentLevel] || TR_DATA[3];
+  const qs = pick(data, Math.min(4, data.length));
+  const w = document.getElementById('trwrap'); w.innerHTML='';
   qs.forEach((q,i)=>{
-    const d=document.createElement('div');d.style.marginBottom='22px';
-    d.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:5px;letter-spacing:1px">CÂU ${i+1}</div>
+    const d = document.createElement('div');
+    d.className = 'tr-item';
+    d.innerHTML=`<div style="font-size:11px;color:var(--muted);margin-bottom:6px;letter-spacing:1px">CÂU ${i+1} · <span style="cursor:pointer;color:#5DADE2" onclick="speak('${q.zh.replace(/'/g,"\\'")}')">🔊 Nghe</span></div>
     <div class="trq">${q.zh}</div>
-    <textarea class="trta" placeholder="Viết nghĩa tiếng Việt..."></textarea>
-    <button onclick="this.nextElementSibling.classList.toggle('on')" style="font-size:11px;padding:5px 11px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:6px;cursor:pointer" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">👁 Xem đáp án</button>
-    <div class="ansbox" id="ta${i}">${q.vi}</div>`;
+    <textarea class="trta" id="ta-input-${i}" placeholder="Viết nghĩa tiếng Việt của bạn..."></textarea>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+      <button class="ai-check-btn" onclick="checkTranslate(${i},'${encodeURIComponent(q.zh)}','${encodeURIComponent(q.vi)}')">🤖 AI chấm điểm & giải thích</button>
+      <button onclick="document.getElementById('ta-ans-${i}').classList.toggle('on')" style="font-size:11px;padding:5px 11px;background:transparent;border:1px solid rgba(255,255,255,.15);color:var(--muted);border-radius:6px;cursor:pointer" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">👁 Tham khảo</button>
+    </div>
+    <div class="ansbox" id="ta-ans-${i}" style="margin-top:8px">${q.vi}</div>
+    <div class="ai-fb" id="ta-fb-${i}"></div>`;
     w.appendChild(d);
   });
 }
-function showAllAns(){document.querySelectorAll('.ansbox').forEach(b=>b.classList.add('on'));}
 
-// ── HANDWRITING ───────────────────────────────────────────────────
-let hwL=[],hwI=0,hwOk=0,hwNo=0,hwBad=[];
-let hwChk=false,refOn=false;
-let painting=false,lx=0,ly=0,strokes=[],cur=[];
-let penClr='#1a1a1a';
-let cvs=null,ctx=null;
+async function checkTranslate(idx, zhEnc, viEnc){
+  const zh = decodeURIComponent(zhEnc);
+  const vi = decodeURIComponent(viEnc);
+  const userAnswer = document.getElementById(`ta-input-${idx}`).value.trim();
+  if(!userAnswer){ alert('Vui lòng nhập bản dịch của bạn trước.'); return; }
 
-function initHW(hard){
-  hwI=0;hwOk=0;hwNo=0;hwChk=false;refOn=false;
-  hwL=hard&&hwBad.length>0?pick(hwBad,Math.min(hwBad.length,15)):pick(V,15);
-  updHWS();renderHW();
+  const fb = document.getElementById(`ta-fb-${idx}`);
+  fb.className = 'ai-fb on ok';
+  fb.innerHTML = '<div class="ai-loading"><span style="font-size:12px">🤖 AI đang chấm...</span><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        system: `Bạn là giáo viên tiếng Trung dạy học viên người Việt đang học HSK.
+Nhiệm vụ: chấm điểm bản dịch của học viên từ tiếng Trung sang tiếng Việt.
+Phân tích chi tiết và thân thiện bằng tiếng Việt.
+Trả lời JSON: {"score":0-100,"grade":"Xuất sắc/Tốt/Khá/Cần cố gắng","correct":"phần dịch đúng","wrong":"lỗi cụ thể (nếu có)","explain":"giải thích ngắn về từ/cấu trúc khó","suggestion":"bản dịch gợi ý tốt hơn (nếu cần)"}`,
+        messages:[{role:"user", content:`Câu tiếng Trung: ${zh}\nĐáp án tham khảo: ${vi}\nBản dịch của học viên: ${userAnswer}\nHãy chấm điểm và nhận xét chi tiết.`}]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    let p;
+    try { p = JSON.parse(text.replace(/```json|```/g,'').trim()); }
+    catch { p = {score:65, grade:'Khá', explain:text, wrong:'', correct:userAnswer, suggestion:''}; }
+
+    const gc = p.score>=85?'great':p.score>=60?'ok':'bad';
+    const emoji = p.score>=85?'🌟':p.score>=60?'👍':'💪';
+    fb.className = `ai-fb on ${gc}`;
+    fb.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap">
+        <strong style="font-size:16px">${emoji} ${p.score}/100</strong>
+        <span style="padding:3px 10px;border-radius:10px;font-size:12px;background:rgba(255,255,255,.1)">${p.grade}</span>
+      </div>
+      ${p.correct?`<div style="margin-bottom:5px">✅ <strong>Phần đúng:</strong> ${p.correct}</div>`:''}
+      ${p.wrong?`<div style="margin-bottom:5px;color:#E74C3C">❌ <strong>Lỗi:</strong> ${p.wrong}</div>`:''}
+      ${p.explain?`<div style="margin-bottom:5px;color:var(--gold-light)">💡 <strong>Giải thích:</strong> ${p.explain}</div>`:''}
+      ${p.suggestion?`<div style="margin-top:6px;padding:8px;background:rgba(255,255,255,.05);border-radius:7px;font-size:12px">📝 <strong>Gợi ý:</strong> ${p.suggestion}</div>`:''}`;
+    addScore(p.score); addExercise();
+  } catch(e) {
+    fb.className = 'ai-fb on bad';
+    fb.innerHTML = '❌ Lỗi kết nối AI. Vui lòng thử lại!';
+  }
 }
 
+/* ════════════════════════════════════════════════════════════════
+   LISTENING
+════════════════════════════════════════════════════════════════ */
+let liData = null, liSpeaking = false, liSpeech = null, liScore = 0, liTotal = 0;
+
+function initLI(){
+  const data = LI_DATA[currentLevel] || LI_DATA[3];
+  liData = data[Math.floor(Math.random()*data.length)];
+  liScore = 0; liTotal = liData.questions.length;
+  liSpeaking = false;
+  if(liSpeech){ try{ window.speechSynthesis.cancel(); }catch(e){} }
+  renderLI();
+}
+
+function renderLI(){
+  const d = liData;
+  const cont = document.getElementById('li-content');
+  cont.innerHTML = `
+    <div class="listen-card">
+      <div class="listen-title">🎧 ${d.title}</div>
+      <div class="listen-controls">
+        <button class="play-btn" id="li-play-btn" onclick="toggleLIPlay()" title="Phát / Dừng">▶</button>
+        <select class="listen-speed" id="li-speed">
+          <option value="0.6">0.6x chậm</option>
+          <option value="0.8" selected>0.8x</option>
+          <option value="1.0">1.0x bình thường</option>
+        </select>
+        <button class="show-text-btn" onclick="toggleLIText()">👁 Xem văn bản</button>
+        <span style="font-size:12px;color:var(--muted);padding:4px 10px;background:rgba(255,255,255,.05);border-radius:6px">Nghe rồi trả lời câu hỏi ↓</span>
+      </div>
+      <div class="listen-zh" id="li-text">${d.zh.replace(/\n/g,'<br>')}</div>
+    </div>
+    <div class="listen-qs" id="li-qs">
+      ${d.questions.map((q,i)=>`
+        <div class="lq-item" id="lq-item-${i}">
+          <div class="lq-text">${i+1}. ${q.q}</div>
+          <div class="lq-opts">
+            ${q.opts.map((o,j)=>`
+              <button class="lq-opt" data-qi="${i}" data-oi="${j}" onclick="checkLQ(this,${i},${j},${q.ans})">${String.fromCharCode(65+j)}. ${o}</button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <div class="listen-score" id="li-score">
+      🎉 Kết quả: <strong id="li-score-txt"></strong>
+    </div>`;
+}
+
+function toggleLIPlay(){
+  if(!liData) return;
+  const btn = document.getElementById('li-play-btn');
+  const speed = parseFloat(document.getElementById('li-speed').value || '0.8');
+  if(liSpeaking){
+    window.speechSynthesis.cancel();
+    liSpeaking = false;
+    btn.textContent = '▶';
+    btn.classList.remove('playing');
+    return;
+  }
+  if(!window.speechSynthesis){ alert('Trình duyệt không hỗ trợ TTS.'); return; }
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(liData.zh.replace(/\n/g,' '));
+  u.lang = 'zh-CN'; u.rate = speed; u.pitch = 1;
+  u.onstart = ()=>{ liSpeaking=true; btn.textContent='⏹'; btn.classList.add('playing'); };
+  u.onend = u.onerror = ()=>{ liSpeaking=false; btn.textContent='▶'; btn.classList.remove('playing'); };
+  window.speechSynthesis.speak(u);
+}
+
+function toggleLIText(){
+  const t = document.getElementById('li-text');
+  t.classList.toggle('show');
+}
+
+let liAnswered = {};
+function checkLQ(btn, qi, oi, ans){
+  if(liAnswered[qi] !== undefined) return;
+  liAnswered[qi] = oi;
+  const opts = document.querySelectorAll(`[data-qi="${qi}"]`);
+  opts.forEach(b=>b.disabled=true);
+  btn.classList.add(oi===ans?'ok':'no');
+  if(oi===ans){ liScore++; opts[ans].classList.add('ok'); }
+  else { opts[ans].classList.add('ok'); }
+  // Check if all answered
+  if(Object.keys(liAnswered).length === liTotal){
+    const pct = Math.round(liScore/liTotal*100);
+    const s = document.getElementById('li-score');
+    document.getElementById('li-score-txt').textContent = `${liScore}/${liTotal} (${pct}%)`;
+    s.classList.add('show');
+    addScore(pct); addExercise();
+    liAnswered = {};
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════
+   HANDWRITING
+════════════════════════════════════════════════════════════════ */
+let hwL=[], hwI=0, hwOk=0, hwNo=0, hwBad=[];
+let hwChk=false, refOn=false;
+let painting=false, lx=0, ly=0, strokes=[], cur=[];
+let penClr='#1a1a1a';
+let cvs=null, ctx=null;
+
+function initHW(hard){
+  hwI=0; hwOk=0; hwNo=0; hwChk=false; refOn=false;
+  hwL=hard&&hwBad.length>0 ? pick(hwBad,Math.min(hwBad.length,15)) : pick(V.length?V:DB[3],15);
+  updHWS(); renderHW();
+}
 function setupCV(){
   const outer=document.getElementById('cvouter');
-  if(!outer)return;
-  // Get fresh canvas reference
+  if(!outer) return;
   cvs=document.getElementById('hwcv');
-  if(!cvs)return;
-  const W=outer.clientWidth||380;
-  const H=cvs.clientHeight||280;
-  cvs.width=W;
-  cvs.height=H;
+  if(!cvs) return;
+  const W=outer.clientWidth||380, H=cvs.clientHeight||280;
+  cvs.width=W; cvs.height=H;
   ctx=cvs.getContext('2d');
-  strokes=[];
-  drawGrid();
-
-  // Clone to remove old listeners
+  strokes=[]; drawGrid();
   const nc=cvs.cloneNode(false);
   outer.replaceChild(nc,cvs);
-  cvs=nc;
-  ctx=cvs.getContext('2d');
-  cvs.width=W;cvs.height=H;
-  drawGrid();
-
+  cvs=nc; ctx=cvs.getContext('2d');
+  cvs.width=W; cvs.height=H; drawGrid();
   function getP(e){
     const r=cvs.getBoundingClientRect();
     const src=e.touches?e.touches[0]:e;
     return{x:(src.clientX-r.left)*cvs.width/r.width, y:(src.clientY-r.top)*cvs.height/r.height};
   }
-  function dn(e){
-    e.preventDefault();painting=true;cur=[];
-    const p=getP(e);lx=p.x;ly=p.y;cur.push({x:lx,y:ly});
-  }
-  function mv(e){
-    e.preventDefault();if(!painting)return;
-    const p=getP(e);
-    ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);
-    ctx.strokeStyle=penClr;ctx.lineWidth=3.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
-    lx=p.x;ly=p.y;cur.push({x:lx,y:ly});
-  }
+  function dn(e){e.preventDefault();painting=true;cur=[];const p=getP(e);lx=p.x;ly=p.y;cur.push({x:lx,y:ly});}
+  function mv(e){e.preventDefault();if(!painting)return;const p=getP(e);ctx.beginPath();ctx.moveTo(lx,ly);ctx.lineTo(p.x,p.y);ctx.strokeStyle=penClr;ctx.lineWidth=3.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();lx=p.x;ly=p.y;cur.push({x:lx,y:ly});}
   function up(e){e.preventDefault();if(painting){strokes.push([...cur]);painting=false;}}
-
-  cvs.addEventListener('mousedown',dn);
-  cvs.addEventListener('mousemove',mv);
-  cvs.addEventListener('mouseup',up);
-  cvs.addEventListener('mouseleave',up);
-  cvs.addEventListener('touchstart',dn,{passive:false});
-  cvs.addEventListener('touchmove',mv,{passive:false});
-  cvs.addEventListener('touchend',up,{passive:false});
-  cvs.addEventListener('touchcancel',up,{passive:false});
+  cvs.addEventListener('mousedown',dn);cvs.addEventListener('mousemove',mv);cvs.addEventListener('mouseup',up);cvs.addEventListener('mouseleave',up);
+  cvs.addEventListener('touchstart',dn,{passive:false});cvs.addEventListener('touchmove',mv,{passive:false});cvs.addEventListener('touchend',up,{passive:false});cvs.addEventListener('touchcancel',up,{passive:false});
 }
-
 function drawGrid(){
-  if(!ctx||!cvs)return;
-  const W=cvs.width,H=cvs.height;
-  ctx.clearRect(0,0,W,H);
-  ctx.fillStyle='#F5EFE6';ctx.fillRect(0,0,W,H);
-  const cs=Math.min(H*0.95, W/Math.max(1,Math.round(W/H)));
-  const cols=Math.max(1,Math.floor(W/cs));
-  const cw=W/cols;
+  if(!ctx||!cvs) return;
+  const W=cvs.width, H=cvs.height;
+  ctx.clearRect(0,0,W,H); ctx.fillStyle='#F5EFE6'; ctx.fillRect(0,0,W,H);
+  const cs=Math.min(H*.95,W/Math.max(1,Math.round(W/H))), cols=Math.max(1,Math.floor(W/cs)), cw=W/cols;
   for(let c=0;c<cols;c++){
-    const x=c*cw,p=7;
-    ctx.strokeStyle='rgba(192,57,43,0.32)';ctx.lineWidth=1.2;ctx.setLineDash([]);
+    const x=c*cw, p=7;
+    ctx.strokeStyle='rgba(192,57,43,0.32)'; ctx.lineWidth=1.2; ctx.setLineDash([]);
     ctx.strokeRect(x+p,p,cw-p*2,H-p*2);
-    ctx.strokeStyle='rgba(192,57,43,0.14)';ctx.setLineDash([5,5]);ctx.lineWidth=1;
-    ctx.beginPath();
-    ctx.moveTo(x+cw/2,p);ctx.lineTo(x+cw/2,H-p);
-    ctx.moveTo(x+p,H/2);ctx.lineTo(x+cw-p,H/2);
-    ctx.moveTo(x+p,p);ctx.lineTo(x+cw-p,H-p);
-    ctx.moveTo(x+cw-p,p);ctx.lineTo(x+p,H-p);
-    ctx.stroke();ctx.setLineDash([]);
+    ctx.strokeStyle='rgba(192,57,43,0.14)'; ctx.setLineDash([5,5]); ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(x+cw/2,p);ctx.lineTo(x+cw/2,H-p);ctx.moveTo(x+p,H/2);ctx.lineTo(x+cw-p,H/2);
+    ctx.moveTo(x+p,p);ctx.lineTo(x+cw-p,H-p);ctx.moveTo(x+cw-p,p);ctx.lineTo(x+p,H-p);
+    ctx.stroke(); ctx.setLineDash([]);
   }
 }
-
 function redraw(){
   drawGrid();
-  strokes.forEach(s=>{
-    if(s.length<2)return;
-    ctx.beginPath();ctx.moveTo(s[0].x,s[0].y);
-    s.forEach(p=>ctx.lineTo(p.x,p.y));
-    ctx.strokeStyle=penClr;ctx.lineWidth=3.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();
-  });
+  strokes.forEach(s=>{if(s.length<2)return;ctx.beginPath();ctx.moveTo(s[0].x,s[0].y);s.forEach(p=>ctx.lineTo(p.x,p.y));ctx.strokeStyle=penClr;ctx.lineWidth=3.5;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke();});
 }
-
 function clearCV(){strokes=[];drawGrid();}
 function undoCV(){if(strokes.length){strokes.pop();redraw();}}
 function setClr(c,id){
   penClr=c;
   document.querySelectorAll('.cvbtn').forEach(b=>b.classList.remove('act'));
-  const el=document.getElementById(id);if(el)el.classList.add('act');
+  const el=document.getElementById(id); if(el)el.classList.add('act');
 }
-
 function renderHW(){
-  if(hwI>=hwL.length)return;
+  if(hwI>=hwL.length) return;
   const v=hwL[hwI];
-  hwChk=false;refOn=false;
+  hwChk=false; refOn=false;
   document.getElementById('hwpy').textContent=v[1];
   document.getElementById('hwmn').textContent=v[2];
   document.getElementById('hwtp').textContent=v[3];
   const ref=document.getElementById('hwref');
-  ref.textContent=v[0];ref.classList.remove('show');
+  ref.textContent=v[0]; ref.classList.remove('show');
   document.getElementById('hwnch').textContent=v[0];
   document.getElementById('hwidx').textContent=hwI+1;
   document.getElementById('hwtot').textContent=hwL.length;
   document.getElementById('hwmi').value='';
   document.getElementById('hwmi').className='hwmi';
   document.getElementById('hwmfb').className='hwmfb';
-  clearCV();updHWS();
+  clearCV(); updHWS();
 }
-
-function toggleRef(){
-  refOn=!refOn;
-  document.getElementById('hwref').classList.toggle('show',refOn);
-}
-
+function toggleRef(){ refOn=!refOn; document.getElementById('hwref').classList.toggle('show',refOn); }
 function checkHWM(){
-  if(hwChk)return;
+  if(hwChk) return;
   const v=hwL[hwI];
   const val=document.getElementById('hwmi').value.trim().toLowerCase();
   const correct=v[2].toLowerCase();
   const ok=val.length>=2&&(correct.includes(val)||val.includes(correct.split(',')[0].trim())||correct.split(/[,，]/).some(p=>val.includes(p.trim())));
-  const inp=document.getElementById('hwmi'),fb=document.getElementById('hwmfb');
+  const inp=document.getElementById('hwmi'), fb=document.getElementById('hwmfb');
   inp.classList.remove('ok','no');
   if(ok){inp.classList.add('ok');fb.className='hwmfb on ok';fb.textContent=`✅ Đúng! ${v[2]}`;hwOk++;}
   else{inp.classList.add('no');fb.className='hwmfb on no';fb.textContent=`❌ Sai! Đáp án: ${v[2]}`;hwNo++;if(!hwBad.find(w=>w[0]===v[0]))hwBad.push(v);}
-  hwChk=true;updHWS();
+  hwChk=true; updHWS();
 }
-
 function skipHW(){
-  if(hwChk)return;
+  if(hwChk) return;
   const v=hwL[hwI];
   document.getElementById('hwmfb').className='hwmfb on no';
   document.getElementById('hwmfb').textContent=`📖 Đáp án: ${v[2]}`;
-  hwNo++;if(!hwBad.find(w=>w[0]===v[0]))hwBad.push(v);
-  hwChk=true;updHWS();
+  hwNo++; if(!hwBad.find(w=>w[0]===v[0]))hwBad.push(v);
+  hwChk=true; updHWS();
 }
-
-function hwMv(d){
-  const n=hwI+d;
-  if(n>=0&&n<hwL.length){hwI=n;renderHW();}
-}
-
+function hwMv(d){ const n=hwI+d; if(n>=0&&n<hwL.length){hwI=n;renderHW();} }
 function updHWS(){
   document.getElementById('hwok').textContent=hwOk;
   document.getElementById('hwno').textContent=hwNo;
   document.getElementById('hwleft').textContent=Math.max(0,hwL.length-hwI-1);
 }
 
-// ── SPEAKING ─────────────────────────────────────────────────────
-const SP_SENTENCES = [
-  {zh:"你好，我叫小明，很高兴认识你。",py:"Nǐ hǎo, wǒ jiào Xiǎomíng, hěn gāoxìng rènshi nǐ.",vi:"Xin chào, tôi tên Tiểu Minh, rất vui được gặp bạn."},
-  {zh:"我每天坚持学习汉语，努力提高水平。",py:"Wǒ měitiān jiānchí xuéxí Hànyǔ, nǔlì tígāo shuǐpíng.",vi:"Tôi kiên trì học tiếng Trung mỗi ngày, cố gắng nâng cao trình độ."},
-  {zh:"如果你有问题，请随时告诉我。",py:"Rúguǒ nǐ yǒu wèntí, qǐng suíshí gàosu wǒ.",vi:"Nếu bạn có vấn đề, hãy cho tôi biết bất cứ lúc nào."},
-  {zh:"这个超市附近有很多好吃的餐厅。",py:"Zhège chāoshì fùjìn yǒu hěnduō hǎochī de cāntīng.",vi:"Gần siêu thị này có rất nhiều nhà hàng ngon."},
-  {zh:"虽然学汉语不容易，但是我很喜欢。",py:"Suīrán xué Hànyǔ bù róngyì, dànshì wǒ hěn xǐhuān.",vi:"Dù học tiếng Trung không dễ, nhưng tôi rất thích."},
-  {zh:"我的爱好是听音乐和看电影。",py:"Wǒ de àihào shì tīng yīnyuè hé kàn diànyǐng.",vi:"Sở thích của tôi là nghe nhạc và xem phim."},
-  {zh:"请帮我检查一下这份文件，谢谢。",py:"Qǐng bāng wǒ jiǎnchá yīxià zhè fèn wénjiàn, xièxie.",vi:"Vui lòng giúp tôi kiểm tra tài liệu này, cảm ơn."},
-  {zh:"我打算明年去中国旅行，参加汉语课程。",py:"Wǒ dǎsuàn míngnián qù Zhōngguó lǚxíng, cānjiā Hànyǔ kèchéng.",vi:"Tôi dự định năm sau đi Trung Quốc du lịch, tham gia khóa học tiếng Trung."},
-];
+/* ════════════════════════════════════════════════════════════════
+   SPEAKING
+════════════════════════════════════════════════════════════════ */
+const SP_SENTENCES = {
+  3:[
+    {zh:"你好，我叫小明，很高兴认识你。",py:"Nǐ hǎo, wǒ jiào Xiǎomíng, hěn gāoxìng rènshi nǐ.",vi:"Xin chào, tôi tên Tiểu Minh, rất vui được gặp bạn."},
+    {zh:"我每天坚持学习汉语，努力提高水平。",py:"Wǒ měitiān jiānchí xuéxí Hànyǔ, nǔlì tígāo shuǐpíng.",vi:"Tôi kiên trì học tiếng Trung mỗi ngày."},
+    {zh:"如果你有问题，请随时告诉我。",py:"Rúguǒ nǐ yǒu wèntí, qǐng suíshí gàosu wǒ.",vi:"Nếu bạn có vấn đề, hãy cho tôi biết bất cứ lúc nào."},
+    {zh:"虽然学汉语不容易，但是我很喜欢。",py:"Suīrán xué Hànyǔ bù róngyì, dànshì wǒ hěn xǐhuān.",vi:"Dù học tiếng Trung không dễ, nhưng tôi rất thích."},
+  ],
+  4:[
+    {zh:"互联网的发展改变了人们的生活方式。",py:"Hùliánwǎng de fāzhǎn gǎibiànle rénmen de shēnghuó fāngshì.",vi:"Sự phát triển của internet đã thay đổi lối sống của mọi người."},
+    {zh:"环境保护是每个人的责任和义务。",py:"Huánjìng bǎohù shì měi gè rén de zérèn hé yìwù.",vi:"Bảo vệ môi trường là trách nhiệm và nghĩa vụ của mỗi người."},
+    {zh:"他对工作态度积极，深受同事的尊重。",py:"Tā duì gōngzuò tàidù jījí, shēn shòu tóngshì de zūnzhòng.",vi:"Anh ấy có thái độ tích cực trong công việc, được đồng nghiệp tôn trọng."},
+  ],
+  5:[
+    {zh:"创新是推动社会进步的核心动力。",py:"Chuàngxīn shì tuīdòng shèhuì jìnbù de héxīn dònglì.",vi:"Đổi mới sáng tạo là động lực cốt lõi thúc đẩy tiến bộ xã hội."},
+    {zh:"可持续发展要求我们积极保护自然环境。",py:"Kě chí xù fāzhǎn yāoqiú wǒmen jījí bǎohù zìrán huánjìng.",vi:"Phát triển bền vững đòi hỏi chúng ta tích cực bảo vệ môi trường tự nhiên."},
+    {zh:"高质量的教育能够有效培养学生的综合能力。",py:"Gāo zhìliàng de jiàoyù nénggòu yǒuxiào péiyǎng xuéshēng de zōnghé nénglì.",vi:"Giáo dục chất lượng cao có thể hiệu quả bồi dưỡng năng lực tổng hợp của học sinh."},
+  ],
+  6:[
+    {zh:"文化传承与创新是一个民族永恒的主题。",py:"Wénhuà chuánchéng yǔ chuàngxīn shì yī gè mínzú yǒnghéng de zhǔtí.",vi:"Truyền thừa và đổi mới văn hóa là chủ đề vĩnh cửu của một dân tộc."},
+    {zh:"在全球化背景下，文化交流日益频繁。",py:"Zài quánqiúhuà bèijǐng xià, wénhuà jiāoliú rì yì pínfán.",vi:"Trong bối cảnh toàn cầu hóa, giao lưu văn hóa ngày càng thường xuyên."},
+  ]
+};
+const CHAT_TOPICS = ["Hỏi về sở thích (爱好)","Nói về gia đình (家人)","Hỏi đường (问路)","Đặt đồ ăn (点菜)","Mua sắm (购物)","Công việc / học tập","Du lịch và văn hóa Trung Quốc"];
 
-const CHAT_TOPICS = [
-  "Hỏi về sở thích (爱好) của nhau",
-  "Nói về gia đình (家人) bằng tiếng Trung",
-  "Luyện hỏi đường (问路) bằng tiếng Trung",
-  "Đặt đồ ăn (点菜) tại nhà hàng",
-  "Mua sắm (购物) tại siêu thị",
-  "Nói về công việc / học tập hàng ngày",
-];
+let spMode='pronounce', spList=[], spI=0;
+let spRecognition=null, spRecActive=false, chatHistory=[], chatRecActive=false;
+let curSentence=null;
 
-let spMode = 'pronounce';
-let spList = [], spI = 0;
-let spRecognition = null;
-let spRecActive = false;
-let chatHistory = [];
+function getSR(lang){ const SR=window.SpeechRecognition||window.webkitSpeechRecognition; if(!SR)return null; const r=new SR();r.lang=lang||'zh-CN';r.continuous=false;r.interimResults=true;r.maxAlternatives=3;return r; }
 
-// Speech Recognition setup
-function getSR(lang) {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) return null;
-  const r = new SR();
-  r.lang = lang || 'zh-CN';
-  r.continuous = false;
-  r.interimResults = true;
-  r.maxAlternatives = 3;
-  return r;
-}
-
-// TTS - speak Chinese
-function speak(text, lang) {
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = lang || 'zh-CN';
-  u.rate = 0.85;
-  u.pitch = 1;
-  window.speechSynthesis.speak(u);
-}
-
-function setMode(m) {
-  spMode = m;
-  ['pronounce','sentence','chat'].forEach(x => {
-    document.getElementById('sp-' + (x==='pronounce'?'pronounce':x==='sentence'?'sentence':'chat-panel')).style.display = x === m ? 'block' : 'none';
-    document.getElementById('mode-btn-' + x).classList.toggle('on', x === m);
+function setMode(m){
+  spMode=m;
+  const map={'pronounce':'sp-pronounce','sentence':'sp-sentence','chat':'sp-chat-panel'};
+  Object.entries(map).forEach(([k,v])=>{
+    document.getElementById(v).style.display=k===m?'block':'none';
+    document.getElementById('mode-btn-'+k).classList.toggle('on',k===m);
   });
-  if (m === 'chat' && chatHistory.length === 0) initChat();
+  if(m==='chat'&&chatHistory.length===0) initChat();
 }
 
-// ── PRONOUNCE MODE ───────────────────────────────────────────────
-function initSP() {
-  spList = pick(V, 15); spI = 0;
-  renderSPWord();
+function initSP(){
+  spList=pick(V.length?V:DB[3],15); spI=0; renderSPWord();
+}
+function renderSPWord(){
+  if(!spList.length) return;
+  const v=spList[spI];
+  document.getElementById('sp-hanzi').textContent=v[0];
+  document.getElementById('sp-pinyin').textContent=v[1];
+  document.getElementById('sp-meaning').textContent=v[2];
+  document.getElementById('sp-wtype').textContent=v[3];
+  document.getElementById('sp-idx').textContent=spI+1;
+  document.getElementById('sp-tot').textContent=spList.length;
+  document.getElementById('sp-bar').style.width=`${(spI+1)/spList.length*100}%`;
+  document.getElementById('sp-transcript').textContent='Lời nói của bạn sẽ hiện ở đây...';
+  document.getElementById('sp-transcript').className='sp-transcript';
+  document.getElementById('sp-result').className='sp-result';
+  resetMicBtn('mic-btn','mic-label','Nhấn để bắt đầu nói');
+}
+function spMove(d){ stopAllMic(); const n=spI+d; if(n>=0&&n<spList.length){spI=n;renderSPWord();} }
+function toggleMic(){
+  if(spRecActive){stopAllMic();return;}
+  const v=spList[spI];
+  startRecognition('mic-btn','mic-label','sp-transcript','zh-CN',async(final,transcript)=>{
+    if(final){setMicThinking('mic-btn','mic-label');await evalPronunciation(transcript,v[0],v[1],v[2],'sp-result');resetMicBtn('mic-btn','mic-label','Nhấn để nói lại');}
+  });
+}
+async function evalPronunciation(spoken,hanzi,pinyin,meaning,resultId){
+  const rb=document.getElementById(resultId);
+  rb.className='sp-result on ok';
+  rb.innerHTML='<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Bạn là giáo viên tiếng Trung dạy người Việt HSK. Đánh giá phát âm ngắn gọn bằng tiếng Việt. JSON: {"score":0-100,"grade":"A/B/C","comment":"nhận xét","tips":"mẹo"}`,messages:[{role:"user",content:`Từ: ${hanzi} (${pinyin}) - ${meaning}\nHọc viên nói: "${spoken}"\nĐánh giá.`}]})});
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'';
+    let p; try{p=JSON.parse(text.replace(/```json|```/g,'').trim());}catch{p={score:70,grade:'B',comment:text,tips:''};}
+    const gc=p.score>=85?'great':p.score>=60?'ok':'bad';
+    rb.className=`sp-result on ${gc}`;
+    rb.innerHTML=`<div class="sp-score-row"><span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">${p.score>=85?'🌟':p.score>=60?'👍':'💪'} ${p.score}/100</span><span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">Bạn nói: "${spoken}"</span></div>
+    <div style="margin-top:8px"><strong>📝</strong> ${p.comment}</div>
+    ${p.tips?`<div style="margin-top:6px;color:var(--gold-light)">💡 ${p.tips}</div>`:''}
+    <div style="margin-top:8px;opacity:.7;font-size:12px">🔊 <span style="cursor:pointer;text-decoration:underline" onclick="speak('${hanzi}')">Nghe mẫu</span></div>`;
+  }catch(e){rb.className='sp-result on bad';rb.innerHTML=`❌ Lỗi AI. Từ đúng: ${hanzi} (${pinyin})`;}
 }
 
-function renderSPWord() {
-  if (spI >= spList.length) return;
-  const v = spList[spI];
-  document.getElementById('sp-hanzi').textContent = v[0];
-  document.getElementById('sp-pinyin').textContent = v[1];
-  document.getElementById('sp-meaning').textContent = v[2];
-  document.getElementById('sp-wtype').textContent = v[3];
-  document.getElementById('sp-idx').textContent = spI + 1;
-  document.getElementById('sp-tot').textContent = spList.length;
-  document.getElementById('sp-bar').style.width = `${(spI + 1) / spList.length * 100}%`;
-  document.getElementById('sp-transcript').textContent = 'Lời nói của bạn sẽ hiện ở đây...';
-  document.getElementById('sp-transcript').className = 'sp-transcript';
-  document.getElementById('sp-result').className = 'sp-result';
-  resetMicBtn('mic-btn', 'mic-label', 'Nhấn để bắt đầu nói');
-}
-
-function spMove(d) {
+function nextSentence(){
   stopAllMic();
-  const n = spI + d;
-  if (n >= 0 && n < spList.length) { spI = n; renderSPWord(); }
+  const sents = SP_SENTENCES[currentLevel] || SP_SENTENCES[3];
+  curSentence=sents[Math.floor(Math.random()*sents.length)];
+  document.getElementById('sp-sent-zh').textContent=curSentence.zh;
+  document.getElementById('sp-sent-py').textContent=curSentence.py;
+  document.getElementById('sp-sent-vi').textContent=curSentence.vi;
+  document.getElementById('sp-trans-s').textContent='Lời đọc sẽ hiện ở đây...';
+  document.getElementById('sp-trans-s').className='sp-transcript';
+  document.getElementById('sp-result-s').className='sp-result';
+  resetMicBtn('mic-btn-s','mic-label-s','Nhấn để đọc câu trên');
 }
-
-function toggleMic() {
-  if (spRecActive) { stopAllMic(); return; }
-  const v = spList[spI];
-  startRecognition('mic-btn', 'mic-label', 'sp-transcript', 'zh-CN', async (final, transcript) => {
-    if (final) {
-      setMicThinking('mic-btn', 'mic-label');
-      await evalPronunciation(transcript, v[0], v[1], v[2], 'sp-result');
-      resetMicBtn('mic-btn', 'mic-label', 'Nhấn để nói lại');
-    }
+function toggleMicS(){
+  if(spRecActive){stopAllMic();return;}
+  if(!curSentence){nextSentence();return;}
+  startRecognition('mic-btn-s','mic-label-s','sp-trans-s','zh-CN',async(final,transcript)=>{
+    if(final){setMicThinking('mic-btn-s','mic-label-s');await evalSentence(transcript,curSentence,'sp-result-s');resetMicBtn('mic-btn-s','mic-label-s','Nhấn để đọc lại');}
   });
 }
-
-async function evalPronunciation(spoken, hanzi, pinyin, meaning, resultId) {
-  const rb = document.getElementById(resultId);
-  rb.className = 'sp-result on ok';
-  rb.innerHTML = '<div class="msg-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: `Bạn là giáo viên tiếng Trung chuyên dạy người Việt học HSK3. 
-Nhiệm vụ: đánh giá phát âm dựa trên văn bản nhận dạng giọng nói.
-Trả lời ngắn gọn bằng tiếng Việt, thân thiện, khích lệ.
-Định dạng JSON: {"score":0-100,"grade":"A/B/C","comment":"nhận xét ngắn","tips":"mẹo phát âm","correct":true/false}`,
-        messages: [{
-          role: "user",
-          content: `Từ cần đọc: ${hanzi} (${pinyin}) - nghĩa: ${meaning}
-Học viên đã nói (nhận dạng): "${spoken}"
-Đánh giá: từ nhận dạng có khớp với từ cần đọc không? Cho điểm và nhận xét.`
-        }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
-    let parsed;
-    try { parsed = JSON.parse(text.replace(/```json|```/g, '').trim()); }
-    catch { parsed = { score: 70, grade: 'B', comment: text, correct: spoken.includes(hanzi.charAt(0)) }; }
-
-    const gradeClass = parsed.score >= 85 ? 'great' : parsed.score >= 60 ? 'ok' : 'bad';
-    const gradeEmoji = parsed.score >= 85 ? '🌟' : parsed.score >= 60 ? '👍' : '💪';
-    rb.className = `sp-result on ${gradeClass}`;
-    rb.innerHTML = `
-      <div class="sp-score-row">
-        <span class="sp-sc ${parsed.score>=85?'a':parsed.score>=60?'b':'c'}">${gradeEmoji} ${parsed.score}/100</span>
-        <span class="sp-sc ${parsed.score>=85?'a':parsed.score>=60?'b':'c'}">Bạn nói: "${spoken}"</span>
-      </div>
-      <div style="margin-top:8px"><strong>📝 Nhận xét:</strong> ${parsed.comment}</div>
-      ${parsed.tips ? `<div style="margin-top:6px;color:var(--gold-light)">💡 Mẹo: ${parsed.tips}</div>` : ''}
-      <div style="margin-top:8px;opacity:.7;font-size:12px">🔊 <span style="cursor:pointer;text-decoration:underline" onclick="speak('${hanzi}')">Nhấn để nghe mẫu</span></div>`;
-  } catch (e) {
-    rb.className = 'sp-result on bad';
-    rb.innerHTML = `❌ Lỗi kết nối AI. Bạn nói: "${spoken}" · Từ đúng: ${hanzi} (${pinyin})`;
-  }
+async function evalSentence(spoken,sent,resultId){
+  const rb=document.getElementById(resultId);
+  rb.className='sp-result on ok';
+  rb.innerHTML='<div class="ai-loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Đánh giá học viên đọc câu tiếng Trung. JSON: {"score":0-100,"comment":"nhận xét","correct_parts":"phần đúng","wrong_parts":"phần sai","encouragement":"lời động viên"}`,messages:[{role:"user",content:`Câu gốc: ${sent.zh}\nHọc viên đọc: "${spoken}"`}]})});
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'';
+    let p; try{p=JSON.parse(text.replace(/```json|```/g,'').trim());}catch{p={score:65,comment:text,encouragement:"Cố gắng thêm nhé!"};}
+    const gc=p.score>=85?'great':p.score>=60?'ok':'bad';
+    rb.className=`sp-result on ${gc}`;
+    rb.innerHTML=`<div class="sp-score-row"><span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">${p.score>=85?'🌟':p.score>=60?'👍':'💪'} ${p.score}/100</span></div>
+    <div style="margin-top:8px"><strong>Bạn đọc:</strong> "${spoken}"</div>
+    <div style="margin-top:6px"><strong>📝</strong> ${p.comment}</div>
+    ${p.wrong_parts?`<div style="margin-top:5px;color:#E74C3C">❌ ${p.wrong_parts}</div>`:''}
+    ${p.correct_parts?`<div style="margin-top:5px;color:var(--green-light)">✅ ${p.correct_parts}</div>`:''}
+    <div style="margin-top:6px;color:var(--gold-light)">✨ ${p.encouragement}</div>
+    <div style="margin-top:8px;opacity:.7;font-size:12px">🔊 <span style="cursor:pointer;text-decoration:underline" onclick="speak('${sent.zh.replace(/'/g,"\\'")}')">Nghe mẫu</span></div>`;
+  }catch(e){rb.className='sp-result on bad';rb.innerHTML=`❌ Lỗi AI.`;}
 }
 
-// ── SENTENCE MODE ────────────────────────────────────────────────
-let curSentence = null;
-
-function nextSentence() {
-  stopAllMic();
-  curSentence = SP_SENTENCES[Math.floor(Math.random() * SP_SENTENCES.length)];
-  document.getElementById('sp-sent-zh').textContent = curSentence.zh;
-  document.getElementById('sp-sent-py').textContent = curSentence.py;
-  document.getElementById('sp-sent-vi').textContent = curSentence.vi;
-  document.getElementById('sp-trans-s').textContent = 'Lời đọc của bạn sẽ hiện ở đây...';
-  document.getElementById('sp-trans-s').className = 'sp-transcript';
-  document.getElementById('sp-result-s').className = 'sp-result';
-  resetMicBtn('mic-btn-s', 'mic-label-s', 'Nhấn để đọc câu trên');
+function initChat(){
+  chatHistory=[]; document.getElementById('chat-history').innerHTML='';
+  addAIMsg(`你好！👋 Tôi là giáo viên AI của bạn – đang học <strong>HSK ${currentLevel}</strong>.<br><br><span class="msg-hanzi">我们开始练习吧！</span><br><br>Hãy trò chuyện bằng tiếng Trung với tôi. Tôi sẽ trả lời và giải thích bằng tiếng Việt.`);
 }
-
-function toggleMicS() {
-  if (spRecActive) { stopAllMic(); return; }
-  if (!curSentence) { nextSentence(); return; }
-  startRecognition('mic-btn-s', 'mic-label-s', 'sp-trans-s', 'zh-CN', async (final, transcript) => {
-    if (final) {
-      setMicThinking('mic-btn-s', 'mic-label-s');
-      await evalSentence(transcript, curSentence, 'sp-result-s');
-      resetMicBtn('mic-btn-s', 'mic-label-s', 'Nhấn để đọc lại');
-    }
-  });
-}
-
-async function evalSentence(spoken, sent, resultId) {
-  const rb = document.getElementById(resultId);
-  rb.className = 'sp-result on ok';
-  rb.innerHTML = '<div class="msg-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: `Bạn là giáo viên tiếng Trung dạy người Việt HSK3. Đánh giá học viên đọc câu tiếng Trung.
-Trả lời JSON: {"score":0-100,"grade":"A/B/C","comment":"nhận xét","correct_parts":"phần đúng","wrong_parts":"phần sai hoặc bỏ qua","encouragement":"lời động viên"}`,
-        messages: [{
-          role: "user",
-          content: `Câu gốc: ${sent.zh}\nHọc viên đọc: "${spoken}"\nSo sánh và đánh giá.`
-        }]
-      })
-    });
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
-    let p;
-    try { p = JSON.parse(text.replace(/```json|```/g, '').trim()); }
-    catch { p = { score: 65, comment: text, encouragement: "Cố gắng thêm nhé!" }; }
-    const gc = p.score >= 85 ? 'great' : p.score >= 60 ? 'ok' : 'bad';
-    rb.className = `sp-result on ${gc}`;
-    rb.innerHTML = `
-      <div class="sp-score-row">
-        <span class="sp-sc ${p.score>=85?'a':p.score>=60?'b':'c'}">${p.score>=85?'🌟':p.score>=60?'👍':'💪'} ${p.score}/100</span>
-      </div>
-      <div style="margin-top:8px"><strong>Bạn đọc:</strong> "${spoken}"</div>
-      <div style="margin-top:6px"><strong>📝 Nhận xét:</strong> ${p.comment}</div>
-      ${p.wrong_parts ? `<div style="margin-top:5px;color:#E74C3C">❌ Cần cải thiện: ${p.wrong_parts}</div>` : ''}
-      ${p.correct_parts ? `<div style="margin-top:5px;color:var(--green-light)">✅ Phần tốt: ${p.correct_parts}</div>` : ''}
-      <div style="margin-top:6px;color:var(--gold-light)">✨ ${p.encouragement}</div>
-      <div style="margin-top:8px;opacity:.7;font-size:12px">🔊 <span style="cursor:pointer;text-decoration:underline" onclick="speak('${sent.zh.replace(/'/g,"\\'")}')">Nghe mẫu</span></div>`;
-  } catch (e) {
-    rb.className = 'sp-result on bad';
-    rb.innerHTML = `❌ Lỗi AI. Câu gốc: ${sent.zh}`;
-  }
-}
-
-// ── CHAT MODE ────────────────────────────────────────────────────
-function initChat() {
-  chatHistory = [];
-  const hist = document.getElementById('chat-history');
-  hist.innerHTML = '';
-  addAIMsg(`你好！👋 Tôi là giáo viên AI của bạn. Hãy thực hành nói chuyện bằng tiếng Trung với tôi nhé!\n\n<span class="msg-hanzi">我们开始吧！</span>\n\nBạn có thể nói hoặc gõ bằng tiếng Trung hoặc tiếng Việt. Tôi sẽ trả lời bằng tiếng Trung và giải thích bằng tiếng Việt.`);
-}
-
-function clearChat() { initChat(); }
-
-function suggestTopic() {
-  const t = CHAT_TOPICS[Math.floor(Math.random() * CHAT_TOPICS.length)];
-  document.getElementById('chat-input').value = 'Hãy luyện tập chủ đề: ' + t;
+function clearChat(){initChat();}
+function suggestTopic(){
+  const t=CHAT_TOPICS[Math.floor(Math.random()*CHAT_TOPICS.length)];
+  document.getElementById('chat-input').value='Hãy luyện tập chủ đề: '+t;
   document.getElementById('chat-input').focus();
 }
-
-function addAIMsg(html) {
-  const hist = document.getElementById('chat-history');
-  const d = document.createElement('div');
-  d.className = 'msg ai';
-  d.innerHTML = html;
-  hist.appendChild(d);
-  hist.scrollTop = hist.scrollHeight;
-  return d;
+function addAIMsg(html){
+  const hist=document.getElementById('chat-history');
+  const d=document.createElement('div'); d.className='msg ai'; d.innerHTML=html;
+  hist.appendChild(d); hist.scrollTop=hist.scrollHeight; return d;
 }
-
-function addUserMsg(text) {
-  const hist = document.getElementById('chat-history');
-  const d = document.createElement('div');
-  d.className = 'msg user';
-  d.textContent = text;
-  hist.appendChild(d);
-  hist.scrollTop = hist.scrollHeight;
+function addUserMsg(text){
+  const hist=document.getElementById('chat-history');
+  const d=document.createElement('div'); d.className='msg user'; d.textContent=text;
+  hist.appendChild(d); hist.scrollTop=hist.scrollHeight;
 }
-
-function addTyping() {
-  const hist = document.getElementById('chat-history');
-  const d = document.createElement('div');
-  d.className = 'msg ai';
-  d.id = 'typing-indicator';
-  d.innerHTML = '<div class="msg-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
-  hist.appendChild(d);
-  hist.scrollTop = hist.scrollHeight;
+function addTyping(){
+  const hist=document.getElementById('chat-history');
+  const d=document.createElement('div'); d.className='msg ai'; d.id='typing-indicator';
+  d.innerHTML='<div class="msg-typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  hist.appendChild(d); hist.scrollTop=hist.scrollHeight;
 }
+function removeTyping(){ const t=document.getElementById('typing-indicator'); if(t)t.remove(); }
 
-function removeTyping() {
-  const t = document.getElementById('typing-indicator');
-  if (t) t.remove();
-}
-
-async function sendChat() {
-  const inp = document.getElementById('chat-input');
-  const text = inp.value.trim();
-  if (!text) return;
-  inp.value = '';
-  addUserMsg(text);
-  chatHistory.push({ role: 'user', content: text });
+async function sendChat(){
+  const inp=document.getElementById('chat-input');
+  const text=inp.value.trim(); if(!text) return;
+  inp.value=''; addUserMsg(text);
+  chatHistory.push({role:'user',content:text});
   addTyping();
-
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        system: `Bạn là giáo viên tiếng Trung thân thiện, nhiệt tình, dạy học viên người Việt đang học HSK3.
-
-CÁCH TRẢ LỜI (luôn theo cấu trúc này):
-1. Dòng tiếng Trung chính (dùng từ vựng HSK1-3, câu ngắn, tự nhiên)
-2. Phiên âm pinyin 
-3. Nghĩa tiếng Việt
-4. Giải thích ngắn gọn nếu có từ mới/hay
-5. Câu hỏi gợi chuyện tiếp (bằng tiếng Trung + nghĩa Việt)
-
-Ví dụ format:
-**我很喜欢学汉语！**
-*Wǒ hěn xǐhuān xué Hànyǔ!*
-→ Tôi rất thích học tiếng Trung!
-💡 喜欢 (xǐhuān) = thích, yêu thích
-❓ 你呢？你为什么学汉语？(Bạn thì sao? Tại sao bạn học tiếng Trung?)
-
-Nếu học viên viết sai ngữ pháp hoặc từ vựng, hãy nhẹ nhàng sửa.
-Dùng từ vựng HSK1-3 là chính. Luôn khích lệ, tạo không khí vui vẻ.`,
-        messages: chatHistory
-      })
-    });
-    const data = await res.json();
-    const reply = data.content?.[0]?.text || '对不起，我不明白。';
+  try{
+    const res=await fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:`Bạn là giáo viên tiếng Trung thân thiện dạy người Việt HSK ${currentLevel}. Trả lời theo cấu trúc: 1) Câu tiếng Trung (từ vựng HSK1-${currentLevel}) 2) Pinyin 3) Nghĩa Việt 4) Giải thích nếu có từ mới 5) Câu hỏi gợi chuyện tiếp. Dùng **bold** cho chữ Hán chính, *italic* cho pinyin.`,messages:chatHistory})});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'对不起，我不明白。';
     removeTyping();
-    chatHistory.push({ role: 'assistant', content: reply });
-    // Format the reply with hanzi styling
-    const formatted = reply
-      .replace(/\*\*(.+?)\*\*/g, '<span class="msg-hanzi">$1</span>')
-      .replace(/\*(.+?)\*/g, '<em style="color:var(--gold-light)">$1</em>')
-      .replace(/💡/g, '<br>💡')
-      .replace(/❓/g, '<br>❓')
-      .replace(/→/g, '<br>→')
-      .replace(/\n/g, '<br>');
-    addAIMsg(formatted);
-  } catch (e) {
-    removeTyping();
-    addAIMsg('❌ Lỗi kết nối. Vui lòng thử lại!');
-  }
+    chatHistory.push({role:'assistant',content:reply});
+    const fmt=reply.replace(/\*\*(.+?)\*\*/g,'<span class="msg-hanzi">$1</span>').replace(/\*(.+?)\*/g,'<em style="color:var(--gold-light)">$1</em>').replace(/💡/g,'<br>💡').replace(/❓/g,'<br>❓').replace(/→/g,'<br>→').replace(/\n/g,'<br>');
+    addAIMsg(fmt);
+  }catch(e){ removeTyping(); addAIMsg('❌ Lỗi kết nối. Vui lòng thử lại!'); }
 }
 
-let chatRecActive = false;
-function toggleMicC() {
-  if (chatRecActive) { stopAllMic(); chatRecActive = false; resetMicBtn('mic-btn-c', null, null); return; }
-  const r = getSR('zh-CN');
-  if (!r) { alert('Trình duyệt không hỗ trợ nhận dạng giọng nói. Vui lòng dùng Chrome.'); return; }
-  chatRecActive = true;
-  const btn = document.getElementById('mic-btn-c');
-  btn.className = 'mic-btn rec';
-  r.onresult = e => {
-    const t = Array.from(e.results).map(r => r[0].transcript).join('');
-    document.getElementById('chat-input').value = t;
-    if (e.results[e.results.length - 1].isFinal) {
-      chatRecActive = false;
-      btn.className = 'mic-btn idle';
-    }
-  };
-  r.onerror = () => { chatRecActive = false; btn.className = 'mic-btn idle'; };
-  r.onend = () => { chatRecActive = false; btn.className = 'mic-btn idle'; };
+function toggleMicC(){
+  if(chatRecActive){stopAllMic();chatRecActive=false;resetMicBtn('mic-btn-c',null,null);return;}
+  const r=getSR('zh-CN');
+  if(!r){alert('Trình duyệt không hỗ trợ nhận dạng giọng nói. Dùng Chrome.');return;}
+  chatRecActive=true;
+  const btn=document.getElementById('mic-btn-c'); btn.className='mic-btn rec';
+  r.onresult=e=>{const t=Array.from(e.results).map(r=>r[0].transcript).join('');document.getElementById('chat-input').value=t;if(e.results[e.results.length-1].isFinal){chatRecActive=false;btn.className='mic-btn idle';}};
+  r.onerror=r.onend=()=>{chatRecActive=false;btn.className='mic-btn idle';};
   r.start();
 }
 
-// ── MIC UTILITIES ─────────────────────────────────────────────────
-function startRecognition(btnId, labelId, transcriptId, lang, onResult) {
-  const r = getSR(lang);
-  if (!r) {
-    alert('Trình duyệt không hỗ trợ nhận dạng giọng nói.\nVui lòng dùng Google Chrome và cho phép quyền microphone.');
-    return;
-  }
-  spRecognition = r;
-  spRecActive = true;
-  const btn = document.getElementById(btnId);
-  const lbl = document.getElementById(labelId);
-  const tr = document.getElementById(transcriptId);
-  btn.className = 'mic-btn rec';
-  btn.textContent = '⏹';
-  if (lbl) lbl.textContent = 'Đang nghe... (nhấn để dừng)';
-  tr.className = 'sp-transcript active';
-  tr.textContent = '🎙 Đang nghe...';
-  let final = '';
-  r.onresult = e => {
-    let interim = '';
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      if (e.results[i].isFinal) final += e.results[i][0].transcript;
-      else interim += e.results[i][0].transcript;
-    }
-    tr.textContent = (final + interim) || '🎙 Đang nghe...';
-    if (final) onResult(true, final.trim());
-  };
-  r.onerror = e => {
-    spRecActive = false;
-    tr.textContent = e.error === 'no-speech' ? '❌ Không nghe thấy giọng nói. Thử lại?' : `❌ Lỗi: ${e.error}`;
-    resetMicBtn(btnId, labelId, 'Nhấn để thử lại');
-  };
-  r.onend = () => { spRecActive = false; };
+function startRecognition(btnId,labelId,transcriptId,lang,onResult){
+  const r=getSR(lang);
+  if(!r){alert('Trình duyệt không hỗ trợ nhận dạng giọng nói.\nVui lòng dùng Google Chrome.');return;}
+  spRecognition=r; spRecActive=true;
+  const btn=document.getElementById(btnId), lbl=document.getElementById(labelId), tr=document.getElementById(transcriptId);
+  btn.className='mic-btn rec'; btn.textContent='⏹';
+  if(lbl)lbl.textContent='Đang nghe... (nhấn để dừng)';
+  tr.className='sp-transcript active'; tr.textContent='🎙 Đang nghe...';
+  let final='';
+  r.onresult=e=>{let interim='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)final+=e.results[i][0].transcript;else interim+=e.results[i][0].transcript;}tr.textContent=(final+interim)||'🎙 Đang nghe...';if(final)onResult(true,final.trim());};
+  r.onerror=e=>{spRecActive=false;tr.textContent=e.error==='no-speech'?'❌ Không nghe thấy. Thử lại?':`❌ Lỗi: ${e.error}`;resetMicBtn(btnId,labelId,'Nhấn để thử lại');};
+  r.onend=()=>{spRecActive=false;};
   r.start();
 }
-
-function stopAllMic() {
-  if (spRecognition) { try { spRecognition.stop(); } catch(e){} spRecognition = null; }
-  spRecActive = false;
-  chatRecActive = false;
+function stopAllMic(){
+  if(spRecognition){try{spRecognition.stop();}catch(e){}spRecognition=null;}
+  spRecActive=false; chatRecActive=false;
+}
+function resetMicBtn(btnId,labelId,label){
+  const btn=document.getElementById(btnId); if(btn){btn.className='mic-btn idle';btn.textContent='🎙';}
+  const lbl=document.getElementById(labelId); if(lbl&&label)lbl.textContent=label;
+}
+function setMicThinking(btnId,labelId){
+  const btn=document.getElementById(btnId); if(btn){btn.className='mic-btn thinking';btn.textContent='🤔';}
+  const lbl=document.getElementById(labelId); if(lbl)lbl.textContent='AI đang đánh giá...';
 }
 
-function resetMicBtn(btnId, labelId, label) {
-  const btn = document.getElementById(btnId);
-  if (btn) { btn.className = 'mic-btn idle'; btn.textContent = '🎙'; }
-  const lbl = document.getElementById(labelId);
-  if (lbl && label) lbl.textContent = label;
-}
-
-function setMicThinking(btnId, labelId) {
-  const btn = document.getElementById(btnId);
-  if (btn) { btn.className = 'mic-btn thinking'; btn.textContent = '🤔'; }
-  const lbl = document.getElementById(labelId);
-  if (lbl) lbl.textContent = 'AI đang đánh giá...';
-}
-
-// ── INIT ──────────────────────────────────────────────────────────
-drawFC();
-initMC();
-initMT();
-initFI();
-initTR();
-initHW(false);
-initSP();
-nextSentence();
+/* ════════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════════ */
+(function init(){
+  V = DB[3];
+  touchStreak();
+  updateProgress();
+  renderVocabList();
+  fcL=[...V]; fcI=0; drawFC();
+  initMC(); initMT(); initFI(); initTR(); initHW(false); initLI(); initSP();
+  nextSentence();
+})();
 </script>
 </body>
 </html>
